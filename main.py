@@ -43,10 +43,6 @@ class Bot(BaseBot):
 
        # React with a heart emoji
         await self.highrise.react("heart", user.id)
-        
-    async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")  
-
 
     async def on_chat(self, user: User, message: str) -> None:
         print(f"{user.username}: {message}")  
