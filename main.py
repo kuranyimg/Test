@@ -1016,12 +1016,6 @@ class Bot(BaseBot):
           if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam1699" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "_irii_" or user.username == "RayBM":
            target_username = message.split("@")[-1].strip()
            await self.teleport_user_next_to(target_username, user)
-
-        if              message.startswith("Carteira") or  message.startswith("Wallet") or    message.startswith("wallet") or       message.startswith("carteira"):
-          if user.username == "FallonXOXO" or user.username == "RayBM" or user.username == "sh1n1gam1699":
-            wallet = (await self.highrise.get_wallet()).content
-            await self.highrise.send_whisper(user.id,f"AMOUNT  : {wallet[0].amount} {wallet[0].type}")
-            await self.highrise.send_emote("dance-tiktok14")
               
         if message.startswith("!kick"):
           if user.username == "FallonXOXO" or user.username == "RayBM":
