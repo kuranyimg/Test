@@ -43,9 +43,11 @@ class Bot(BaseBot):
 
        # React with a heart emoji
         await self.highrise.react("heart", user.id)
-        
+
     async def on_chat(self, user: User, message: str) -> None:
         print(f"{user.username}: {message}")  
+
+        # ... (other parts of on_chat)
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
               parts = message.split(" ")
@@ -110,6 +112,9 @@ class Bot(BaseBot):
                       return
                   for bar in tip:
                       await self.highrise.tip_user(room_user.id, bar)
+                      # Announce the tip with a slight delay
+                      await self.highrise.chat(f"{user.username} tipped {room_user.username} {amount}!")
+                      await asyncio.sleep(1)  # Wait 1 second before announcing the next tip
 
         if message.lower().startswith("-tipme ") and user.username== "RayBM":
                 try:
@@ -159,9 +164,12 @@ class Bot(BaseBot):
                     # Send tip to the user who issued the command
                     for bar in tip:
                         await self.highrise.tip_user(user.id, bar)
-                    await self.highrise.chat(f"You have been tipped {amount_str}.")
+                        await self.highrise.chat(f"{user.username} tipped you {amount_str}!")
+                        await asyncio.sleep(1)  # Wait 1 second before announcing the next tip
                 except (IndexError, ValueError):
                     await self.highrise.chat("Invalid tip amount. Please specify a valid number.")
+
+        # ... (rest of on_chat)
                     
           
         if message.lower() == "/fish":
