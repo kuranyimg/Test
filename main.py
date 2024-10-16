@@ -72,7 +72,7 @@ class Bot(BaseBot):
                 await self.highrise.chat("Not enough funds to tip everyone")
                 return
             # Tip each user in the room the specified amount
-           bars_dictionary = {
+            bars_dictionary = {
                 10000: "gold_bar_10k",
                 5000: "gold_bar_5000",
                 1000: "gold_bar_1k",
@@ -82,8 +82,8 @@ class Bot(BaseBot):
                 10: "gold_bar_10",
                 5: "gold_bar_5",
                 1: "gold_bar_1"
-             }
-            fees_dictionary = {
+              }
+             fees_dictionary = {
                 10000: 1000,
                 5000: 500,
                 1000: 100,
@@ -93,7 +93,7 @@ class Bot(BaseBot):
                 10: 1,
                 5: 1,
                 1: 1
-            }
+             }
             # Convert the amount to a string of bars and calculate the fee
              for room_user, pos in room_users.content:
                  tip = []
