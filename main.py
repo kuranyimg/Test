@@ -45,16 +45,25 @@ class Bot(BaseBot):
        # React with a heart emoji
         await self.highrise.react("heart", user.id)
 
+
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")
+        print(f"{user.username}: {message}")  
 
-        await handle_tip_command(self, message, user)  # Handle tipping commands
-
+        # Check for wallet command *first*
         if message.startswith("Carteira") or  message.startswith("Wallet") or    message.startswith("wallet") or       message.startswith("carteira"):
             if user.username in ["FallonXOXO", "sh1n1gam1699", "RayBM"]:  # Check if the user is allowed
                 wallet = (await self.highrise.get_wallet()).content
                 await self.highrise.send_whisper(user.id, f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
                 await self.highrise.send_emote("emote-blowkisses")
+
+        # Handle the tip command *after* checking for wallet command
+        await handle_tip_command(self, message, user) 
+
+        # ... your existing code ...
+
+if __name__ == "__main__":
+    bot = Bot()
+    bot.run()
 
 
         if message.lower() == "/fish":
