@@ -48,7 +48,7 @@ class Bot(BaseBot):
         print(f"{user.username}: {message}")  
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
-        parts = message.split(" ")
+            parts = message.split(" ")
             if len(parts) != 2:
                 await self.highrise.send_message(user.id, "Invalid command")
                 return
