@@ -82,7 +82,7 @@ class Bot(BaseBot):
                 10: "gold_bar_10",
                 5: "gold_bar_5",
                 1: "gold_bar_1"
-              }
+             }
              fees_dictionary = {
                 10000: 1000,
                 5000: 500,
