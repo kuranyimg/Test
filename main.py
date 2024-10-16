@@ -6,6 +6,7 @@ from highrise import BaseBot,Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
 
+
 casa = ["I Marry You 💍","Of course I do 💍❤️","I don't want to 💍💔","Of course I don't 💍💔","I Love You Of course I marry you 💍"]
 
 curativo = ["🔴You Used the Bandage Your Life Is at: 100%🔴","🔴You Used the Bandage Your Life is at: 50%🔴","🔴You Used the Bandage Your Life is at: 60%🔴","🔴You Used Your Life Bandage is at: 75% Your Life is at: 90%🔴","🔴You Used the Bandage It is at: 91%🔴"]
@@ -45,8 +46,17 @@ class Bot(BaseBot):
         await self.highrise.react("heart", user.id)
 
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")  
-        
+    print(f"{user.username}: {message}")
+
+    await handle_tip_command(self, message, user)  # Handle tipping commands
+
+    if message.startswith("Carteira") or  message.startswith("Wallet") or    message.startswith("wallet") or       message.startswith("carteira"):
+        if user.username in ["FallonXOXO", "sh1n1gam1699", "RayBM"]:  # Check if the user is allowed
+            wallet = (await self.highrise.get_wallet()).content
+            await self.highrise.send_whisper(user.id, f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
+            await self.highrise.send_emote("emote-blowkisses")
+
+
         if message.lower() == "/fish":
            frase = random.choice(pescar)
            await self.highrise.send_whisper(user.id,frase)
