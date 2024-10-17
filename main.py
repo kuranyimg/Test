@@ -1272,28 +1272,42 @@ class Bot(BaseBot):
         # If no matching function is found
         return        
 
-    async def on_message(self, user_id: str, conversation_id: str, is_new_conversation: bool) -> None:
-        try:
-            # Log the incoming message details
-            print(f"New message from {user_id} in {conversation_id}! Is new conversation: {is_new_conversation}")
+     async def on_message(self, user_id: str, conversation_id: str, is_new_conversation: bool) -> None:
+    try:
+        # Log the incoming message details
+        print(f"New message from {user_id} in {conversation_id}! Is new conversation: {is_new_conversation}")
 
-            # Fetch the latest messages in the private conversation
-            response = await self.highrise.get_messages(conversation_id)
+        # Fetch the latest messages in the private conversation
+        response = await self.highrise.get_messages(conversation_id)
+        
+        # Ensure that the response contains valid messages
+        if isinstance(response, GetMessagesRequest.GetMessagesResponse) and response.messages:
+            # Get the most recent message content
+            message = response.messages[0].content
+            print(f"Received message: {message}")
             
-            # Ensure that the response contains valid messages
-            if isinstance(response, GetMessagesRequest.GetMessagesResponse) and response.messages:
-                # Get the most recent message content
-                message = response.messages[0].content
-                print(f"Received message: {message}")
+            # Normalize the message to handle various loop and stop commands
+            command = message.lower().strip()
+            
+            # Identify the user (you may need to fetch user details with self.highrise.get_user(user_id))
+            user = User(id=user_id, username="PlaceholderUsername")  # Placeholder, you need to replace this with the actual user fetching logic
+            
+            # Check if the message is a loop command
+            if command.startswith(('!loop', '-loop', 'loop')):
+                await loop(self, user, message)  # Call the loop function
                 
-                # Broadcast the message to the public chat room
+            # Check if the message is a stop command
+            elif command in ('stop', '!stop', '-stop'):
+                await stop_loop(self, user, message)  # Call the stop function
+                
+            else:
+                # If not a command, broadcast the message to the public chat room
                 await self.highrise.chat(message)
                 print(f"Broadcasted message: {message}")
-            
-        except Exception as e:
-            # Log any errors for debugging
-            print(f"Error handling private message: {e}")
-
+        
+    except Exception as e:
+        # Log any errors for debugging
+        print(f"Error handling private message: {e}")
            
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
