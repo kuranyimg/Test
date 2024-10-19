@@ -36,7 +36,7 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
             except:
                 await self.highrise.send_whisper(user.id,f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
                 return
-            await asyncio.sleep(2)
+            await asyncio.sleep(10)
             room_users = (await self.highrise.get_room_users()).content
             user_in_room = False
             for room_user, position in room_users:
@@ -61,7 +61,7 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
             if task.get_name() == user.username:
                 # Removes the task from the task group
                 task.cancel()
-                
+                https://github.com/kuranyimg/Test/edit/main/functions/loop_emote%202.py
         taskgroup.create_task(coro=loop_emote(self, user, emote_name))
 
             
