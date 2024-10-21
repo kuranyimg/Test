@@ -400,6 +400,48 @@ class Bot(BaseBot):
 
         if        message.startswith("/curtsy") or      message.startswith("!curtsy") or      message.startswith("Curtsy") or message.startswith("curtsy") or message.startswith("19"):
             await self.highrise.send_emote("emote-curtsy",user.id)
+
+
+
+        if        message.startswith("/relaxed") or      message.startswith("!relaxed") or      message.startswith("Relaxed") or message.startswith("relaxed") or message.startswith("98"):
+            await self.highrise.send_emote("emote-relaxed", user.id)
+
+        if        message.startswith("/cozynap") or      message.startswith("!cozynap") or      message.startswith("Cozynap") or message.startswith("cozynap") or message.startswith("99"):
+            await self.highrise.send_emote("emote-cozynap", user.id)
+
+        if        message.startswith("/ghostfloat") or      message.startswith("!ghostfloat") or      message.startswith("Ghost float") or message.startswith("ghost float") or message.startswith("0"):
+            await self.highrise.send_emote("emote-ghostfloat", user.id)
+
+        if        message.startswith("/rest") or      message.startswith("!rest") or      message.startswith("Rest") or message.startswith("rest") or message.startswith("re"):
+            await self.highrise.send_emote("emote-rest", user.id)
+
+        if        message.startswith("/jinglehop") or      message.startswith("!jinglehop") or      message.startswith("Jingle hop") or message.startswith("jingle hop") or message.startswith("hop"):
+            await self.highrise.send_emote("emote-jinglehop", user.id)
+
+        if        message.startswith("/loveflutter") or      message.startswith("!loveflutter") or      message.startswith("Love flutter") or message.startswith("love flutter") or message.startswith("fl"):
+            await self.highrise.send_emote("emote-loveflutter", user.id)
+
+        if        message.startswith("/attentive") or      message.startswith("!attentive") or      message.startswith("Attentive") or message.startswith("attentive") or message.startswith("at"):
+            await self.highrise.send_emote("emote-attentive", user.id)
+
+        if        message.startswith("/clumsy") or      message.startswith("!clumsy") or      message.startswith("Clumsy") or message.startswith("clumsy") or message.startswith("cl"):
+            await self.highrise.send_emote("emote-clumsy", user.id)
+
+        if        message.startswith("/gimmeattention") or      message.startswith("!gimmeattention") or      message.startswith("Gimme attention") or message.startswith("gimme attention") or message.startswith("gm"):
+            await self.highrise.send_emote("emote-gimmeattention", user.id)
+
+        if        message.startswith("/shrink") or      message.startswith("!shrink") or      message.startswith("Shrink") or message.startswith("shrink") or message.startswith("shr"):
+            await self.highrise.send_emote("emote-shrink", user.id)
+
+        if        message.startswith("/fruitydance") or      message.startswith("!fruitydance") or      message.startswith("Fruity dance") or message.startswith("fruity dance") or message.startswith("fd"):
+            await self.highrise.send_emote("emote-fruitydance", user.id)
+
+        if        message.startswith("/nocturnalhoop") or      message.startswith("!nocturnalhoop") or      message.startswith("Nocturnal howl") or message.startswith("nocturnal howl") or message.startswith("nh"):
+            await self.highrise.send_emote("emote-nocturnalhoop", user.id)
+
+        if        message.startswith("/laidback") or      message.startswith("!laidback") or      message.startswith("Laid back") or message.startswith("laid back") or message.startswith("lb"):
+            await self.highrise.send_emote("emote-laidback", user.id)
+             
             
 
         if        message.startswith("/snowball") or      message.startswith("!snowball") or      message.startswith("Snowball") or                              message.startswith("snowball") or message.startswith("20"):
