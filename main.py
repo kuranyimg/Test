@@ -1273,30 +1273,30 @@ class Bot(BaseBot):
         return        
 
 
-    async def on_message(self, user_id: str, conversation_id: str, is_new_conversation: bool) -> None:
-        try:
-            # Log the incoming message details
-            print(f"New message from {user_id} in {conversation_id}! Is new conversation: {is_new_conversation}")
+async def on_message(self, user_id: str, conversation_id: str, is_new_conversation: bool) -> None:
+    try:
+        # Log the incoming message details
+        print(f"New message from {user_id} in {conversation_id}! Is new conversation: {is_new_conversation}")
 
-            # Check if the sender is RayBM or botmes *before* fetching messages
+        # Fetch the latest messages in the private conversation
+        response = await self.highrise.get_messages(conversation_id)
+
+        # Ensure that the response contains valid messages
+        if isinstance(response, GetMessagesRequest.GetMessagesResponse) and response.messages:
+            # Get the most recent message content
+            message = response.messages[0].content
+            print(f"Received message: {message}")
+
+            # Check if the sender is RayBM or botmes and if it's a private conversation
             user = await self.highrise.get_user(user_id)
-            if user.username.lower() == "raybm" or user.username.lower() == "botmes":
-                # Fetch the latest messages in the private conversation
-                response = await self.highrise.get_messages(conversation_id)
+            if user.username.lower() == "raybm" or user.username.lower() == "botmes" and conversation_id != self.highrise.room_id:  # Added check for conversation ID
+                # Broadcast the message to the public chat room
+                await self.highrise.chat(message)
+                print(f"Broadcasted message: {message}")
 
-                # Ensure that the response contains valid messages
-                if isinstance(response, GetMessagesRequest.GetMessagesResponse) and response.messages:
-                    # Get the most recent message content
-                    message = response.messages[0].content
-                    print(f"Received message: {message}")
-
-                    # Broadcast the message to the public chat room
-                    await self.highrise.chat(message)
-                    print(f"Broadcasted message: {message}")
-
-            except Exception as e:
-                # Log any errors for debugging
-                print(f"Error handling private message: {e}")
+    except Exception as e:
+        # Log any errors for debugging
+        print(f"Error handling private message: {e}")
              
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
