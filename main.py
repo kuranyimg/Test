@@ -1272,22 +1272,15 @@ class Bot(BaseBot):
         # If no matching function is found
         return        
 
-    async def on_private_message(self, user: User, message: str) -> None:
-        """Handles private messages from users.
+    async def on_whisper(self, user: User, message: str) -> None:
+        print(f"{user.username} whispered: {message}")
 
-        This function is called when a user sends a private message to the bot.
-        It checks if the sender is RayBM or botmes and broadcasts the message
-        to the public chat room if they are.
-        """
-        print(f"Received private message from {user.username}: {message}")
+        # Handle private messages for RayBM and botmes
         if user.username.lower() == "raybm" or user.username.lower() == "botmes":
             await self.highrise.chat(message)
             print(f"Broadcasted private message to the room: {message}")
 
-    # ... (Rest of your Bot class code)
-             
-    async def on_whisper(self, user: User, message: str) -> None:
-        print(f"{user.username} whispered: {message}")
+        # ... (Your existing logic for other commands)
 
         if        message.startswith("tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "RayBM":
@@ -1300,16 +1293,15 @@ class Bot(BaseBot):
           if user.username == "FallonXOXO" or user.username == "Shaun_Knox" or user.username == "@Its.Melly.Moo.XoXo" or user.username == "@RayBM" or user.username == "Dreamy._.KY":
            target_username = message.split("@")[-1].strip()
            await self.teleport_user_next_to(target_username, user)
-            
+
         if              message.startswith("Carteira") or  message.startswith("Wallet") or    message.startswith("wallet") or       message.startswith("carteira"):
           if user.username == "FallonXOXO" or user.username == "sh1n1gam1699" or user.username == "RayBM":
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
-            
+
     async def on_user_move(self, user: User, pos: Position) -> None:
         print (f"{user.username} moved to {pos}")
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
-
