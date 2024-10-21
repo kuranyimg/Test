@@ -1276,11 +1276,17 @@ class Bot(BaseBot):
         print(f"{user.username} whispered: {message}")
 
         # Handle private messages for RayBM and botmes
-        if user.username.lower() == "raybm" or user.username.lower() == "botmes":
+        if user.username.lower() == "raybm" or user.username.lower() == "safa006" or user.username.lower() == "botmes":
             await self.highrise.chat(message)
             print(f"Broadcasted private message to the room: {message}")
+                 
 
-        # ... (Your existing logic for other commands)
+        if message.startswith("-loop"):
+            await loop(self.highrise, user, message)
+
+        elif message.startswith("-stop"):
+            await stop_loop(self.highrise, user, message)
+
 
         if        message.startswith("tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "RayBM":
