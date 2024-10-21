@@ -1294,9 +1294,9 @@ class Bot(BaseBot):
                     await self.highrise.chat(message)
                     print(f"Broadcasted message: {message}")
 
-        except Exception as e:
-            # Log any errors for debugging
-            print(f"Error handling private message: {e}")
+            except Exception as e:
+                # Log any errors for debugging
+                print(f"Error handling private message: {e}")
              
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
