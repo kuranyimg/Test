@@ -1272,31 +1272,19 @@ class Bot(BaseBot):
         # If no matching function is found
         return        
 
+    async def on_private_message(self, user: User, message: str) -> None:
+        """Handles private messages from users.
 
-    async def on_message(self, user_id: str, conversation_id: str, is_new_conversation: bool) -> None:
-        try:
-            # Log the incoming message details
-            print(f"New message from {user_id} in {conversation_id}! Is new conversation: {is_new_conversation}")
+        This function is called when a user sends a private message to the bot.
+        It checks if the sender is RayBM or botmes and broadcasts the message
+        to the public chat room if they are.
+        """
+        print(f"Received private message from {user.username}: {message}")
+        if user.username.lower() == "raybm" or user.username.lower() == "botmes":
+            await self.highrise.chat(message)
+            print(f"Broadcasted private message to the room: {message}")
 
-            # Fetch the latest messages in the private conversation
-            response = await self.highrise.get_messages(conversation_id)
-
-            # Ensure that the response contains valid messages
-            if isinstance(response, GetMessagesRequest.GetMessagesResponse) and response.messages:
-                # Get the most recent message content
-                message = response.messages[0].content
-                print(f"Received message: {message}")
-
-                # Check if the sender is RayBM or botmes and if it's a private conversation
-                user = await self.highrise.get_user(user_id)
-                if user.username.lower() == "raybm" or user.username.lower() == "botmes" and conversation_id != self.highrise.room_id:  # Added check for conversation ID
-                    # Broadcast the message to the public chat room
-                    await self.highrise.chat(message)
-                    print(f"Broadcasted message: {message}")
-
-        except Exception as e:
-            # Log any errors for debugging
-            print(f"Error handling private message: {e}")
+    # ... (Rest of your Bot class code)
              
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
