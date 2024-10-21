@@ -61,67 +61,58 @@ emote_durations = {
     'emote-looping': 6
 }
 
-async def loop(self: BaseBot, user: User, message: str) -> None:
-    async def loop_emote(self: BaseBot, user: User, emote_name: str) -> None:
-        emote_id = ""
-        emote_duration = 2  # Default duration if not found
 
-        for emote in emote_list:
-            if emote[0].lower() == emote_name.lower():
-                emote_id = emote[1]
-                emote_duration = emote_durations.get(emote_id, 2)  # Get duration or default to 10 seconds
-                break
+async def send_emote_and_wait(highrise, emote_id, user_id):
+    await highrise.send_emote(emote_id, user_id)
+    duration = emote_durations.get(emote_id, 0.5)  # Default duration if not specified
+    await asyncio.sleep(duration)  # Wait for the duration of the emote
 
-        if emote_id == "":
-            await self.highrise.send_whisper(user.id,f"🚫🔄 @{user.username} To Stop the Loop Just Walk🔄🚫")
-            return
+async def loop_emote(self: BaseBot, user: User, emote_name: str) -> None:
+    emote_id = ""
+    
+    for emote in emote_list:
+        if emote[0].lower() == emote_name.lower():
+            emote_id = emote[1]
+            break
 
-        user_position = None
-        user_in_room = False
-        room_users = (await self.highrise.get_room_users()).content
-        for room_user, position in room_users:
-            if room_user.id == user.id:
-                user_position = position
-                start_position = position
-                user_in_room = True
-                break
+    if emote_id == "":
+        return
 
-        if user_position is None:
-            await self.highrise.send_whisper(user.id,f"✅️ @{user.username} Siga <RayMG> 🤍 Hastag : #RayMG ✅️")
-            return
+    user_position = None
+    user_in_room = False
+    room_users = (await self.highrise.get_room_users()).content
+    
+    for room_user, position in room_users:
+        if room_user.id == user.id:
+            user_position = position
+            start_position = position
+            user_in_room = True
+            break
 
-        await self.highrise.send_whisper(user.id,f"👯🏻‍♂️🔄 @{user.username} You are in a loop: {emote_name} 👯🏻‍♂️🔄")
+    if user_position is None:
+        await self.highrise.send_whisper(user.id, f"🚫🔄 @{user.username} To Stop the Loop Just Walk 🔄🚫")
+        return
 
-        while start_position == user_position:
-            print(f"Loop {emote_name} - {user.username}")
-            try:
-                await self.highrise.send_emote(emote_id, user.id)
-            except:
-                await self.highrise.send_whisper(user.id,f"🚫🔄{user.username} loop 🤍 🔄🚫")
-                return
-            await asyncio.sleep(emote_duration)  # Sleep based on the emote's duration
+    await self.highrise.send_whisper(user.id, f"👯🏻‍♂️🔄 @{user.username} You are in a loop: {emote_name} 👯🏻‍♂️🔄")
+    
+    while start_position == user_position:
+        try:
+            # Start the emote and wait for it to finish before sending the next
+            await send_emote_and_wait(self.highrise, emote_id, user.id)
+
+            # Check user position again after sending the emote
             room_users = (await self.highrise.get_room_users()).content
             user_in_room = False
+            
             for room_user, position in room_users:
                 if room_user.id == user.id:
                     user_position = position
                     user_in_room = True
                     break
+            
             if not user_in_room:
-                break
+                break  # Exit loop if user is no longer in the room
 
-    try:
-        splited_message = message.split(" ")
-        emote_name = " ".join(splited_message[1:])
-        print(emote_name)
-    except:
-        await self.highrise.send_whisper(user.id,f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
-        return
-    else:
-        taskgroup = self.highrise.tg
-        task_list : list[Task] = list(taskgroup._tasks)
-        for task in task_list:
-            if task.get_name() == user.username:
-                task.cancel()
-
-        taskgroup.create_task(coro=loop_emote(self, user, emote_name))
+        except Exception as e:
+            await self.highrise.send_whisper(user.id, f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+            return
