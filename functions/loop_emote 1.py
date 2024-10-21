@@ -57,7 +57,7 @@ emote_durations = {
     'idle-toilet': 5, 'dance-jinglebell': 7, 'emote-hyped': 6, 'emote-sleigh': 7,
     'emote-pose6': 5, 'sit-relaxed': 6, 'dance-kawai': 7, 'dance-touch': 6,
     'emote-gift': 5, 'dance-employee': 7, 'emote-cutesalute': 4, 'emote-salute': 4,
-    'dance-tiktok11': 7, 'emote-kissing-bound': 6, 'emote-launch': 7, 'idle-floating': 7,
+    'dance-tiktok11': 7, 'emote-kissing-bound': 6, 'emote-launch': 7, 'idle-floating': 5,
     'emote-looping': 6
 }
 
