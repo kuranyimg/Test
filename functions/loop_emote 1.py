@@ -64,12 +64,12 @@ emote_durations = {
 async def loop(self: BaseBot, user: User, message: str) -> None:
     async def loop_emote(self: BaseBot, user: User, emote_name: str) -> None:
         emote_id = ""
-        emote_duration = 10  # Default duration if not found
+        emote_duration = 2  # Default duration if not found
 
         for emote in emote_list:
             if emote[0].lower() == emote_name.lower():
                 emote_id = emote[1]
-                emote_duration = emote_durations.get(emote_id, 10)  # Get duration or default to 10 seconds
+                emote_duration = emote_durations.get(emote_id, 2)  # Get duration or default to 10 seconds
                 break
 
         if emote_id == "":
