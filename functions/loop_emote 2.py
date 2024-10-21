@@ -274,11 +274,11 @@ emote_list: list[tuple[str, str, float]] = [
 
 async def loop_emote(self: BaseBot, user: User, emote_name: str) -> None:
     emote_id = ""
-    emote_duration = 10  # Default duration
+    emote_duration = 2  # Default duration
     for emote in emote_list:
         if emote[0].lower() == emote_name.lower():
             emote_id = emote[1]
-            emote_duration = emote_durations.get(emote_id, 10)  # Use duration from dictionary, default to 10 seconds
+            emote_duration = emote_durations.get(emote_id, 2)  # Use duration from dictionary, default to 10 seconds
             break
     if emote_id == "":
         return
