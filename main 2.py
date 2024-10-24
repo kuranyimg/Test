@@ -5,6 +5,7 @@ from highrise import*
 from highrise import BaseBot,Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
+from functions.leaderboard import leaderboard_instance
 
 casa = ["I Marry You 💍","Of course I do 💍❤️","I don't want to 💍💔","Of course I don't 💍💔","I Love You Of course I marry you 💍"]
 
@@ -32,6 +33,9 @@ class Bot(BaseBot):
         # Announce the user has joined the room publicly
         await self.highrise.chat(f"{user.username} joined to find a Buddy!")
 
+        # Start tracking user duration in the room
+        leaderboard_instance.start_duration(user.id)
+
         # Send welcome whispers to the user
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
@@ -43,9 +47,21 @@ class Bot(BaseBot):
 
        # React with a heart emoji
         await self.highrise.react("heart", user.id)
-        
+
+    async def on_user_leave(self, user: User) -> None:
+        # Do not announce when a user leaves
+        # print(f"{user.username} (ID: {user.id}) left.")
+    
+        # Stop tracking user duration in the room
+        leaderboard_instance.stop_duration(user.id)
+
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")  
+        print(f"{user.username}: {message}")
+
+        if message.startswith("-leaderboard"):
+            option = message.split()[1].lower() if len(message.split()) > 1 else None
+            if option in ["active"]:
+                await leaderboard_instance.handle_leaderboard_command(user, option, self.get_user)
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
               parts = message.split(" ")
@@ -1271,6 +1287,13 @@ class Bot(BaseBot):
         
         # If no matching function is found
         return        
+
+
+    async def get_user(self, user_id):
+        return await self.highrise.get_user(user_id)
+
+    async def on_boost(self, user: User):
+        leaderboard_instance.add_boost(user.id, user.username)
 
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
