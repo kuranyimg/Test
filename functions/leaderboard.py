@@ -2,7 +2,8 @@ from highrise import User
 import asyncio
 
 class Leaderboard:
-    def __init__(self):
+    def __init__(self, highrise):
+        self.highrise = highrise  # Pass Highrise instance to the Leaderboard
         self.activity_tracker = {}
         self.booster_tracker = {}
         self.duration_tracker = {}  # Track duration in the room
@@ -38,22 +39,22 @@ class Leaderboard:
         sorted_leaderboard = sorted(self.duration_tracker.items(), key=lambda item: item[1]["time"], reverse=True)
         return sorted_leaderboard
 
-    def format_leaderboard(self, leaderboard_data, get_user_func):
+    async def format_leaderboard(self, leaderboard_data):
         formatted = ""
         for i, (user_id, data) in enumerate(leaderboard_data):
-            user = get_user_func(user_id)
+            user = await self.get_user(user_id)  # Await user retrieval
             duration = data["time"]
             formatted += f"{i+1}. @{user.username} - {duration // 60} minutes\n"  # Convert seconds to minutes
         return formatted
 
-    async def handle_leaderboard_command(self, user: User, option: str, get_user_func):
+    async def handle_leaderboard_command(self, user: User, option: str):
         if option == "active":
             data = self.get_duration_leaderboard()
-            leaderboard_str = self.format_leaderboard(data, get_user_func)
-            await user.send_whisper(leaderboard_str)
+            leaderboard_str = await self.format_leaderboard(data)
+            await self.highrise.send_whisper(user.id, leaderboard_str)  # Send the leaderboard as a whisper
 
     async def get_user(self, user_id):
-        return await self.highrise.get_user(user_id)
+        return await self.highrise.get_user(user_id)  # Await the user retrieval
 
 # Initialize Leaderboard instance
 leaderboard_instance = Leaderboard()
