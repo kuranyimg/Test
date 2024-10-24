@@ -44,26 +44,6 @@ class Bot(BaseBot):
 
     async def on_user_leave(self, user: User) -> None:
         leaderboard_instance.stop_duration(user.id)
-
-    async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")
-
-        # Check for leaderboard command
-        if message.lower().startswith("-leaderboard") or message.lower() in ["leaderboard", "active", "boost"]:
-            # Get the option after the command
-            parts = message.split()
-            if len(parts) > 1:
-                option = parts[1].lower()
-            else:
-                option = message.lower()  # Use the message directly if no additional parts
-
-            # Handle options for the leaderboard
-            if option in ["active", "-active"]:
-                await leaderboard_instance.handle_leaderboard_command(user, "active", self.get_user)
-            elif option in ["boost", "-boost"]:
-                await leaderboard_instance.handle_leaderboard_command(user, "boost", self.get_user)
-            else:
-                await self.highrise.send_whisper(user.id, "Invalid option. Use: -leaderboard active or -leaderboard boost.")
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
