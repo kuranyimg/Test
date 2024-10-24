@@ -1366,10 +1366,6 @@ class Bot(BaseBot):
     async def is_admin(self, user: User) -> bool:
         """Check if the user is an admin."""
         return user.username == "RayBM"
-
-keep_alive()
-if __name__ == "__main__":
-    arun(Bot().run())
          
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
