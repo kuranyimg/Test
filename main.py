@@ -5,7 +5,9 @@ from highrise import*
 from highrise import BaseBot,Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
-from functions.leaderboard import leaderboard_instance
+from functions.leaderboard import Leaderboard
+
+
 
 casa = ["I Marry You 💍","Of course I do 💍❤️","I don't want to 💍💔","Of course I don't 💍💔","I Love You Of course I marry you 💍"]
 
@@ -25,6 +27,9 @@ class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
         await self.highrise.walk_to(Position(14.5 , 0.25 , 3.5, "FrontRight"))
+             
+        # Initialize the leaderboard instance here
+        self.leaderboard_instance = Leaderboard(self.highrise)
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
@@ -55,25 +60,27 @@ class Bot(BaseBot):
         # Stop tracking user duration in the room
         leaderboard_instance.stop_duration(user.id)
 
+
     async def on_chat(self, user: User, message: str) -> None:
-    print(f"{user.username}: {message}")
+        print(f"{user.username}: {message}")
 
-    # Check for leaderboard command
-    if message.lower().startswith("-leaderboard") or message.lower() == "leaderboard":
-        # Get the option after the command
-        parts = message.split()
-        if len(parts) > 1:
-            option = parts[1].lower()
-        else:
-            option = None
+        # Check for leaderboard command
+        if message.lower().startswith("-leaderboard") or message.lower() == "leaderboard":
+            # Get the option after the command
+            parts = message.split()
+            if len(parts) > 1:
+                option = parts[1].lower()
+            else:
+                option = None
 
-        # Handle options for the leaderboard
-        if option == "active":
-            await leaderboard_instance.handle_leaderboard_command(user, option, self.get_user)
-        elif option is None:
-            await self.highrise.send_whisper(user.id, "Please specify an option. Usage: -leaderboard active")
-        else:
-            await self.highrise.send_whisper(user.id, "Invalid option. Usage: -leaderboard active")
+            # Handle options for the leaderboard
+            if option == "active":
+                await self.leaderboard_instance.handle_leaderboard_command(user, option, self.get_user)
+            elif option is None:
+                await self.highrise.send_whisper(user.id, "Please specify an option. Usage: -leaderboard active")
+            else:
+                await self.highrise.send_whisper(user.id, "Invalid option. Usage: -leaderboard active")
+
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
               parts = message.split(" ")
