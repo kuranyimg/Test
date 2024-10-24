@@ -1,51 +1,70 @@
 import random
 import os
 import importlib.util
-from highrise import*
-from highrise import BaseBot,Position
+from highrise import *
+from highrise import BaseBot, Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
+from asyncio import sleep
+import time
+from collections import defaultdict
 
-casa = ["I Marry You 💍","Of course I do 💍❤️","I don't want to 💍💔","Of course I don't 💍💔","I Love You Of course I marry you 💍"]
-
-curativo = ["🔴You Used the Bandage Your Life Is at: 100%🔴","🔴You Used the Bandage Your Life is at: 50%🔴","🔴You Used the Bandage Your Life is at: 60%🔴","🔴You Used Your Life Bandage is at: 75% Your Life is at: 90%🔴","🔴You Used the Bandage It is at: 91%🔴"]
-         
-bomba = ["💣🧟‍♂️ You Threw a Bomb on 1x Boss Zombie 🧟‍♀️💣","💣🧟 You Threw a Bomb on 3x Boss Zombie 🧟💣","💣🧟‍♂️ You Threw a Bomb on 2x Boss Zombie 💣🧟‍♀️","💣 🧟‍♂️ You Threw a Bomb on 7x Boss Zombie 💣🧟‍♂️","💣🧟 You Threw a Bomb on 4x Boss Zombie 🧟💣"]
-
-facada = ["🧟🔪 You Stabbed 1x Zombie 🔪🧟","🧟🔪 You Stabbed 6x Zombie 🔪🧟","🧟🔪 You Stabbed 7x Zombie 🔪🧟","🧟‍♂️🔪🧟‍♂️ You Stabbed 8x Zombie 🔪🧟‍♂️","🧟 🔪 You Stabbed 10x Zombie 🔪🧟","🧟🔪 You Stabbed 9x Zombie 🔪🧟","🧟‍♀️🔪🧟‍♂️ You Stabbed 3x Zombie 🧟‍♂️🔪🧟‍♀️"]
-
-atirar = ["🧟You Shot 5x Zombie🧟","🧟You Shot 1x Zombie🧟","🧟You Shot 8x Zombie🧟","🧟You Shot 3x Zombie🧟","🧟‍♂️You Shot 5x Zombie🧟‍♂️ ","🧟‍♀️You Shot 10x Zombie🧟‍♀️","🧟🧟‍♀️You Shot 9x Zombie 🧟🧟‍♀️"]
-
-play = ["🔴Your Life is at 50% use : /bandage","🔴Your Life is at 20% use : /bandage","🔴Your Life is at 40% use : /bandage","🧟The Zombies Are Coming Use : /stab or /shoot","🧟🧟‍♂️ There Are Many Zombies 🧟‍♀️🧟 🛡 Use: /shield 🛡","🧟The Zombie Boss Is Coming Use: /bomb","🧟The Zombies Are Coming Use: /stab or/ shoot","🧟🧟‍♂️ There are Lots of Zombies 🧟‍♀️🧟 🛡 Use: /shield 🛡","🔴Your Life is at 60% use: /bandage","🔴Your Life is at 10% use: /bandage" ,"🧟The Zombies Are Coming Use : /stab or /shoot" ,"🧟The Zombies Are Coming Use : /stab or /shoot","🧟The Zombies Are Coming Use : /stab or /shoot","🧟The Zombies They're Coming Use : /stab or /shoot","🧟The Zombies Are Coming Use : /stab or /shoot","🧟The Zombies Are Coming Use : /stab or /shoot "]
-
-pescar = ["🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈","🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉","🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉","🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉","🥉YOU WON OR THE MEDAL: BRONZE FISHERMAN🥉","🟡Event: /carp 🟡","⚫️You Fished 3x Night Moon⚫️(+150 POINTS)","⚫️You Fished 2x Night Moon⚫️(+100 POINTS)"," ⚫️You Fished 1x Night Moon⚫️(+50 POINTS)","🟡You Fished 1x Golden Shrimp 🟡 (MULTIPLE POINT)","🟡You Fished 1x Golden Flounder🟡 (MULTIPLE POINT)","🪼🌈You Fished 1x Octopus Rainbow🪼🌈 (EXTRA POINTS)","🐢You Caught 3x Turtle 🐢 (LOSS OF POINTS)","🦑You Caught 1x Giant Squid 🦑 (LEGENDARY)","🦀You Caught 6x Crab 🦀 (COMMON)", "🦀You Caught 2x Crab 🦀 (COMMON)","🦀You Caught 8x Crab 🦀 (COMMON)","🪼You Caught 1x Sea Octopus🪼(EPIC)","🦈You Caught 2x Shark🦈 (EPIC)", "🦈You Fished 5x Sharks🦈 (EPIC)","🦈You Fished 8x Sharks🦈 (EPIC)","🦈You Fished 1x Sharks🦈 (EPIC)","🐠You Fished 1x Sea Tuna🐠 (LEGENDARY)", "🐠You Caught 3x Clown Fish🐠 (LEGENDARIOUS)","🐠You Caught 3x Sea Tuna🐠 (LEGENDARIOUS)","🐠You Caught 1x Clown Fish🐠 (LEGENDARIOUS)","🐠You Caught 8x Clown Fish🐠 (LEGENDARY) )","🐠You Caught 10x Clown Fish🐠 (LEGENDARY)","🐟You Caught 1x Salmon🐟 (RARE)","🧜🏼‍♀️You Caught 5x Mermaid🧜🏼‍♀️(EPIC)","🧜🏼‍ ♀️You Caught 2x Mermaid🧜🏼‍♀️(EPIC)","🧜🏼‍♀️You Caught 1x Mermaid🧜🏼‍♀️(EPIC)","🐟You Caught 3x Salmon🐟 (RARE)","🟡You Caught 1 x Tilapia Dourada🟡 (MULTIPLE POINT)","☠️🐋You Caught 3x Dead Whale☠️🐋 (LOSS OF POINTS)","🐋You Caught 11x Sea Whale🐋(COMMON)","🐋🌈You Caught 1x Rainbow Whale🌈 🐋 (EXTRA POINTS)","🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈","🥇YOU WON THE MEDAL: GOLD FISHERMAN🥇","🏅YOU WON THE MEDAL: STAR FISHERMAN🏅","💎Event: /shrimp 💎"]
+casa = ["I Marry You 💍", "Of course I do 💍❤️", "I don't want to 💍💔", "Of course I don't 💍💔", "I Love You Of course I marry you 💍"]
+curativo = ["🔴You Used the Bandage Your Life Is at: 100%🔴", "🔴You Used the Bandage Your Life is at: 50%🔴", "🔴You Used the Bandage Your Life is at: 60%🔴"]
+bomba = ["💣🧟‍♂️ You Threw a Bomb on 1x Boss Zombie 🧟‍♀️💣", "💣🧟 You Threw a Bomb on 3x Boss Zombie 🧟💣"]
+facada = ["🧟🔪 You Stabbed 1x Zombie 🔪🧟", "🧟🔪 You Stabbed 6x Zombie 🔪🧟"]
+atirar = ["🧟You Shot 5x Zombie🧟", "🧟You Shot 1x Zombie🧟"]
+play = ["🔴Your Life is at 50% use : /bandage", "🔴Your Life is at 20% use : /bandage"]
+pescar = ["🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈", "🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉"]
 
 class Bot(BaseBot):
+    leaderboard = defaultdict(int)
+    activity_tracker = defaultdict(int)
+    level_threshold = 10  # Points needed for a level up
+    update_interval = 10  # Seconds between leaderboard updates
+    anti_spam_cooldown = 5  # Seconds to prevent activity spamming
+    last_activity_time = defaultdict(int)
+
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
-        await self.highrise.walk_to(Position(14.5 , 0.25 , 3.5, "FrontRight"))
-             
+        await self.highrise.walk_to(Position(14.5, 0.25, 3.5, "FrontRight"))
+
+        # Start the leaderboard update loop
+        self.highrise.tg.create_task(self.update_leaderboard())
+
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        # Only the bot prints the message in the console
         print(f"{user.username} (ID: {user.id})")
-
-        # Announce the user has joined the room publicly
         await self.highrise.chat(f"{user.username} joined to find a Buddy!")
-
-        # Send welcome whispers to the user
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
         await self.highrise.send_whisper(user.id, f"❤Type F4 or floor number to teleport 🤍.")
-
-        # Send emotes
         await self.highrise.send_emote("dance-hipshake")
         await self.highrise.send_emote("emote-lust", user.id)
-
-       # React with a heart emoji
         await self.highrise.react("heart", user.id)
-        
+
+        # Initialize activity tracker if the user is new
+        if user.id not in self.activity_tracker:
+            self.activity_tracker[user.id] = 0
+
+        # Send welcome message with current level
+        level = self.calculate_level(self.activity_tracker[user.id])
+        welcome_message = f"Welcome @{user.username}! You are currently Level {level}. Stay active to level up!"
+        await self.highrise.chat(welcome_message)
+
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")  
+        print(f"{user.username}: {message}")
+
+        # Command handling
+        if message.startswith("-leaderboard"):
+            await self.handle_leaderboard_command(user, message)
+        elif message.startswith("-resetleaderboard"):
+            await self.reset_leaderboard_command(user)
+
+        # Track user activity with cooldown to prevent spamming
+        current_time = time.time()
+        if current_time - self.last_activity_time[user.id] > self.anti_spam_cooldown:
+            self.activity_tracker[user.id] += 1
+            self.last_activity_time[user.id] = current_time
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
               parts = message.split(" ")
@@ -1314,6 +1333,44 @@ class Bot(BaseBot):
         # If no matching function is found
         return        
 
+    async def handle_leaderboard_command(self, user: User, message: str):
+        """Handles the -leaderboard command to display the leaderboard."""
+        limit = 10
+        sorted_leaderboard = sorted(self.leaderboard.items(), key=lambda item: item[1], reverse=True)[:limit]
+        leaderboard_str = "🏆 Leaderboard:\n"
+        for i, (user_id, activity) in enumerate(sorted_leaderboard):
+            user_data = await self.highrise.get_user(user_id)
+            level = self.calculate_level(activity)
+            leaderboard_str += f"{i+1}. @{user_data.username} - {activity} points (Level {level})\n"
+        await self.highrise.chat(leaderboard_str)
+
+    async def reset_leaderboard_command(self, user: User):
+        """Handles the -resetleaderboard command (admin use only)."""
+        if await self.is_admin(user):
+            self.leaderboard.clear()
+            self.activity_tracker.clear()
+            await self.highrise.chat("Leaderboard has been reset!")
+        else:
+            await self.highrise.chat("You do not have permission to reset the leaderboard.")
+
+    async def update_leaderboard(self):
+        """Updates the leaderboard periodically."""
+        while True:
+            self.leaderboard = self.activity_tracker.copy()
+            await sleep(self.update_interval)
+
+    def calculate_level(self, activity):
+        """Calculates the user's level based on activity points."""
+        return activity // self.level_threshold
+
+    async def is_admin(self, user: User) -> bool:
+        """Check if the user is an admin."""
+        return user.username == "RayBM"
+
+keep_alive()
+if __name__ == "__main__":
+    arun(Bot().run())
+         
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
 
