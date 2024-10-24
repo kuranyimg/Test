@@ -25,11 +25,11 @@ pescar = ["🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈","🥉YOU WON THE MEDAL: 
 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        print("working")
-        await self.highrise.walk_to(Position(14.5 , 0.25 , 3.5, "FrontRight"))
-             
+        print("Bot is working")
+        await self.highrise.walk_to(Position(14.5, 0.25, 3.5, "FrontRight"))
+
         # Initialize the leaderboard instance here
-        self.leaderboard_instance = Leaderboard(self.highrise)
+        self.leaderboard_instance = Leaderboard(self.highrise)  # This line passes the highrise instance
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
