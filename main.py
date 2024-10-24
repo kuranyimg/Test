@@ -56,12 +56,24 @@ class Bot(BaseBot):
         leaderboard_instance.stop_duration(user.id)
 
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")
+    print(f"{user.username}: {message}")
 
-        if message.startswith("-leaderboard"):
-            option = message.split()[1].lower() if len(message.split()) > 1 else None
-            if option in ["active"]:
-                await leaderboard_instance.handle_leaderboard_command(user, option, self.get_user)
+    # Check for leaderboard command
+    if message.lower().startswith("-leaderboard") or message.lower() == "leaderboard":
+        # Get the option after the command
+        parts = message.split()
+        if len(parts) > 1:
+            option = parts[1].lower()
+        else:
+            option = None
+
+        # Handle options for the leaderboard
+        if option == "active":
+            await leaderboard_instance.handle_leaderboard_command(user, option, self.get_user)
+        elif option is None:
+            await self.highrise.send_whisper(user.id, "Please specify an option. Usage: -leaderboard active")
+        else:
+            await self.highrise.send_whisper(user.id, "Invalid option. Usage: -leaderboard active")
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
               parts = message.split(" ")
