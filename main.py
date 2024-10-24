@@ -49,13 +49,6 @@ class Bot(BaseBot):
             self.leaderboard[user.id] += time_spent
             del self.user_join_time[user.id]
 
-    async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")
-
-        # Command handling
-        if message.lower().startswith("leaderboard"):
-            await self.handle_leaderboard_command(user)
-
     async def handle_leaderboard_command(self, user: User):
         """Handles the leaderboard command to display the leaderboard as a whisper."""
         try:
@@ -1370,40 +1363,6 @@ class Bot(BaseBot):
         # If no matching function is found
         return        
 
-    async def handle_leaderboard_command(self, user: User, message: str):
-        """Handles the -leaderboard command to display the leaderboard."""
-        limit = 10
-        sorted_leaderboard = sorted(self.leaderboard.items(), key=lambda item: item[1], reverse=True)[:limit]
-        leaderboard_str = "🏆 Leaderboard:\n"
-        for i, (user_id, activity) in enumerate(sorted_leaderboard):
-            user_data = await self.highrise.get_user(user_id)
-            level = self.calculate_level(activity)
-            leaderboard_str += f"{i+1}. @{user_data.username} - {activity} points (Level {level})\n"
-        await self.highrise.chat(leaderboard_str)
-
-    async def reset_leaderboard_command(self, user: User):
-        """Handles the -resetleaderboard command (admin use only)."""
-        if await self.is_admin(user):
-            self.leaderboard.clear()
-            self.activity_tracker.clear()
-            await self.highrise.chat("Leaderboard has been reset!")
-        else:
-            await self.highrise.chat("You do not have permission to reset the leaderboard.")
-
-    async def update_leaderboard(self):
-        """Updates the leaderboard periodically."""
-        while True:
-            self.leaderboard = self.activity_tracker.copy()
-            await sleep(self.update_interval)
-
-    def calculate_level(self, activity):
-        """Calculates the user's level based on activity points."""
-        return activity // self.level_threshold
-
-    async def is_admin(self, user: User) -> bool:
-        """Check if the user is an admin."""
-        return user.username == "RayBM"
-         
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
 
