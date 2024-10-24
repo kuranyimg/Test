@@ -23,13 +23,47 @@ play = ["🔴Your Life is at 50% use : /bandage","🔴Your Life is at 20% use : 
 
 pescar = ["🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈","🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉","🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉","🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉","🥉YOU WON OR THE MEDAL: BRONZE FISHERMAN🥉","🟡Event: /carp 🟡","⚫️You Fished 3x Night Moon⚫️(+150 POINTS)","⚫️You Fished 2x Night Moon⚫️(+100 POINTS)"," ⚫️You Fished 1x Night Moon⚫️(+50 POINTS)","🟡You Fished 1x Golden Shrimp 🟡 (MULTIPLE POINT)","🟡You Fished 1x Golden Flounder🟡 (MULTIPLE POINT)","🪼🌈You Fished 1x Octopus Rainbow🪼🌈 (EXTRA POINTS)","🐢You Caught 3x Turtle 🐢 (LOSS OF POINTS)","🦑You Caught 1x Giant Squid 🦑 (LEGENDARY)","🦀You Caught 6x Crab 🦀 (COMMON)", "🦀You Caught 2x Crab 🦀 (COMMON)","🦀You Caught 8x Crab 🦀 (COMMON)","🪼You Caught 1x Sea Octopus🪼(EPIC)","🦈You Caught 2x Shark🦈 (EPIC)", "🦈You Fished 5x Sharks🦈 (EPIC)","🦈You Fished 8x Sharks🦈 (EPIC)","🦈You Fished 1x Sharks🦈 (EPIC)","🐠You Fished 1x Sea Tuna🐠 (LEGENDARY)", "🐠You Caught 3x Clown Fish🐠 (LEGENDARIOUS)","🐠You Caught 3x Sea Tuna🐠 (LEGENDARIOUS)","🐠You Caught 1x Clown Fish🐠 (LEGENDARIOUS)","🐠You Caught 8x Clown Fish🐠 (LEGENDARY) )","🐠You Caught 10x Clown Fish🐠 (LEGENDARY)","🐟You Caught 1x Salmon🐟 (RARE)","🧜🏼‍♀️You Caught 5x Mermaid🧜🏼‍♀️(EPIC)","🧜🏼‍ ♀️You Caught 2x Mermaid🧜🏼‍♀️(EPIC)","🧜🏼‍♀️You Caught 1x Mermaid🧜🏼‍♀️(EPIC)","🐟You Caught 3x Salmon🐟 (RARE)","🟡You Caught 1 x Tilapia Dourada🟡 (MULTIPLE POINT)","☠️🐋You Caught 3x Dead Whale☠️🐋 (LOSS OF POINTS)","🐋You Caught 11x Sea Whale🐋(COMMON)","🐋🌈You Caught 1x Rainbow Whale🌈 🐋 (EXTRA POINTS)","🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈","🥇YOU WON THE MEDAL: GOLD FISHERMAN🥇","🏅YOU WON THE MEDAL: STAR FISHERMAN🏅","💎Event: /shrimp 💎"]
 
+
+
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("Bot is working")
         await self.highrise.walk_to(Position(14.5, 0.25, 3.5, "FrontRight"))
+        self.leaderboard_instance = Leaderboard(self.highrise)  # Initialize the leaderboard instance here
 
-        # Initialize the leaderboard instance here
-        self.leaderboard_instance = Leaderboard(self.highrise)  # This line passes the highrise instance
+    async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
+        print(f"{user.username} (ID: {user.id})")
+        await self.highrise.chat(f"{user.username} joined to find a Buddy!")
+        leaderboard_instance.start_duration(user.id)
+        await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
+        await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
+        await self.highrise.send_whisper(user.id, f"❤Type F4 or floor number to teleport 🤍.")
+        await self.highrise.send_emote("dance-hipshake")
+        await self.highrise.send_emote("emote-lust", user.id)
+        await self.highrise.react("heart", user.id)
+
+    async def on_user_leave(self, user: User) -> None:
+        leaderboard_instance.stop_duration(user.id)
+
+    async def on_chat(self, user: User, message: str) -> None:
+        print(f"{user.username}: {message}")
+
+        # Check for leaderboard command
+        if message.lower().startswith("-leaderboard") or message.lower() in ["leaderboard", "active", "boost"]:
+            # Get the option after the command
+            parts = message.split()
+            if len(parts) > 1:
+                option = parts[1].lower()
+            else:
+                option = message.lower()  # Use the message directly if no additional parts
+
+            # Handle options for the leaderboard
+            if option in ["active", "-active"]:
+                await leaderboard_instance.handle_leaderboard_command(user, "active", self.get_user)
+            elif option in ["boost", "-boost"]:
+                await leaderboard_instance.handle_leaderboard_command(user, "boost", self.get_user)
+            else:
+                await self.highrise.send_whisper(user.id, "Invalid option. Use: -leaderboard active or -leaderboard boost.")
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
