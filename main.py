@@ -10,7 +10,7 @@ import time
 from collections import defaultdict
 
 casa = ["I Marry You 💍", "Of course I do 💍❤️", "I don't want to 💍💔", "Of course I don't 💍💔", "I Love You Of course I marry you 💍"]
-curativo = ["🔴You Used the Bandage Your Life Is at: 100%🔴", "🔴You Used the Bandage Your Life is at: 50%🔴", "🔴You Used the Bandage Your Life is at: 60%🔴"]
+curativo = ["🔴You Used the Bandage Your Life Is at: 100%🔴", "🔴You Used the Bandage Your Life is at: 50%🔴"]
 bomba = ["💣🧟‍♂️ You Threw a Bomb on 1x Boss Zombie 🧟‍♀️💣", "💣🧟 You Threw a Bomb on 3x Boss Zombie 🧟💣"]
 facada = ["🧟🔪 You Stabbed 1x Zombie 🔪🧟", "🧟🔪 You Stabbed 6x Zombie 🔪🧟"]
 atirar = ["🧟You Shot 5x Zombie🧟", "🧟You Shot 1x Zombie🧟"]
@@ -18,12 +18,9 @@ play = ["🔴Your Life is at 50% use : /bandage", "🔴Your Life is at 20% use :
 pescar = ["🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈", "🥉YOU WON THE MEDAL: BRONZE FISHERMAN🥉"]
 
 class Bot(BaseBot):
-    leaderboard = defaultdict(int)
-    activity_tracker = defaultdict(int)
-    level_threshold = 10  # Points needed for a level up
+    leaderboard = defaultdict(float)  # Store time spent in the room
+    user_join_time = {}  # Track the time when each user joined the room
     update_interval = 10  # Seconds between leaderboard updates
-    anti_spam_cooldown = 5  # Seconds to prevent activity spamming
-    last_activity_time = defaultdict(int)
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
@@ -42,29 +39,69 @@ class Bot(BaseBot):
         await self.highrise.send_emote("emote-lust", user.id)
         await self.highrise.react("heart", user.id)
 
-        # Initialize activity tracker if the user is new
-        if user.id not in self.activity_tracker:
-            self.activity_tracker[user.id] = 0
+        # Store the time when the user joined
+        self.user_join_time[user.id] = time.time()
 
-        # Send welcome message with current level
-        level = self.calculate_level(self.activity_tracker[user.id])
-        welcome_message = f"Welcome @{user.username}! You are currently Level {level}. Stay active to level up!"
-        await self.highrise.chat(welcome_message)
+    async def on_user_leave(self, user: User) -> None:
+        """Track time spent in the room when the user leaves."""
+        if user.id in self.user_join_time:
+            time_spent = time.time() - self.user_join_time[user.id]
+            self.leaderboard[user.id] += time_spent
+            del self.user_join_time[user.id]
 
     async def on_chat(self, user: User, message: str) -> None:
         print(f"{user.username}: {message}")
 
         # Command handling
-        if message.startswith("-leaderboard"):
-            await self.handle_leaderboard_command(user, message)
-        elif message.startswith("-resetleaderboard"):
-            await self.reset_leaderboard_command(user)
+        if message.lower().startswith("leaderboard"):
+            await self.handle_leaderboard_command(user)
+
+    async def handle_leaderboard_command(self, user: User):
+        """Handles the leaderboard command to display the leaderboard as a whisper."""
+        try:
+            limit = 10
+            sorted_leaderboard = sorted(self.leaderboard.items(), key=lambda item: item[1], reverse=True)[:limit]
+            leaderboard_str = "🏆 Leaderboard (Time Spent in Room):\n"
+
+            for i, (user_id, time_spent) in enumerate(sorted_leaderboard):
+                try:
+                    user_data = await self.highrise.get_user(user_id)
+                    time_in_minutes = round(time_spent / 60, 2)
+                    leaderboard_str += f"{i+1}. @{user_data.username} - {time_in_minutes} minutes\n"
+                except Exception as e:
+                    print(f"Error fetching user info for {user_id}: {e}")
+                    leaderboard_str += f"{i+1}. Unknown User - {round(time_spent / 60, 2)} minutes\n"
+
+            # Send the leaderboard as a whisper to the requesting user
+            await self.highrise.send_whisper(user.id, leaderboard_str)
+        except Exception as e:
+            await self.highrise.send_whisper(user.id, "An error occurred while generating the leaderboard.")
+            print(f"Error in handle_leaderboard_command: {e}")
+
+    async def update_leaderboard(self):
+        """Periodically update the leaderboard."""
+        while True:
+            for user_id in self.user_join_time:
+                # Update the leaderboard based on time spent so far
+                time_spent = time.time() - self.user_join_time[user_id]
+                self.leaderboard[user_id] += time_spent
+                # Reset the join time for ongoing users
+                self.user_join_time[user_id] = time.time()
+
+            await sleep(self.update_interval)
 
         # Track user activity with cooldown to prevent spamming
         current_time = time.time()
         if current_time - self.last_activity_time[user.id] > self.anti_spam_cooldown:
             self.activity_tracker[user.id] += 1
             self.last_activity_time[user.id] = current_time
+            
+    async def on_chat(self, user: User, message: str) -> None:
+        print(f"{user.username}: {message}")
+
+        # Command handling
+        if message.lower().startswith("leaderboard"):
+            await self.handle_leaderboard_command(user)
 
         if message.lower().startswith("-tipall ") and user.username == "RayBM":
               parts = message.split(" ")
