@@ -30,12 +30,12 @@ class Bot(BaseBot):
         print(f"{user.username} (ID: {user.id})")
 
         # Announce the user has joined the room publicly
-        await self.highrise.chat(f"{user.username} joined to find a Buddy!")
+        await self.highrise.chat(f"{user.username} joined to find a Bestie!")
 
         # Send welcome whispers to the user
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
-        await self.highrise.send_whisper(user.id, f"❤Type F4 or floor number to teleport 🤍.")
+        await self.highrise.send_whisper(user.id, f"❤Type F1 F2 and F3 or floor number to teleport 🤍.")
 
         # Send emotes
         await self.highrise.send_emote("dance-hipshake")
