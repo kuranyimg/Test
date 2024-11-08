@@ -1125,7 +1125,7 @@ class Bot(BaseBot):
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-toilet", roomUser.id)
             
-        if        message.startswith("/tp") or      message.startswith("!tp") or      message.startswith("tele") or          message.startswith("Tp") or          message.startswith("Tele") or  message.startswith("!tele"):
+        if        message.startswith("/tp") or      message.startswith("!tp") or    message.startswith("T")      or   message.startswith("t")      or    message.startswith("T ")      or  message.startswith("t ")      or      message.startswith("tele") or          message.startswith("Tp") or       message.startswith("Tele") or  message.startswith("!tele"):
           target_username =         message.split("@")[-1].strip()
           await                     self.teleport_to_user(user, target_username)
 
@@ -1282,7 +1282,7 @@ class Bot(BaseBot):
 
         # ... (Your existing logic for other commands)
 
-        if        message.startswith("tele") or    message.startswith("T")      or   message.startswith("t")      or    message.startswith("T ")      or  message.startswith("t ")      or         message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
+        if        message.startswith("tele") or          message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "RayBM":
             await self.teleporter(message)
 
