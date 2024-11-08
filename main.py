@@ -230,7 +230,7 @@ class Bot(BaseBot):
            await self.highrise.send_whisper(user.id,f"@{user.username}  You could say, “Ah, water—because staying hydrated is the real adventure!”🚰💧")
                       
             
-        if        message.startswith("/tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
+        if        message.startswith("/tele") or              message.startswith("/tp") or    message.startswith("T")      or     message.startswith("t")      or  message.startswith("T ")      or    message.startswith("t ")      or     message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "iced_yu" or user.username == "FallonXOXO" or user.username == "RayMG":            await self.teleporter(message)
 
         if        message.startswith("/") or              message.startswith("-") or              message.startswith(".") or          message.startswith("!"):
@@ -297,7 +297,7 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id,f"emotes available from number 1 to 97")
 
         if        message.startswith("-Help") or      message.startswith("/help") or      message.startswith("!help") or message.startswith("-help"):
-            await self.highrise.chat(f"/lista | /pessoas | /emotes | | /marry me? | /play /fish /userinfo @ | !emoteall | !tele @ | !summon @ | !kick @ | !tele z,y,x | !tele @ z,y,x | ")
+            await self.highrise.chat(f"/list | /pessoas | /emotes | | /marry me? | /play /fish /userinfo @ | !emoteall | !tele @ | !summon @ | !kick @ | !tele z,y,x | !tele @ z,y,x | ")
             await self.highrise.chat(f"[Emote] All | !emote all [Emote]")        
             await self.highrise.chat(f"{user.username} all activation codes must be used >> ! or/")
             await self.highrise.send_emote("dance-floss")
@@ -1129,8 +1129,8 @@ class Bot(BaseBot):
           target_username =         message.split("@")[-1].strip()
           await                     self.teleport_to_user(user, target_username)
 
-        if                            message.startswith("Summon") or         message.startswith("Summom") or         message.startswith("!summom") or        message.startswith("/summom") or        message.startswith("/summon") or  message.startswith("!summon"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam1699" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "_irii_" or user.username == "RayBM":
+        if                            message.startswith("Summon") or         message.startswith("Summom") or         message.startswith("!summom") or        message.startswith("/summom") or        message.startswith("/summon") or  message.startswith("S") or message.startswith("s") or message.startswith("S ") or message.startswith("s ") or message.startswith("!summon"):
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam1699" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "IssyBun" or user.username == "_irii_" or user.username == "RayBM":
            target_username = message.split("@")[-1].strip()
            await self.teleport_user_next_to(target_username, user)
 
@@ -1282,7 +1282,7 @@ class Bot(BaseBot):
 
         # ... (Your existing logic for other commands)
 
-        if        message.startswith("tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
+        if        message.startswith("tele") or    message.startswith("T")      or   message.startswith("t")      or    message.startswith("T ")      or  message.startswith("t ")      or         message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "RayBM":
             await self.teleporter(message)
 
