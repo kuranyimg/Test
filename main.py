@@ -1125,7 +1125,7 @@ class Bot(BaseBot):
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-toilet", roomUser.id)
             
-        if        message.startswith("/tp") or      message.startswith("!tp") or    message.startswith("T")      or   message.startswith("t")      or    message.startswith("T ")      or  message.startswith("t ")      or      message.startswith("tele") or          message.startswith("Tp") or       message.startswith("Tele") or  message.startswith("!tele"):
+        if        message.startswith("/tp") or      message.startswith("!tp") or    message.startswith("T")      or   message.startswith("t")      or    message.startswith("T ")      or  message.startswith("t ")      or      message.startswith("tele") or        message.startswith("tele ") or      message.startswith("Tele ") or    message.startswith("Tp") or       message.startswith("Tele") or  message.startswith("!tele"):
           target_username =         message.split("@")[-1].strip()
           await                     self.teleport_to_user(user, target_username)
 
