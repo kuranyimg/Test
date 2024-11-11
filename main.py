@@ -23,7 +23,7 @@ pescar = ["🥈YOU WON THE MEDAL: SILVER FISHERMAN🥈","🥉YOU WON THE MEDAL: 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
-        await self.highrise.walk_to(Position(16.5 , 0.5 , 18.5, "FrontRight"))
+        await self.highrise.walk_to(Position(2.5 , 20.0 , 0.5, "FrontRight"))
       
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
