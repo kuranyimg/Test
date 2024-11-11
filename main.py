@@ -24,8 +24,6 @@ class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
         await self.highrise.walk_to(Position(2.5 , 20.0 , 0.5, "FrontRight"))
-
-         x=2.5, y=20.0, z=0.5
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
