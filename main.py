@@ -246,7 +246,7 @@ class Bot(BaseBot):
           await self.highrise.teleport(user.id, Position(11.5 , 0.0 , 5.0 ))
 
         if        message.startswith("-floor3") or message.startswith("!floor3") or message.startswith("-floor 3") or message.startswith("Floor 3") or message.startswith("Floor3") or message.startswith("/floor3") or    message.startswith("floor3") or message.startswith("-3") or    message.startswith("floor3") or message.startswith("f3") or message.startswith("f 3") or message.startswith("floor3") or message.startswith("F3")  or   message.startswith("floor 3") or message.startswith("!floor 3"):
-          await self.highrise.teleport(user.id, Position(15.5 , 14.75 , 9.0))
+          await self.highrise.teleport(user.id, Position(15.0 , 15.25 , 9.5))
 
         if        message.startswith("-floor4") or message.startswith("!floor4") or message.startswith("-floor 4") or message.startswith("Floor 4") or message.startswith("Floor4") or message.startswith("/floor4") or    message.startswith("floor4") or message.startswith("-4") or    message.startswith("floor4") or message.startswith("f4") or message.startswith("f 4") or message.startswith("floor4") or message.startswith("F4")  or   message.startswith("floor 4") or message.startswith("!floor 4"):
           await self.highrise.teleport(user.id, Position(16.0 , 20.0 , 5.5))
