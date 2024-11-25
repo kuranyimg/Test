@@ -1127,7 +1127,7 @@ class Bot(BaseBot):
           await                     self.teleport_to_user(user, target_username)
 
         if                            message.startswith("Summon") or         message.startswith("Summom") or         message.startswith("!summom") or        message.startswith("/summom") or        message.startswith("/summon") or  message.startswith("S") or message.startswith("s") or message.startswith("S ") or message.startswith("s ") or message.startswith("!summon"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam1699" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "IssyBun" or user.username == "_irii_" or user.username == "RayBM":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam1699" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "IssyBun" or user.username == "@_Snowfield_" or user.username == "RayBM":
            target_username = message.split("@")[-1].strip()
            await self.teleport_user_next_to(target_username, user)
 
