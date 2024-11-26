@@ -28,6 +28,9 @@ class Bot(BaseBot):
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
         print(f"{user.username} (ID: {user.id})")
+             
+        # Announce the user has joined the room publicly
+        await self.highrise.chat(f"{user.username} joined")
 
         # Send welcome whispers to the user
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [emote name] or [1-97] for dances & emotes.")
