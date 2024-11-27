@@ -36,7 +36,7 @@ class Bot(BaseBot):
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [emote name] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: -loop emote name or nummber -loop stop on when you walk.")
         await self.highrise.send_whisper(user.id, f"❤Type F3 F2 and F1 to teleport between the floor 🤍.")
-              self.highrise.send_whisper(user.id, f"❤Type -play song name 🔊🎸🎶.")
+        await self.highrise.send_whisper(user.id, f"❤Type -play song name 🔊🎸🎶.")
 
         # Send emotes
         await self.highrise.send_emote("dance-hipshake")
