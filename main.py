@@ -673,451 +673,451 @@ class Bot(BaseBot):
                 await self.highrise.send_emote("emote-launch", roomUser.id)
                 
         if              message.startswith("Smooch All") or                              message.startswith("/emote all smooch") or       message.startswith("!emote all smooch"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "GothicGirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "GothicGirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-kissing-bound", roomUser.id)
                 
         if              message.startswith("Pushit All") or                              message.startswith("/emote all pushit") or       message.startswith("!emote all pushit"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-employee", roomUser.id)
                 
         if              message.startswith("Gift All") or                              message.startswith("/emote all gift") or       message.startswith("!emote all gift"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-gift", roomUser.id)
                 
         if              message.startswith("Attention All") or                              message.startswith("/emote all attention") or       message.startswith("!emote all attention"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-salute", roomUser.id)
                 
 
         if              message.startswith("Salute All") or                              message.startswith("/emote all salute") or       message.startswith("!emote all salute"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-cutesalute", roomUser.id)
                 
         if              message.startswith("Tiktok All") or                              message.startswith("/emote all tiktok") or       message.startswith("!emote all tiktok"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-tiktok11", roomUser.id)
                       
         if              message.startswith("Touch All") or                              message.startswith("/emote all touch") or       message.startswith("!emote all touch"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-touch", roomUser.id)
                            
         if              message.startswith("Kawaii All") or                              message.startswith("/emote all kawaii") or       message.startswith("!emote all kawaii"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-kawai", roomUser.id)
                        
         if              message.startswith("Hot All") or                              message.startswith("/emote all hot") or       message.startswith("!emote all hot"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-hot", roomUser.id)
                       
         if              message.startswith("Curtsy All") or                              message.startswith("/emote all curtsy") or       message.startswith("!emote all curtsy"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-curtsy", roomUser.id)
                 
         if              message.startswith("Surprise All") or                              message.startswith("/emote all surprise") or       message.startswith("!emote all surprise"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose6", roomUser.id)
                 
         if              message.startswith("Jingle All") or                              message.startswith("/emote all jingle") or       message.startswith("!emote all jingle"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-jinglebell", roomUser.id)
                 
         if              message.startswith("Creepy All") or                              message.startswith("/emote all creepy") or       message.startswith("!emote all creepy"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-creepypuppet", roomUser.id)
                 
         if              message.startswith("Nervous All") or message.startswith("Bitnervous All") or      message.startswith("!emote all bitnervous") or message.startswith("/emote all bitnervous") or                             message.startswith("/emote all nervous") or       message.startswith("!emote all nervous"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-nervous", roomUser.id)
                 
         if              message.startswith("Scritchy All") or                              message.startswith("/emote all scritchy") or       message.startswith("!emote all scritchy"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-wild", roomUser.id)
                           
         if              message.startswith("Fashion All") or                              message.startswith("/emote all fashion") or       message.startswith("!emote all fashion"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-fashionista", roomUser.id)
                              
         if              message.startswith("Wrong All") or                              message.startswith("/emote all wrong") or       message.startswith("!emote all wrong"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-wrong", roomUser.id)
                 
         if              message.startswith("Cutey All") or                              message.startswith("/emote all cutey") or       message.startswith("!emote all cutey"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-cutey", roomUser.id)
                 
         if              message.startswith("Hyped All") or                              message.startswith("/emote all hyped") or       message.startswith("!emote all hyped"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-hyped", roomUser.id)
                             
         if              message.startswith("Superpose All") or                              message.startswith("/emote all superpose") or       message.startswith("!emote all superpose"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-superpose", roomUser.id)
                 
         if              message.startswith("Punk All") or                              message.startswith("/emote all punk") or       message.startswith("!emote all punk"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-punkguitar", roomUser.id) 
                               
         if              message.startswith("Dontstartnow All") or message.startswith("Tiktok2 All") or      message.startswith("!emote all dontstartnow") or message.startswith("/emote all dontstartnow") or                             message.startswith("/emote all tiktok2") or       message.startswith("!emote all tiktok2"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-tiktok2", roomUser.id)
                             
         if              message.startswith("Savage All") or message.startswith("Tiktok8 All") or      message.startswith("!emote all savage") or message.startswith("/emote all savage") or                             message.startswith("/emote all tiktok8") or       message.startswith("!emote all tiktok8"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-tiktok8", roomUser.id)
                              
         if              message.startswith("Tiktok10 All") or                              message.startswith("/emote all tiktok10") or       message.startswith("!emote all tiktok10"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-tiktok10", roomUser.id)
                              
         if              message.startswith("Viral All") or     message.startswith("!emotr all tiktok9") or        message.startswith("/emote all tiktok9") or    message.startswith("Tiktok9 All") or message.startswith("Viralgroove All") or      message.startswith("!emote all viral") or message.startswith("/emote all viralgroove") or                             message.startswith("/emote all viral") or       message.startswith("!emote all viralgroove"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-tiktok9", roomUser.id)
                             
         if              message.startswith("Blackpink All") or                              message.startswith("/emote all blackpink") or       message.startswith("!emote all blackpink"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-blackpink", roomUser.id)
                          
         if              message.startswith("Gagging All") or                              message.startswith("/emote all gagging") or       message.startswith("!emote all gagging"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emoji-gagging", roomUser.id)
                 
         if              message.startswith("Pose3 All") or                              message.startswith("/emote all pose3") or       message.startswith("!emote all pose3"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose3", roomUser.id)
                 
         if              message.startswith("Pose7 All") or                              message.startswith("/emote all pose7") or       message.startswith("!emote all pose7"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose7", roomUser.id)
 
         if              message.startswith("Pose5 All") or                              message.startswith("/emote all pose5") or       message.startswith("!emote all pose5"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose5", roomUser.id)
 
         if              message.startswith("Pose1 All") or                              message.startswith("/emote all pose1") or       message.startswith("!emote all pose1"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose1", roomUser.id)
                 
         if              message.startswith("Pose8 All") or                              message.startswith("/emote all pose8") or       message.startswith("!emote all pose8"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayMG" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayMG" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose8", roomUser.id)
      
         if              message.startswith("Enthused All") or                              message.startswith("/emote all enthused") or       message.startswith("!emote all enthused"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-enthusiastic", roomUser.id)
                 
         if              message.startswith("Singing All") or message.startswith("Sing All") or      message.startswith("!emote all sing") or message.startswith("/emote all sing") or                             message.startswith("/emote all singing") or       message.startswith("!emote all singing"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle_singing", roomUser.id)
 
         if              message.startswith("Teleport All") or                              message.startswith("/emote all teleport") or       message.startswith("!emote all teleport"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-teleporting", roomUser.id)
                 
         if              message.startswith("Telekinesis All") or                              message.startswith("/emote all telekinesis") or       message.startswith("!emote all telekinesis"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-telekinesis", roomUser.id)
 
         if              message.startswith("Casual All") or                              message.startswith("/emote all casual") or       message.startswith("!emote all casual"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-dance-casual", roomUser.id)
                 
         if              message.startswith("Icecream All") or                              message.startswith("/emote all icecream") or       message.startswith("!emote all icecream"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-icecream", roomUser.id)
                    
         if              message.startswith("Zombie All") or                              message.startswith("/emote all zombie") or       message.startswith("!emote all zombie"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-zombierun", roomUser.id)
 
         if              message.startswith("Celebrate All") or                              message.startswith("/emote all celebrate") or       message.startswith("!emote all celebrate"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emoji-celebrate", roomUser.id)
 
         if              message.startswith("Kiss All") or                              message.startswith("/emote all kiss") or       message.startswith("!emote all kiss"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-kiss", roomUser.id)
 
         if              message.startswith("Snowangel All") or                              message.startswith("/emote all snowangel") or       message.startswith("!emote all snowangel"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-snowangel", roomUser.id)
 
         if              message.startswith("Bow All") or                              message.startswith("/emote all bow") or       message.startswith("!emote all bow"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-bow", roomUser.id)
 
         if              message.startswith("Ice All") or message.startswith("Skating All") or      message.startswith("!emote all ice") or message.startswith("/emote all skating") or                             message.startswith("/emote all ice") or       message.startswith("!emote all skating"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-iceskating", roomUser.id)
 
         if              message.startswith("Confused All") or                              message.startswith("/emote all confused") or       message.startswith("!emote all confused"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-confused", roomUser.id)
 
         if              message.startswith("Charging All") or                              message.startswith("/emote all charging") or       message.startswith("!emote all charging"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-charging", roomUser.id)
 
         if              message.startswith("Weird All") or message.startswith("Wei All") or      message.startswith("!emote all wei") or message.startswith("/emote all wei") or                             message.startswith("/emote all weird") or       message.startswith("!emote all weird"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-weird", roomUser.id)
 
         if              message.startswith("Greedy All") or                              message.startswith("/emote all greedy") or       message.startswith("!emote all greedy"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-greedy", roomUser.id)
     
 
         if              message.startswith("Cursing All") or                              message.startswith("/emote all cursing") or       message.startswith("!emote all cursing"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emoji-cursing", roomUser.id)
 
         if              message.startswith("Russian All") or                              message.startswith("/emote all russian") or       message.startswith("!emote all russian"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-russian", roomUser.id)
                 
 
         if              message.startswith("Repose All") or                              message.startswith("/emote all repose") or       message.startswith("!emote all repose"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("sit-relaxed", roomUser.id)
                             
         if              message.startswith("Shop All") or message.startswith("Shopping All") or      message.startswith("!emote all shopping") or message.startswith("/emote all shop") or                             message.startswith("/emote all shopping") or       message.startswith("!emote all shop"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-shoppingcart", roomUser.id)
                 
 
         if              message.startswith("Macarena All") or message.startswith("Ren All") or      message.startswith("!emote all macarena") or message.startswith("/emote all macarena") or                             message.startswith("/emote all ren") or       message.startswith("!emote all   ren "):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-macarena", roomUser.id)
                 
 
         if              message.startswith("Snake All") or                              message.startswith("/emote all snake") or       message.startswith("!emote all snake"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-snake", roomUser.id)
                 
 
         if              message.startswith("Model All") or                              message.startswith("/emote all model") or       message.startswith("!emote all model"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-model", roomUser.id)
                 
         if              message.startswith("Sleigh All") or                              message.startswith("/emote all sleigh") or       message.startswith("!emote all sleigh"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-sleigh", roomUser.id)
                 
         if              message.startswith("Sayso All") or message.startswith("Tiktok4 All") or      message.startswith("!emote all sayso") or message.startswith("/emote all sayso") or                             message.startswith("/emote all tiktok4") or       message.startswith("!emote all tiktok4"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-dance-tiktok4", roomUser.id)
 
         if              message.startswith("Uwu All") or                              message.startswith("/emote all uwu") or       message.startswith("!emote all uwu"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-uwu", roomUser.id)
             
 
         if              message.startswith("Star All") or                              message.startswith("/emote all star") or       message.startswith("!emote all star"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-stargazer", roomUser.id)
                 
 
         if              message.startswith("Pose9 All") or                              message.startswith("/emote all pose9") or       message.startswith("!emote all pose9"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose9", roomUser.id)
 
         if              message.startswith("Boxer All") or                              message.startswith("/emote all boxer") or       message.startswith("!emote all boxer"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-boxer", roomUser.id)
 
         if              message.startswith("Airguitar All") or message.startswith("Guitar All") or      message.startswith("!emote all guitar") or message.startswith("/emote all airguitar") or                             message.startswith("/emote all guitar") or       message.startswith("!emote all airguitar"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-guitar", roomUser.id)
 
         if              message.startswith("Penguin All") or message.startswith("Pinguin All") or      message.startswith("!emote all penguin") or message.startswith("/emote all penguin") or                             message.startswith("/emote all pinguin") or       message.startswith("!emote all pinguin"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-pinguin", roomUser.id)   
             
         if              message.startswith("Astronaut All") or message.startswith("Zero All") or      message.startswith("!emote all zero") or message.startswith("/emote all zero") or                             message.startswith("/emote all astronaut") or       message.startswith("!emote all astronaut"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-astronaut", roomUser.id)
                 
         if              message.startswith("Saunter All") or   message.startswith("Anime All") or   message.startswith("!emote all anime") or   message.startswith("/emote all anime") or                              message.startswith("/emote all saunter") or       message.startswith("!emote all saunter"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("dance-anime", roomUser.id)         
 
         if              message.startswith("Flirt All") or     message.startswith("!emote all flirt") or    message.startswith("/emote all flirt") or    message.startswith("!emote all flirty") or     message.startswith("Flirtywave All") or    message.startswith("/emote all flirty") or    message.startswith("/emote all flirt") or                               message.startswith("/emote all flirtywave") or       message.startswith("!emote all flirtywave"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-lust", roomUser.id)
             
 
         if              message.startswith("Watch All") or                              message.startswith("/emote all watch") or       message.startswith("!emote all watch"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-creepycute", roomUser.id)
                         
         if              message.startswith("Revelations All") or                              message.startswith("/emote all revelations") or       message.startswith("!emote all revelations"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-headblowup", roomUser.id)
             
         if              message.startswith("Bashful All") or                              message.startswith("/emote all bashful") or       message.startswith("!emote all bashful"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-shy2", roomUser.id)
             
 
         if              message.startswith("Arabesque All") or                              message.startswith("/emote all arabesque") or       message.startswith("!emote all arabesque"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Mo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-pose10", roomUser.id)
             
         
         if              message.startswith("Party All") or                              message.startswith("/emote all party") or       message.startswith("!emote all party"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-celebrate", roomUser.id)
             
         if              message.startswith("Time All") or                              message.startswith("/emote all time") or       message.startswith("!emote all time"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae" or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoX" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie38" or user.username == "hidinurbasemen" or user.username == "@empin" or user.username == "BabygirlFa" or user.username == "icedyu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("emote-timejump", roomUser.id)
                 
 
         if              message.startswith("Gottago All") or                              message.startswith("/emote all gottago") or       message.startswith("!emote all gottago"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "RayBM" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae" or user.username == "iced_yu":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.MooXoXo" or user.username == "RayBM" or user.username == "sh1n1gam169" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae" or user.username == "iced_yu":
             roomUsers = (await self.highrise.get_room_users()).content
             for roomUser, _ in roomUsers:
                 await self.highrise.send_emote("idle-toilet", roomUser.id)
@@ -1127,12 +1127,12 @@ class Bot(BaseBot):
           await                     self.teleport_to_user(user, target_username)
 
         if                            message.startswith("Summon") or         message.startswith("Summom") or         message.startswith("!summom") or        message.startswith("/summom") or        message.startswith("/summon") or  message.startswith("S") or message.startswith("s") or message.startswith("S ") or message.startswith("s ") or message.startswith("!summon"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam1699" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "IssyBun" or user.username == "@_Snowfield_" or user.username == "RayBM":
+          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "Shaun_Knox" or user.username == "sh1n1gam169" or user.username == "Dreamy._.KY" or user.username == "hidinurbasement" or user.username == "IssyBun" or user.username == "_Snowfield_" or user.username == "RayBM":
            target_username = message.split("@")[-1].strip()
            await self.teleport_user_next_to(target_username, user)
 
         if              message.startswith("Carteira") or  message.startswith("Wallet") or    message.startswith("wallet") or       message.startswith("carteira"):
-          if user.username == "FallonXOXO" or user.username == "RayBM" or user.username == "sh1n1gam1699":
+          if user.username == "FallonXOXO" or user.username == "RayBM" or user.username == "sh1n1gam169":
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT  : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("dance-tiktok14")
@@ -1273,7 +1273,7 @@ class Bot(BaseBot):
         print(f"{user.username} whispered: {message}")
 
         # Handle private messages for RayBM and botmes
-        if user.username.lower() == "raybm" or user.username.lower() == "botmes":
+        if user.username.lower() == "raybm" or user.username.lower() == "Dreamy._.KY":
             await self.highrise.chat(message)
             print(f"Broadcasted private message to the room: {message}")
 
