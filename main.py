@@ -1273,7 +1273,7 @@ class Bot(BaseBot):
         print(f"{user.username} whispered: {message}")
 
         # Handle private messages for RayBM and botmes
-        if user.username.lower() == "raybm" or user.username.lower() == "Dreamy._.KY":
+        if user.username.lower() == "raybm" or user.username.lower() == "dreamy._.ky":
             await self.highrise.chat(message)
             print(f"Broadcasted private message to the room: {message}")
 
