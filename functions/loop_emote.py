@@ -4,9 +4,8 @@ import asyncio
 from asyncio import Task
 from highrise import BaseBot
 
-# قائمة الإيموجيات الموحدة مع مدة التكرار
+# قائمة الإيموجيات مع المدة بالثواني
 emote_list: list[tuple[str, str, int]] = [
-    # (اسم الإيموجي، الاسم الكامل، مدة التكرار بالثواني)
     ('1', 'dance-wrong', 10),
     ('2', 'emote-fashionista', 15),
     ('3', 'emote-gravity', 10),
@@ -25,76 +24,60 @@ emote_list: list[tuple[str, str, int]] = [
     ('Laugh', 'emote-laughing', 20),
 ]
 
-# دالة لتكرار الإيموجي
+# تخزين المهام حسب المستخدم
+active_loops: dict[str, Task] = {}
+
+# تكرار الإيموجي بناءً على المدة
 async def loop_emote(self: BaseBot, user: User, emote_name: str) -> None:
     emote_id = ""
-    duration = 10  # القيمة الافتراضية لمدة التكرار 10 ثواني
+    duration = 10
+
     for emote in emote_list:
         if emote[0].lower() == emote_name.lower() or emote[1].lower() == emote_name.lower():
             emote_id = emote[1]
-            duration = emote[2]  # الحصول على مدة التكرار المحددة للإيموجي
+            duration = emote[2]
             break
 
     if emote_id == "":
-        await self.highrise.chat("Invalid emote")
+        await self.highrise.chat(f"@{user.username} Invalid emote.")
         return
 
-    await self.highrise.chat(f"@{user.username} is looping {emote_name} for {duration} seconds.")
+    await self.highrise.chat(f"@{user.username} is now looping {emote_name} every {duration} seconds.")
 
-    # تكرار الإيموجي لمدة معينة
-    end_time = asyncio.get_event_loop().time() + duration
-    while asyncio.get_event_loop().time() < end_time:
-        try:
+    try:
+        while True:
             await self.highrise.send_emote(emote_id, user.id)
-        except:
-            await self.highrise.chat(f"Sorry, @{user.username}, this emote isn't free or you don't own it.")
-            return
-        await asyncio.sleep(5)  # إرسال الإيموجي كل 5 ثواني
+            await asyncio.sleep(duration)
+    except asyncio.CancelledError:
+        await self.highrise.chat(f"@{user.username} has stopped looping {emote_name}.")
 
-    await self.highrise.chat(f"@{user.username}'s {emote_name} loop has ended.")
-
-# دالة لفحص الرسائل وبدء التكرار تلقائيًا عند كتابة اسم الإيموجي أو loop
+# التحقق من الرسائل وتفعيل أو إيقاف التكرار
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str) -> None:
-    if 'loop' in message.lower():
-        # إذا كانت الرسالة تحتوي على "loop" أو "Loop"
-        parts = message.split(" ")
-        if len(parts) > 1:
-            emote_name = " ".join(parts[1:])
+    lower_msg = message.strip().lower()
+
+    # إيقاف التكرار
+    if lower_msg == "stop":
+        task = active_loops.get(user.id)
+        if task:
+            task.cancel()
+            del active_loops[user.id]
         else:
-            await self.highrise.chat("Please provide an emote name after the loop command.")
-            return
+            await self.highrise.chat(f"@{user.username} you have no active loop.")
+        return
+
+    # استخراج اسم الإيموجي
+    parts = message.strip().split(" ")
+    if lower_msg.startswith("loop ") or lower_msg.startswith("Loop "):
+        emote_name = " ".join(parts[1:])
     else:
-        # إذا كانت الرسالة تحتوي على اسم إيموجي مباشرة
         emote_name = message.strip()
 
-    await loop_emote(self, user, emote_name)
+    # إيقاف أي تكرار قديم للمستخدم
+    old_task = active_loops.get(user.id)
+    if old_task:
+        old_task.cancel()
 
-# دالة للتعامل مع الأوامر الواردة
-async def command_handler(self, user: User, message: str):
-    parts = message.split(" ")
-    command = parts[0].lower()
-
-    if command.startswith("-"):
-        command = command[1:]
-
-    functions_folder = "functions"
-    for file_name in os.listdir(functions_folder):
-        if file_name.endswith(".py"):
-            module_name = file_name[:-3]
-            module_path = os.path.join(functions_folder, file_name)
-
-            # Load the module
-            spec = importlib.util.spec_from_file_location(module_name, module_path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-
-            # Check if the function exists in the module
-            if hasattr(module, command) and callable(getattr(module, command)):
-                function = getattr(module, command)
-                await function(self, user, message)
-
-    # التحقق من وجود الإيموجي في الرسالة بشكل مباشر بدون الحاجة لاستخدام /loop
-    from functions.loop_emote import check_and_start_emote_loop
-    await check_and_start_emote_loop(self, user, message)
-
-    return
+    # بدء التكرار الجديد
+    task = asyncio.create_task(loop_emote(self, user, emote_name))
+    task.set_name(f"loop-{user.username}")
+    active_loops[user.id] = task
