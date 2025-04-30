@@ -579,7 +579,7 @@ class Bot(BaseBot):
             await self.highrise.send_emote("dance-creepypuppet",user.id)
 
         if        message.startswith("/rest") or      message.startswith("!Rest") or      message.startswith("Rest") or   message.startswith("rest") or message.startswith("105"):
-            await self.highrise.send_emote("sit-idle-cute",user.id)
+            await self.highrise.send_emote('sit-idle-cute',user.id)
 
         if        message.startswith("/levitate") or      message.startswith("!levitate") or      message.startswith("Levitate") or message.startswith("Levi") or message.startswith("lev") or message.startswith("Lev") or  message.startswith("Levitate") or message.startswith("104"):
             await self.highrise.send_emote("emoji-halo",user.id)
