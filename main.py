@@ -580,6 +580,9 @@ class Bot(BaseBot):
 
         if        message.startswith("/attentive") or      message.startswith("!attentive") or      message.startswith("Attentive") or message.startswith("Att") or message.startswith("att") or  message.startswith("attentive") or message.startswith("106"):
             await self.highrise.send_emote("idle_layingdown",user.id)
+                 
+        if        message.startswith("/ghost") or      message.startswith("!ghost") or      message.startswith("ghost") or   message.startswith("Ghost") or message.startswith("107"):
+            await self.highrise.send_emote("emote-ghost-idle",user.id)
 
         if        message.startswith("/rest") or      message.startswith("!Rest") or      message.startswith("Rest") or   message.startswith("rest") or message.startswith("105"):
             await self.highrise.send_emote("sit-idle-cute",user.id)
