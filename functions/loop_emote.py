@@ -87,11 +87,14 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['gangnam'], 'emote-gangnam', 7.28),
 ]
 
-# تفعيل التكرار أو التشغيل مرة واحدة حسب نوع الإيموجي
+# تخزين المهام المتكررة لكل مستخدم
+user_loops = {}
+
+# تفعيل التكرار
 async def loop(self: BaseBot, user: User, message: str):
     parts = message.strip().split(" ", 1)
     if len(parts) < 2:
-        await self.highrise.chat("Please provide an emote name after 'loop'.")
+        await self.highrise.chat("يرجى كتابة اسم الإيموجي بعد 'loop'.")
         return
     emote_name = parts[1].strip().lower()
 
@@ -99,26 +102,20 @@ async def loop(self: BaseBot, user: User, message: str):
         (emote for emote in emote_list if emote_name in [k.lower() for k in emote[0]]), None)
 
     if not selected:
-        await self.highrise.chat("Invalid emote name.")
+        await self.highrise.chat("الإيموجي غير موجود.")
         return
 
     _, emote_id, duration = selected
 
-    # أوقف أي تكرار سابق
+    # إيقاف أي تكرار سابق
     if user.id in user_loops:
         user_loops[user.id].cancel()
         del user_loops[user.id]
 
-    # إذا الإيموجي لا تحتاج تكرار
-    if emote_id in non_looping_emotes:
-        await self.highrise.send_emote(emote_id, user.id)
-        await self.highrise.chat(f"@{user.username} is now doing '{emote_id}' (static emote).")
-        return
-
-    # الإيموجي المتكررة
+    # تنفيذ التكرار
     async def emote_loop():
         try:
-            await self.highrise.chat(f"@{user.username} started looping '{emote_id}' every {duration:.1f} seconds.")
+            await self.highrise.chat(f"بدأ @{user.username} تكرار الإيموجي '{emote_id}' كل {duration:.1f} ثانية.")
             while True:
                 await self.highrise.send_emote(emote_id, user.id)
                 await asyncio.sleep(duration)
@@ -133,11 +130,11 @@ async def stop_loop(self: BaseBot, user: User, message: str):
     if user.id in user_loops:
         user_loops[user.id].cancel()
         del user_loops[user.id]
-        await self.highrise.chat(f"@{user.username}, your emote loop has been stopped.")
+        await self.highrise.chat(f"@{user.username} تم إيقاف تكرار الإيموجي الخاص بك.")
     else:
-        await self.highrise.chat(f"@{user.username}, you have no active loop to stop.")
+        await self.highrise.chat(f"@{user.username} ليس لديك أي تكرار نشط.")
 
-# تفعيل الإيموجي عند كتابة اسمه مباشرة
+# تفعيل الإيموجي تلقائيًا عند كتابة اسمه مباشرة
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     message = message.strip().lower()
     found = next((emote for emote in emote_list if message in [k.lower() for k in emote[0]]), None)
