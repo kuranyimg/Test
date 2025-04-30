@@ -14,7 +14,7 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
                 emote_id = emote[1]
                 break
         if emote_id == "":
-            await self.highrise.send_whisper(user.id,f"🚫🔄 @{user.username} To Stop the Loop Just Walk🔄🚫")
+            await self.highrise.chat("Invalid emote")
             return
         user_position = None
         user_in_room = False
@@ -26,15 +26,14 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
                 user_in_room = True
                 break
         if user_position == None:
-            await self.highrise.send_whisper(user.id,f"✅️ @{user.username} Siga <RayMG> 🤍 Hastag : #RayMG ✅️")
+            await self.highrise.chat("User not found")
             return
-        await self.highrise.send_whisper(user.id,f"👯🏻‍♂️🔄 @{user.username} You are in a loop: {emote_name} 👯🏻‍♂️🔄")
+        await self.highrise.chat(f"@{user.username} is looping {emote_name}")
         while start_position == user_position:
-            print(f"Loop {emote_name} - {user.username}")
             try:
                 await self.highrise.send_emote(emote_id, user.id)
             except:
-                await self.highrise.send_whisper(user.id,f"🚫🔄{user.username} loop 🤍 🔄🚫")
+                await self.highrise.chat(f"Sorry, @{user.username}, this emote isn't free or you don't own it.")
                 return
             await asyncio.sleep(10)
             room_users = (await self.highrise.get_room_users()).content
@@ -50,9 +49,8 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
         splited_message = message.split(" ")
         # The emote name is every string after the first one
         emote_name = " ".join(splited_message[1:])
-        print(emote_name)
     except:
-        await self.highrise.send_whisper(user.id,f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+        await self.highrise.chat("Invalid command format. Please use '/loop <emote name>.")
         return
     else:   
         taskgroup = self.highrise.tg
@@ -62,16 +60,25 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
                 # Removes the task from the task group
                 task.cancel()
                 
+        room_users = (await self.highrise.get_room_users()).content
+        user_list  = []
+        for room_user, pos in room_users:
+            user_list.append(room_user.username)
+                
         taskgroup.create_task(coro=loop_emote(self, user, emote_name))
-
+        task_list : list[Task] = list(taskgroup._tasks)
+        for task in task_list:
+            if task.get_coro().__name__ == "loop_emote" and not (task.get_name() in user_list):
+                task.set_name(user.username)
             
 async def stop_loop(self: BaseBot, user: User, message: str) -> None:
         taskgroup = self.highrise.tg
         task_list : list[Task] = list(taskgroup._tasks)
         for task in task_list:
+            print(task.get_name())
             if task.get_name() == user.username:
                 task.cancel()
-                await self.highrise.send_whisper(user.id,f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+                await self.highrise.chat(f"Stopping your emote loop, {user.username}!")
                 return
-        await self.highrise.send_whisper(user.id,f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+        await self.highrise.chat(f"You're not looping any emotes, {user.username}")
         return
