@@ -1,10 +1,8 @@
-from highrise import *
-from highrise.models import *
 import asyncio
-from asyncio import Task
 from highrise import BaseBot
+from highrise.models import User
 
-# قائمة الإيموجيات مع المدة بالثواني
+# قائمة الإيموجيات مع مدتها بالثواني
 emote_list: list[tuple[str, str, int]] = [
     ('1', 'dance-wrong', 10),
     ('2', 'emote-fashionista', 15),
@@ -24,60 +22,57 @@ emote_list: list[tuple[str, str, int]] = [
     ('Laugh', 'emote-laughing', 20),
 ]
 
-# تخزين المهام حسب المستخدم
-active_loops: dict[str, Task] = {}
+# تخزين التكرار الجاري لكل مستخدم
+user_loops: dict[str, asyncio.Task] = {}
 
-# تكرار الإيموجي بناءً على المدة
-async def loop_emote(self: BaseBot, user: User, emote_name: str) -> None:
-    emote_id = ""
-    duration = 10
+# الدالة الرئيسية للتكرار المستمر للإيموجي
+async def loop(self: BaseBot, user: User, message: str):
+    parts = message.strip().split(" ", 1)
+    if len(parts) < 2:
+        await self.highrise.chat("Please provide an emote name after 'loop'.")
+        return
+    emote_name = parts[1].strip().lower()
 
-    for emote in emote_list:
-        if emote[0].lower() == emote_name.lower() or emote[1].lower() == emote_name.lower():
-            emote_id = emote[1]
-            duration = emote[2]
-            break
-
-    if emote_id == "":
-        await self.highrise.chat(f"@{user.username} Invalid emote.")
+    # إيجاد الإيموجي المناسب من القائمة
+    selected = next((emote for emote in emote_list
+                     if emote_name == emote[0].lower() or emote_name == emote[1].lower()), None)
+    if not selected:
+        await self.highrise.chat("Invalid emote name.")
         return
 
-    await self.highrise.chat(f"@{user.username} is now looping {emote_name} every {duration} seconds.")
+    _, emote_id, duration = selected
 
-    try:
-        while True:
-            await self.highrise.send_emote(emote_id, user.id)
-            await asyncio.sleep(duration)
-    except asyncio.CancelledError:
-        await self.highrise.chat(f"@{user.username} has stopped looping {emote_name}.")
+    # إيقاف التكرار السابق إن وجد
+    if user.id in user_loops:
+        user_loops[user.id].cancel()
 
-# التحقق من الرسائل وتفعيل أو إيقاف التكرار
-async def check_and_start_emote_loop(self: BaseBot, user: User, message: str) -> None:
-    lower_msg = message.strip().lower()
+    async def emote_loop():
+        try:
+            await self.highrise.chat(f"@{user.username} started looping '{emote_id}' every {duration} seconds.")
+            while True:
+                await self.highrise.send_emote(emote_id, user.id)
+                await asyncio.sleep(duration)
+        except asyncio.CancelledError:
+            pass
 
-    # إيقاف التكرار
-    if lower_msg == "stop":
-        task = active_loops.get(user.id)
-        if task:
-            task.cancel()
-            del active_loops[user.id]
-        else:
-            await self.highrise.chat(f"@{user.username} you have no active loop.")
-        return
+    task = asyncio.create_task(emote_loop())
+    user_loops[user.id] = task
 
-    # استخراج اسم الإيموجي
-    parts = message.strip().split(" ")
-    if lower_msg.startswith("loop ") or lower_msg.startswith("Loop "):
-        emote_name = " ".join(parts[1:])
+# دالة لإيقاف التكرار
+async def stop_loop(self: BaseBot, user: User, message: str):
+    if user.id in user_loops:
+        user_loops[user.id].cancel()
+        del user_loops[user.id]
+        await self.highrise.chat(f"@{user.username}, your emote loop has been stopped.")
     else:
-        emote_name = message.strip()
+        await self.highrise.chat(f"@{user.username}, you have no active loop to stop.")
 
-    # إيقاف أي تكرار قديم للمستخدم
-    old_task = active_loops.get(user.id)
-    if old_task:
-        old_task.cancel()
+# دالة لفحص الرسائل بشكل مباشر بدون أمر loop
+async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
+    message = message.strip().lower()
 
-    # بدء التكرار الجديد
-    task = asyncio.create_task(loop_emote(self, user, emote_name))
-    task.set_name(f"loop-{user.username}")
-    active_loops[user.id] = task
+    # هل كتب اسم إيموجي مباشرة؟
+    found = next((emote for emote in emote_list
+                  if message == emote[0].lower() or message == emote[1].lower()), None)
+    if found:
+        await loop(self, user, f"loop {message}")
