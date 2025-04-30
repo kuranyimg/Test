@@ -3,17 +3,17 @@ from highrise import BaseBot
 from highrise.models import User
 
 # قائمة الإيموجيات مع مدتها بالثواني
-emote_list: list[tuple[str, str, int]] = [
-    ('1', 'dance-wrong', 10),
-    ('2', 'emote-fashionista', 15),
-    ('3', 'emote-gravity', 10),
-    ('4', 'dance-icecream', 20),
-    ('106', 'idle_layingdown', 30),
-    ('107', 'emote-ghost-idle', 25),
-    ('97', 'emote-looping', 30),
-    ('Rest', 'sit-idle-cute', 17.062613),
-    ('Zombie', 'idle_zombie', 28.754937),
-    ('Relaxed', 'idle_layingdown2', 21.546653),
+emote_list: list[tuple[list[str], str, float]] = [
+    (['1', 'wrong', 'dance', 'Wrong', 'Dance'], 'dance-wrong', 10),
+    (['2', 'fashion', 'Fashion'], 'emote-fashionista', 15),
+    (['3', 'gravity', 'Gravity'], 'emote-gravity', 10),
+    (['4', 'icecream', 'Icecream', 'dance', 'Dance'], 'dance-icecream', 20),
+    (['106', 'layingdown', 'Layingdown', 'idle'], 'idle_layingdown', 30),
+    (['107', 'ghost', 'Ghost', 'idle', 'Idle'], 'emote-ghost-idle', 25),
+    (['97', 'looping', 'Looping'], 'emote-looping', 30),
+    (['rest', 'Rest', 'sit', 'Sit', 'cute', 'Cute'], 'sit-idle-cute', 17.062613),
+    (['zombie', 'Zombie', 'idle', 'Idle'], 'idle_zombie', 28.754937),
+    (['relaxed', 'Relaxed', 'layingdown', 'Layingdown'], 'idle_layingdown2', 21.546653),
     ('Attentive', 'idle_layingdown', 24.585168),
     ('Sleepy', 'idle-sleep', 22.620446),
     ('Pouty Face', 'idle-sad', 24.377214),
