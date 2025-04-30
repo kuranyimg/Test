@@ -1281,25 +1281,20 @@ class Bot(BaseBot):
         await self.highrise.teleport(user_id = user_id, dest = Position(float(x), float(y), float(z)))
 
     async def command_handler(self, user: User, message: str):
-        parts = message.strip().split(" ")
+        parts = message.split(" ")
         command = parts[0].lower()
-
-    # إزالة الشرطة إذا كانت موجودة
         if command.startswith("-"):
             command = command[1:]
 
-    # التعامل مع أوامر loop و stop مباشرة
+        # التعامل مع أوامر loop و stop بشكل مباشر
         if command == "loop":
-            from functions.loop_emote import loop  # استيراد دالة loop فقط عند الحاجة
-            await loop(self, user, message)  # استدعاء دالة loop مباشرة
+            await loop(self, user, message)
             return
 
         if command == "stop":
-            from functions.loop_emote import stop_loop  # استيراد دالة stop_loop فقط عند الحاجة
-            await stop_loop(self, user, message)  # استدعاء دالة stop_loop مباشرة
+            await stop_loop(self, user, message)
             return
 
-    # باقي الأوامر (الافتراضية من الملفات)
         functions_folder = "functions"
         for file_name in os.listdir(functions_folder):
             if file_name.endswith(".py"):
@@ -1313,12 +1308,10 @@ class Bot(BaseBot):
                 if hasattr(module, command) and callable(getattr(module, command)):
                     function = getattr(module, command)
                     await function(self, user, message)
-                    return
+                    return  # تنفيذ الأمر والتوقف
 
-    # إذا لم يتم العثور على الأمر
+        # إذا لم يتم العثور على الأمر
         await self.send_message("Unknown command.")
-             
-
          
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
