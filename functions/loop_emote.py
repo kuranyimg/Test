@@ -87,20 +87,6 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['gangnam'], 'emote-gangnam', 7.28),
 ]
 
-# قائمة الإيموجيات الثابتة التي لا تحتاج تكرار
-non_looping_emotes = {
-    'idle_layingdown', 'idle-layingdown', 'idle-layingdown2',
-    'idle-sleep', 'idle-sad', 'idle-posh', 'idle-loop-tired',
-    'idle-loop-sitfloor', 'idle-loop-shy', 'idle-loop-sad',
-    'idle-loop-happy', 'idle-loop-annoyed', 'idle-loop-aerobics',
-    'idle-lookup', 'idle-hero', 'idle-floorsleeping', 'idle-floorsleeping2',
-    'idle-enthusiastic', 'idle-dance-swinging', 'idle-dance-headbobbing',
-    'idle-angry', 'sit-idle-cute', 'idle_zombie'
-}
-
-# المهام النشطة لكل مستخدم
-user_loops: dict[str, asyncio.Task] = {}
-
 # تفعيل التكرار أو التشغيل مرة واحدة حسب نوع الإيموجي
 async def loop(self: BaseBot, user: User, message: str):
     parts = message.strip().split(" ", 1)
