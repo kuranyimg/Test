@@ -1290,12 +1290,12 @@ class Bot(BaseBot):
 
     # التعامل مع أوامر loop و stop مباشرة
         if command == "loop":
-           await loop(self, user, message)
-           return
+            await loop(self, user, message)
+            return
 
         if command == "stop":
-           await stop_loop(self, user, message)
-           return
+            await stop_loop(self, user, message)
+            return
 
     # محاولة تنفيذ أوامر من ملفات في مجلد functions
         functions_folder = "functions"
