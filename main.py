@@ -1279,8 +1279,7 @@ class Bot(BaseBot):
         #teleports the user to the specified coordinate
         await self.highrise.teleport(user_id = user_id, dest = Position(float(x), float(y), float(z)))
 
-
-     async def command_handler(self, user: User, message: str):
+   async def command_handler(self, user: User, message: str):
     parts = message.strip().split(" ")
     if not parts:
         return
