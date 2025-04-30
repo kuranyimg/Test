@@ -233,7 +233,7 @@ class Bot(BaseBot):
         if        message.startswith("/tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "iced_yu" or user.username == "FallonXOXO" or user.username == "RayMG":            await self.teleporter(message)
 
-        if        message.startswith("/") or              message.startswith("-") or              message.startswith(".") or          message.startswith("!"):
+        if        message.startswith("/") or              message.startswith("-") or     message.startswith("loop") or     message.startswith("Loop") or    message.startswith(".") or          message.startswith("!"):
             await self.command_handler(user, message)
           
         if message.startswith("!emoteall"):
