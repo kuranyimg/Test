@@ -115,7 +115,7 @@ async def loop(self: BaseBot, user: User, message: str):
             await self.highrise.chat(f"@{user.username} started looping '{emote_id}' every {duration:.1f} seconds.")
             while True:
                 await self.highrise.send_emote(emote_id, user.id)
-                await asyncio.sleep(duration)
+                await asyncio.sleep(duration - 0.1)
         except asyncio.CancelledError:
             pass
 
