@@ -29,7 +29,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['ponder'], 'idle-lookup', 22.34),
     (['hero pose'], 'idle-hero', 21.87),
     (['relaxing'], 'idle-floorsleeping2', 17.25),
-    (['cozy nap'], 'idle-floorsleeping', 10.00),
+    (['cozy'], 'idle-floorsleeping', 10.00),
     (['enthused'], 'idle-enthusiastic', 15.94),
     (['boogie'], 'idle-dance-swinging', 13.20),
     (['feel the beat'], 'idle-dance-headbobbing', 25.37),
