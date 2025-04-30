@@ -78,18 +78,6 @@ class Bot(BaseBot):
         if        message.startswith("/tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
           if user.username == "iced_yu" or user.username == "FallonXOXO" or user.username == "RayMG":            await self.teleporter(message)
 
-        if        message.startswith("/") or              message.startswith("-") or  message.startswith("") or   message.startswith("loop") or     message.startswith("Loop") or    message.startswith(".") or          message.startswith("!"):
-            await self.command_handler(user, message)
-          
-        if message.startswith("!emoteall"):
-          await self.highrise.send_whisper(user.id,"Fashion All , Wrong All , Cutey All , Superpose All , Punk All , Tiktok2 All, Tiktok8 All , Tiktok9 All , Tiktok10 All , Gagging All , Blackpink All , Creepy All , Revelation All , Bashful All , Arabesque All , Party All")
-
-        if message.startswith("!emoteall"):
-          await self.highrise.send_whisper(user.id,"Pose3 All , Pose7 All , Pose5 All , Pose1 All , Enthused All , Pose8 All , Sing All , Teleport All , Telekinesis All , Casual All , Icecream All , Watch All")
-
-        if message.startswith("!emoteall"):
-          await self.highrise.send_whisper(user.id,"Zombie All , Celebrate All , Kiss All , Bow All , Snowangel All , Confused All , Charging All , Wei All , Cursing All , Greedy All , Russian All , Shop All , Model All , Ren All , Tiktok4 All , Snake All , Uwu All")
-
         if        message.startswith("-floor1") or message.startswith("!floor1") or message.startswith("-floor 1") or message.startswith("Floor 1") or message.startswith("Floor1") or message.startswith("/floor1") or    message.startswith("floor1") or message.startswith("-1") or    message.startswith("floor1") or message.startswith("f1") or message.startswith("f 1") or message.startswith("floor1") or message.startswith("F1")  or   message.startswith("floor 1") or message.startswith("!floor 1"):
           await self.highrise.teleport(user.id, Position(9.5 , 0.0 , 16.5))
                  
@@ -101,9 +89,6 @@ class Bot(BaseBot):
             
         if        message.startswith("-floor2") or message.startswith("!floor2") or message.startswith("-floor 2") or message.startswith("Floor 2") or message.startswith("Floor2") or message.startswith("/floor2") or    message.startswith("floor2") or message.startswith("-2") or    message.startswith("floor2") or message.startswith("f2") or message.startswith("f 2") or message.startswith("floor2") or message.startswith("F2")  or   message.startswith("floor 2") or message.startswith("!floor 2"):
           await self.highrise.teleport(user.id, Position(14.5 , 9.0 , 6.0))
-            
-        if message.startswith("!emoteall"):
-          await self.highrise.send_whisper(user.id,"Skating All , Time All , Gottago All  , Scritchy All , Bitnervous All , Jingle All , Curtsy All , Hot All , Hyped All ,Sleigh All , Surprise All, Repose All , Kawaii All , Touch All , Gift All , Pushit All , Tiktok All , Smooch All , Launch All")
           
         if        message.startswith("!lista") or    message.startswith("!emote list") or                                 message.startswith("!emote list") or message.startswith("!list"):
             await self.highrise.send_whisper(user.id,"!angry ,!thumbsup , !cursing , !flex , !gagging , !celebrate , !blackpink , !tiktok2 , !tiktok9 , !pennywise , !russian , !shop , !enthused , !singing ,!wrong , !guitar , !pinguin , !astronaut , !saunter , !flirt , !creepy , !watch , !revelation")
