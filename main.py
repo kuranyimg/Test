@@ -1285,38 +1285,38 @@ class Bot(BaseBot):
         command = parts[0].lower()
 
     # إزالة الشرطة إذا كانت موجودة
-       if command.startswith("-"):
-           command = command[1:]
+        if command.startswith("-"):
+            command = command[1:]
 
     # التعامل مع أوامر loop و stop مباشرة
-       if command == "loop":
-           from functions.loop_emote import loop  # استيراد دالة loop فقط عند الحاجة
-           await loop(self, user, message)  # استدعاء دالة loop مباشرة
-           return
+        if command == "loop":
+            from functions.loop_emote import loop  # استيراد دالة loop فقط عند الحاجة
+            await loop(self, user, message)  # استدعاء دالة loop مباشرة
+            return
 
-       if command == "stop":
-           from functions.loop_emote import stop_loop  # استيراد دالة stop_loop فقط عند الحاجة
-           await stop_loop(self, user, message)  # استدعاء دالة stop_loop مباشرة
-           return
+        if command == "stop":
+            from functions.loop_emote import stop_loop  # استيراد دالة stop_loop فقط عند الحاجة
+            await stop_loop(self, user, message)  # استدعاء دالة stop_loop مباشرة
+            return
 
     # باقي الأوامر (الافتراضية من الملفات)
-       functions_folder = "functions"
-       for file_name in os.listdir(functions_folder):
-           if file_name.endswith(".py"):
-               module_name = file_name[:-3]
-               module_path = os.path.join(functions_folder, file_name)
+        functions_folder = "functions"
+        for file_name in os.listdir(functions_folder):
+            if file_name.endswith(".py"):
+                module_name = file_name[:-3]
+                module_path = os.path.join(functions_folder, file_name)
 
-               spec = importlib.util.spec_from_file_location(module_name, module_path)
-               module = importlib.util.module_from_spec(spec)
-               spec.loader.exec_module(module)
+                spec = importlib.util.spec_from_file_location(module_name, module_path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
 
-               if hasattr(module, command) and callable(getattr(module, command)):
-                   function = getattr(module, command)
-                   await function(self, user, message)
-                   return
+                if hasattr(module, command) and callable(getattr(module, command)):
+                    function = getattr(module, command)
+                    await function(self, user, message)
+                    return
 
     # إذا لم يتم العثور على الأمر
-       await self.send_message("Unknown command.")
+        await self.send_message("Unknown command.")
              
 
          
