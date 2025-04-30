@@ -1281,38 +1281,38 @@ class Bot(BaseBot):
         await self.highrise.teleport(user_id = user_id, dest = Position(float(x), float(y), float(z)))
 
 
-   async def command_handler(self, user: User, message: str):
-       parts = message.strip().split(" ")
-       command = parts[0].lower()
-       if command.startswith("-"):
-           command = command[1:]
+    async def command_handler(self, user: User, message: str):
+        parts = message.strip().split(" ")
+        command = parts[0].lower()
+        if command.startswith("-"):
+            command = command[1:]
 
     # التعامل مع أوامر loop و stop مباشرة
-       if command == "loop":
-           await loop(self, user, message)
-           return
-       if command == "stop":
-           await stop_loop(self, user, message)
-           return
+        if command == "loop":
+            await loop(self, user, message)
+            return
+        if command == "stop":
+            await stop_loop(self, user, message)
+            return
 
-       functions_folder = "functions"
-       for file_name in os.listdir(functions_folder):
-           if file_name.endswith(".py"):
-               module_name = file_name[:-3]  # Remove the '.py' extension
-               module_path = os.path.join(functions_folder, file_name)
+        functions_folder = "functions"
+        for file_name in os.listdir(functions_folder):
+            if file_name.endswith(".py"):
+                module_name = file_name[:-3]  # Remove the '.py' extension
+                module_path = os.path.join(functions_folder, file_name)
 
             # Load the module
-               spec = importlib.util.spec_from_file_location(module_name, module_path)
-               module = importlib.util.module_from_spec(spec)
-               spec.loader.exec_module(module)
+                spec = importlib.util.spec_from_file_location(module_name, module_path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
 
-            # Check if the function exists in the module
-               if hasattr(module, command) and callable(getattr(module, command)):
-                   function = getattr(module, command)
-                   await function(self, user, message)
+             # Check if the function exists in the module
+                if hasattr(module, command) and callable(getattr(module, command)):
+                    function = getattr(module, command)
+                    await function(self, user, message)
 
     # إذا لم يتم العثور على الأمر
-       return
+        return
 
          
     async def on_whisper(self, user: User, message: str) -> None:
