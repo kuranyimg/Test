@@ -3,7 +3,7 @@ from highrise.models import *
 import asyncio
 from asyncio import Task
 
-emote_list : list[tuple[str, str]] = [('smooch','emote-kissing-bound'),('fairyfloat','idle-floating'),('fairytwirl','emote-looping'),('kissing','emote-kissing-bound'),('tiktok11','dance-tiktok11'),('tiktok','dance-tiktok11'),('tik11','dance-tiktok11'),('gottago','idle-toilet'),('astronaut', 'emote-astronaut'),('wrong','dance-wrong'),('fashion','emote-fashionista'),('gravity','emote-gravity'),('icecream','dance-icecream'),('casual','idle-dance-casual'),('kiss','emote-kiss'),('no','emote-no'),('sad','emote-sad'),('yes','emote-yes'),('lau','emote-laughing'),('hello','emote-hello'),('wave','emote-wave'),('shy','emote-shy'),('tired','emote-tired'),('flirt','emote-lust'),('flirtywave','emote-lust'),('flirty','emote-lust'),('greedy','emote-greedy'),('model','emote-model'),('bow','emote-bow'),('curtsy','emote-curtsy'),('snowball','emote-snowball'),('hot','emote-hot'),('snowangel','emote-snowangel'),('charging','emote-charging'),('confused','emote-confused'),('telekinesis','emote-telekinesis'),('float','emote-float'),('teleport','emote-teleporting'),('maniac','emote-maniac'),('energyball','emote-energyball'),('snake','emote-snake'),('frog','emote-frog'),('superpose','emote-superpose'),('cute','emote-cute'),('pose7','emote-pose7'),('pose8','emote-pose8'),('pose1','emote-pose1'),('pose5','emote-pose5'),('pose3','emote-pose3'),('cutey','emote-cutey'),('tik10','dance-tiktok10'),('sing','idle_singing'),('singing','idle_singing'),('enthused','idle-enthusiastic'),('shop','dance-shoppingcart'),('russian','dance-russian'),('pennywise','dance-pennywise'),('tik2','dance-tiktok2'),('dontstartnow','dance-tiktok2'),('blackpink','dance-blackpink'),('kpop','dance-blackpink'),('celebrate','emoji-celebrate'),('gagging','emoji-gagging'),('flex','emoji-flex'),('cursing','emoji-cursing'),('thumbsup','emoji-thumbsup'),('angry','emoji-angry'),('punk','emote-punkguitar'),('zombie','emote-zombierun'),('sit','idle-loop-sitfloor'),('fight','emote-swordfight'),('ren','dance-macarena'),('wei','dance-weird'),('tik8','dance-tiktok8'),('savage','dance-tiktok8'),('tik9','dance-tiktok9'),('viral','dance-tiktok9'),('uwu','idle-uwu'),('tik4','idle-dance-tiktok4'),('sayso','idle-dance-tiktok4'),('star','emote-stargazer'),('pose9','emote-pose9'),('boxer','emote-boxer'),('guitar','idle-guitar'),('penguin','dance-pinguin'),('pinguin','dance-pinguin'),('zero','emote-astronaut'),('anime','dance-anime'),('saunter','dance-anime'),('creepy','dance-creepypuppet'),('watch','emote-creepycute'),('revelations','emote-headblowup'),('revelation','emote-headblowup'),('bashful','emote-shy2'),('arabesque','emote-pose10'),('pose10','emote-pose10'),('party','emote-celebrate'),('skating','emote-iceskating'),('scritchy','idle-wild'),('bitnervous','idle-nervous'),('nervous','idle-nervous'),('timejump','emote-timejump'),('jump','emote-timejump'),('jingle','dance-jinglebell'),('hyped','emote-hyped'),('sleigh','emote-sleigh'),('surprise','emote-pose6'),('repose','sit-relaxed'),('relaxed','sit-relaxed'),('kawaii','dance-kawai'),('kawai','dance-kawai'),('touch','dance-touch'),('gift','emote-gift'),('pushit','dance-employee'),('salute','emote-cutesalute'),('Relaxing','idle-floorsleeping2'),('Cozy Nap','idle-floorsleeping'),('Laid Back','sit-open'),('Shrink','emote-shrink'),('Ignition Boost','hcc-jetpack'),('Hero Pose','idle-hero'),('Levitate','emoji-halo'),('rest','sit-idle-cute'),('attentive','idle_layingdown'),('ghost','emote-ghost-idle'),('launch','emote-launch')]
+emote_list : list[tuple[str, str]] = [('Rest', 'sit-idle-cute'), ('Zombie', 'idle_zombie'), ('Relaxed', 'idle_layingdown2'), ('Attentive', 'idle_layingdown'), ('Sleepy', 'idle-sleep'), ('Pouty Face', 'idle-sad'), ('Posh', 'idle-posh'), ('Sleepy', 'idle-loop-tired'), ('Tap Loop', 'idle-loop-tapdance'), ('Sit', 'idle-loop-sitfloor'), ('Shy', 'idle-loop-shy'), ('Bummed', 'idle-loop-sad'), ("Chillin'", 'idle-loop-happy'), ('Annoyed', 'idle-loop-annoyed'), ('Aerobics', 'idle-loop-aerobics'), ('Ponder', 'idle-lookup'), ('Hero Pose', 'idle-hero'), ('Relaxing', 'idle-floorsleeping2'), ('Cozy Nap', 'idle-floorsleeping'), ('Enthused', 'idle-enthusiastic'), ('Boogie Swing', 'idle-dance-swinging'), ('Feel The Beat', 'idle-dance-headbobbing'), ('Irritated', 'idle-angry'), ('Yes', 'emote-yes'), ('I Believe I Can Fly', 'emote-wings'), ('The Wave', 'emote-wave'), ('Tired', 'emote-tired'), ('Think', 'emote-think'), ('Theatrical', 'emote-theatrical'), ('Tap Dance', 'emote-tapdance'), ('Super Run', 'emote-superrun'), ('Super Punch', 'emote-superpunch'), ('Sumo Fight', 'emote-sumo'), ('Thumb Suck', 'emote-suckthumb'), ('Splits Drop', 'emote-splitsdrop'), ('Snowball Fight!', 'emote-snowball'), ('Snow Angel', 'emote-snowangel'), ('Shy', 'emote-shy'), ('Secret Handshake', 'emote-secrethandshake'), ('Sad', 'emote-sad'), ('Rope Pull', 'emote-ropepull'), ('Roll', 'emote-roll'), ('ROFL!', 'emote-rofl'), ('Robot', 'emote-robot'), ('Rainbow', 'emote-rainbow'), ('Proposing', 'emote-proposing'), ('Peekaboo!', 'emote-peekaboo'), ('Peace', 'emote-peace'), ('Panic', 'emote-panic'), ('No', 'emote-no'), ('Ninja Run', 'emote-ninjarun'), ('Night Fever', 'emote-nightfever'), ('Monster Fail', 'emote-monster_fail'), ('Model', 'emote-model'), ('Flirty Wave', 'emote-lust'), ('Level Up!', 'emote-levelup'), ('Amused', 'emote-laughing2'), ('Laugh', 'emote-laughing'), ('Kiss', 'emote-kiss'), ('Super Kick', 'emote-kicking'), ('Jump', 'emote-jumpb'), ('Judo Chop', 'emote-judochop'), ('Imaginary Jetpack', 'emote-jetpack'), ('Hug Yourself', 'emote-hugyourself'), ('Sweating', 'emote-hot'), ('Hero Entrance', 'emote-hero'), ('Hello', 'emote-hello'), ('Headball', 'emote-headball'), ('Harlem Shake', 'emote-harlemshake'), ('Happy', 'emote-happy'), ('Handstand', 'emote-handstand'), ('Greedy Emote', 'emote-greedy'), ('Graceful', 'emote-graceful'), ('Moonwalk', 'emote-gordonshuffle'), ('Ghost Float', 'emote-ghost-idle'), ('Gangnam Style', 'emote-gangnam'), ('Frolic ', 'emote-frollicking'), ('Faint', 'emote-fainting'), ('Clumsy', 'emote-fail2'), ('Fall', 'emote-fail1'), ('Face Palm', 'emote-exasperatedb'), ('Exasperated', 'emote-exasperated'), ('Elbow Bump', 'emote-elbowbump'), ('Disco', 'emote-disco'), ('Blast Off', 'emote-disappear'), ('Faint Drop', 'emote-deathdrop'), ('Collapse', 'emote-death2'), ('Revival', 'emote-death'), ('Dab', 'emote-dab'), ('Curtsy', 'emote-curtsy'), ('Confusion', 'emote-confused'), ('Cold', 'emote-cold'), ('Charging', 'emote-charging'), ('Bunny Hop', 'emote-bunnyhop'), ('Bow', 'emote-bow'), ('Boo', 'emote-boo'), ('Home Run!', 'emote-baseball'), ('Falling Apart', 'emote-apart'), ('Thumbs Up', 'emoji-thumbsup'), ('Point', 'emoji-there'), ('Sneeze', 'emoji-sneeze'), ('Smirk', 'emoji-smirking'), ('Sick', 'emoji-sick'), ('Gasp', 'emoji-scared'), ('Punch', 'emoji-punch'), ('Pray', 'emoji-pray'), ('Stinky', 'emoji-poop'), ('Naughty', 'emoji-naughty'), ('Mind Blown', 'emoji-mind-blown'), ('Lying', 'emoji-lying'), ('Levitate', 'emoji-halo'), ('Fireball Lunge', 'emoji-hadoken'), ('Give Up', 'emoji-give-up'), ('Tummy Ache', 'emoji-gagging'), ('Flex', 'emoji-flex'), ('Stunned', 'emoji-dizzy'), ('Cursing Emote', 'emoji-cursing'), ('Sob', 'emoji-crying'), ('Clap', 'emoji-clapping'), ('Raise The Roof', 'emoji-celebrate'), ('Arrogance', 'emoji-arrogance'), ('Angry', 'emoji-angry'), ('Vogue Hands', 'dance-voguehands'), ('Savage Dance', 'dance-tiktok8'), ("Don't Start Now", 'dance-tiktok2'), ('Yoga Flow', 'dance-spiritual'), ('Smoothwalk', 'dance-smoothwalk'), ('Ring on It', 'dance-singleladies'), ("Let's Go Shopping", 'dance-shoppingcart'), ('Russian Dance', 'dance-russian'), ('Robotic', 'dance-robotic'), ("Penny's Dance", 'dance-pennywise'), ('Orange Juice Dance', 'dance-orangejustice'), ('Rock Out', 'dance-metal'), ('Karate', 'dance-martial-artist'), ('Macarena', 'dance-macarena'), ('Hands in the Air', 'dance-handsup'), ('Floss', 'dance-floss'), ('Duck Walk', 'dance-duckwalk'), ('Breakdance', 'dance-breakdance'), ('K-Pop Dance', 'dance-blackpink'), ('Push Ups', 'dance-aerobics')]
 
 async def loop(self: BaseBot, user: User, message: str) -> None:
     # Defining the loop_emote method locally so it cann't be accessed from the command handler.
@@ -14,7 +14,7 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
                 emote_id = emote[1]
                 break
         if emote_id == "":
-          
+            await self.highrise.chat("Invalid emote")
             return
         user_position = None
         user_in_room = False
@@ -26,15 +26,14 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
                 user_in_room = True
                 break
         if user_position == None:
-            await self.highrise.send_whisper(user.id,f"🚫🔄 @{user.username} To Stop the Loop Just Walk 🔄🚫")
+            await self.highrise.chat("User not found")
             return
-        await self.highrise.send_whisper(user.id,f"👯🏻‍♂️🔄 @{user.username} You are in a loop : {emote_name} 👯🏻‍♂️🔄")
+        await self.highrise.chat(f"@{user.username} is looping {emote_name}")
         while start_position == user_position:
-            print(f"Loop {emote_name} - {user.username}")
             try:
                 await self.highrise.send_emote(emote_id, user.id)
             except:
-                await self.highrise.send_whisper(user.id,f"✅️{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+                await self.highrise.chat(f"Sorry, @{user.username}, this emote isn't free or you don't own it.")
                 return
             await asyncio.sleep(10)
             room_users = (await self.highrise.get_room_users()).content
@@ -50,9 +49,8 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
         splited_message = message.split(" ")
         # The emote name is every string after the first one
         emote_name = " ".join(splited_message[1:])
-        print(emote_name)
     except:
-        await self.highrise.send_whisper(user.id,f"✅️ @{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+        await self.highrise.chat("Invalid command format. Please use '/loop <emote name>.")
         return
     else:   
         taskgroup = self.highrise.tg
@@ -62,16 +60,25 @@ async def loop(self: BaseBot, user: User, message: str) -> None:
                 # Removes the task from the task group
                 task.cancel()
                 
+        room_users = (await self.highrise.get_room_users()).content
+        user_list  = []
+        for room_user, pos in room_users:
+            user_list.append(room_user.username)
+                
         taskgroup.create_task(coro=loop_emote(self, user, emote_name))
-
+        task_list : list[Task] = list(taskgroup._tasks)
+        for task in task_list:
+            if task.get_coro().__name__ == "loop_emote" and not (task.get_name() in user_list):
+                task.set_name(user.username)
             
 async def stop_loop(self: BaseBot, user: User, message: str) -> None:
         taskgroup = self.highrise.tg
         task_list : list[Task] = list(taskgroup._tasks)
         for task in task_list:
+            print(task.get_name())
             if task.get_name() == user.username:
                 task.cancel()
-                await self.highrise.send_whisper(user.id,f"✅️ @{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+                await self.highrise.chat(f"Stopping your emote loop, {user.username}!")
                 return
-        await self.highrise.send_whisper(user.id,f"✅️ @{user.username} Siga <@RayMG> 🤍 Hastag : #RayMG ✅️")
+        await self.highrise.chat(f"You're not looping any emotes, {user.username}")
         return
