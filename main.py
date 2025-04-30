@@ -1281,7 +1281,9 @@ class Bot(BaseBot):
              
     async def command_handler(self, user: User, message: str):
         parts = message.split(" ")
-        command = parts[0][1:]
+        command = parts[0].lower()
+        if command.startswith("-"):
+            command = command[1:]
         functions_folder = "functions"
         # Check if the function exists in the module
         for file_name in os.listdir(functions_folder):
