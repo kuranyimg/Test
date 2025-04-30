@@ -10,7 +10,7 @@ emote_list: list[tuple[str, str, int]] = [
     ('4', 'dance-icecream', 20),
     ('106', 'idle_layingdown', 30),
     ('107', 'emote-ghost-idle', 25),
-    ('97', 'emote-looping', 30),emotes = [
+    ('97', 'emote-looping', 30),
     ('Rest', 'sit-idle-cute', 17.062613),
     ('Zombie', 'idle_zombie', 28.754937),
     ('Relaxed', 'idle_layingdown2', 21.546653),
@@ -18,7 +18,7 @@ emote_list: list[tuple[str, str, int]] = [
     ('Sleepy', 'idle-sleep', 22.620446),
     ('Pouty Face', 'idle-sad', 24.377214),
     ('Posh', 'idle-posh', 21.851256),
-    ('Sleepy', 'idle-loop-tired', 21.959007),
+    ('Sleepy Loop', 'idle-loop-tired', 21.959007),  # Changed "Sleepy" to "Sleepy Loop" to differentiate
     ('Tap Loop', 'idle-loop-tapdance', 6.261593),
     ('Sit', 'idle-loop-sitfloor', 22.321055),
     ('Shy', 'idle-loop-shy', 16.47449),
