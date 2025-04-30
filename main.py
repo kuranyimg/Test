@@ -578,8 +578,11 @@ class Bot(BaseBot):
         if        message.startswith("/creepy") or      message.startswith("!creepy") or      message.startswith("Creepy") or   message.startswith("creepy") or message.startswith("71"):
             await self.highrise.send_emote("dance-creepypuppet",user.id)
 
+        if        message.startswith("/attentive") or      message.startswith("!attentive") or      message.startswith("Attentive") or message.startswith("Att") or message.startswith("att") or  message.startswith("attentive") or message.startswith("106"):
+            await self.highrise.send_emote("idle_layingdown",user.id)
+
         if        message.startswith("/rest") or      message.startswith("!Rest") or      message.startswith("Rest") or   message.startswith("rest") or message.startswith("105"):
-            await self.highrise.send_emote('sit-idle-cute',user.id)
+            await self.highrise.send_emote("sit-idle-cute",user.id)
 
         if        message.startswith("/levitate") or      message.startswith("!levitate") or      message.startswith("Levitate") or message.startswith("Levi") or message.startswith("lev") or message.startswith("Lev") or  message.startswith("Levitate") or message.startswith("104"):
             await self.highrise.send_emote("emoji-halo",user.id)
