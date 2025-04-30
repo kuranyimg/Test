@@ -1284,36 +1284,37 @@ class Bot(BaseBot):
     async def command_handler(self, user: User, message: str):
         parts = message.strip().split(" ")
         command = parts[0].lower()
+
         if command.startswith("-"):
             command = command[1:]
 
     # التعامل مع أوامر loop و stop مباشرة
         if command == "loop":
-            await loop(self, user, message)
-            return
-        if command == "stop":
-            await stop_loop(self, user, message)
-            return
+           await loop(self, user, message)
+           return
 
-        functions_folder = "functions"
-        for file_name in os.listdir(functions_folder):
-            if file_name.endswith(".py"):
-                module_name = file_name[:-3]  # Remove the '.py' extension
-                module_path = os.path.join(functions_folder, file_name)
+       if command == "stop":
+           await stop_loop(self, user, message)
+           return
 
-            # Load the module
-                spec = importlib.util.spec_from_file_location(module_name, module_path)
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
+    # محاولة تنفيذ أوامر من ملفات في مجلد functions
+       functions_folder = "functions"
+       for file_name in os.listdir(functions_folder):
+           if file_name.endswith(".py"):
+               module_name = file_name[:-3]
+               module_path = os.path.join(functions_folder, file_name)
 
-             # Check if the function exists in the module
-                if hasattr(module, command) and callable(getattr(module, command)):
-                    function = getattr(module, command)
-                    await function(self, user, message)
+               spec = importlib.util.spec_from_file_location(module_name, module_path)
+               module = importlib.util.module_from_spec(spec)
+               spec.loader.exec_module(module)
 
-    # إذا لم يتم العثور على الأمر
-        return
+               if hasattr(module, command) and callable(getattr(module, command)):
+                   function = getattr(module, command)
+                   await function(self, user, message)
+                   return
 
+    # إذا لم يكن هناك أمر معروف، فربما كتب اسم إيموجي مباشرة
+      await check_and_start_emote_loop(self, user, message)
          
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
