@@ -3,7 +3,7 @@ from highrise import BaseBot
 from highrise.models import User
 
 # قائمة الإيموجيات مع الكلمات الدالة والمدة
-emote_list: list[tuple[list[str], str, float]] = [
+emote_list = [
     (["kawaii", "Kawaii", "1"], "dance-kawai", 10.851),
     (["hyped", "Hyped", "2"], "emote-hyped", 7.622),
     (["levitate", "Levitate", "3"], "emoji-halo", 6.522),
@@ -14,7 +14,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["yawn", "Yawn", "8"], "emoji-yawn", 6.3),
     (["giggle", "Giggle", "9"], "emote-giggle", 5.7),
     (["bored", "Bored", "10"], "emote-bored", 6.2),
-    # إضافة باقي الإيموجيات هنا بنفس الطريقة
+    # Add more emotes in similar fashion
 ]
 
 # تخزين المهام المتكررة لكل مستخدم
@@ -32,7 +32,7 @@ async def loop(self: BaseBot, user: User, message: str):
         (emote for emote in emote_list if emote_name in [k.lower() for k in emote[0]]), None)
 
     if not selected:
-        await self.highrise.chat("الإيموجي غير موجود.")
+        await self.highrise.chat(f"الإيموجي '{emote_name}' غير موجود.")
         return
 
     _, emote_id, duration = selected
@@ -70,3 +70,5 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     found = next((emote for emote in emote_list if message in [k.lower() for k in emote[0]]), None)
     if found:
         await loop(self, user, f"loop {message}")
+    else:
+        await self.highrise.chat(f"الإيموجي '{message}' غير موجود.")
