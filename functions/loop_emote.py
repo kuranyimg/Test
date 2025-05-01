@@ -3,7 +3,6 @@ from highrise import BaseBot
 from highrise.models import 
 # قائمة الإيموجيات مع الكلمات الدالة والمدة
 emote_list: list[tuple[list[str], str, float]] = [
-all_emote_list: list[tuple[str, str]] = [
     ("1. Rest", "sit-idle-cute"),
     ("2. Zombie", "idle_zombie"),
     ("3. Relaxed", "idle_layingdown2"),
