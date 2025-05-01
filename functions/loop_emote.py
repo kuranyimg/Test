@@ -1,6 +1,6 @@
 import asyncio
 from highrise import BaseBot
-from highrise.models import User  # تأكد من استيراد User إذا كان هذا الكائن موجود
+from highrise.models import User
 
 # قائمة الإيموجيات مع الكلمات الدالة والمدة
 emote_list: list[tuple[list[str], str, float]] = [
