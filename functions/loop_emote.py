@@ -17,63 +17,46 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['laugh', 'lol', 'haha', 'giggle', 'chuckle', 'lmao'], 'emote-laughing', 2.6),
 ]
 
-# Store active loops
-user_loops: dict[str, asyncio.Task] = {}
+async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
+    cleaned_msg = message.strip().lower()
 
-# Start emote loop
-async def loop(bot: BaseBot, user: User, message: str):
-    parts = message.strip().split(" ", 1)
-    if len(parts) < 2:
-        await bot.highrise.chat("Please provide an emote name after 'loop'.")
+    # Stop command
+    if cleaned_msg == "stop":
+        if user.id in user_loops:
+            user_loops[user.id].cancel()
+            del user_loops[user.id]
+            await self.highrise.chat(f"@{user.username}, your emote loop has been stopped.")
+        else:
+            await self.highrise.chat(f"@{user.username}, you have no active loop.")
         return
 
-    emote_name = parts[1].strip().lower()
+    # Loop command
+    if any(cleaned_msg.startswith(prefix) for prefix in ("loop ", "/loop ", "!loop ", "-loop ")):
+        emote_name = cleaned_msg.split(" ", 1)[1].strip()
+        selected = next((e for e in emote_list if emote_name in [alias.lower() for alias in e[0]]), None)
+        if not selected:
+            await self.highrise.chat("Invalid emote name.")
+            return
 
-    selected = None
-    for aliases, emote_id, duration in emote_list:
-        if emote_name in [alias.lower() for alias in aliases]:
-            selected = (aliases, emote_id, duration)
-            break
+        if user.id in user_loops:
+            user_loops[user.id].cancel()
 
-    if not selected:
-        await bot.highrise.chat("Invalid emote name.")
+        _, emote_id, duration = selected
+
+        async def emote_loop():
+            try:
+                await self.highrise.chat(f"@{user.username} is looping '{emote_id}'.")
+                while True:
+                    await self.highrise.send_emote(emote_id, user.id)
+                    await asyncio.sleep(duration)
+            except asyncio.CancelledError:
+                pass
+
+        user_loops[user.id] = asyncio.create_task(emote_loop())
         return
 
-    aliases, emote_id, duration = selected
-
-    # Cancel previous loop if exists
-    if user.id in user_loops:
-        user_loops[user.id].cancel()
-
-    async def emote_loop():
-        try:
-            await bot.highrise.chat(f"@{user.username} started looping '{emote_id}' every {duration} seconds.")
-            while True:
-                await bot.highrise.send_emote(emote_id, user.id)
-                await asyncio.sleep(duration)
-        except asyncio.CancelledError:
-            pass
-
-    task = asyncio.create_task(emote_loop())
-    user_loops[user.id] = task
-
-# Stop emote loop
-async def stop_loop(bot: BaseBot, user: User, message: str):
-    if user.id in user_loops:
-        user_loops[user.id].cancel()
-        del user_loops[user.id]
-        await bot.highrise.chat(f"@{user.username}, your emote loop has been stopped.")
-    else:
-        await bot.highrise.chat(f"@{user.username}, you have no active loop to stop.")
-
-# Auto-start emote if message matches a direct emote alias
-async def check_and_start_emote_loop(bot: BaseBot, user: User, message: str):
-    message = message.strip().lower()
-    found = None
-    for aliases, emote_id, duration in emote_list:
-        if message in [alias.lower() for alias in aliases]:
-            found = (aliases, emote_id, duration)
-            break
-
-    if found:
-        await loop(bot, user, f"loop {message}")
+    # One-time emote (direct command like "laugh", "hello")
+    selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
+    if selected:
+        _, emote_id, _ = selected
+        await self.highrise.send_emote(emote_id, user.id)
