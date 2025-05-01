@@ -17,11 +17,14 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['laugh', 'lol', 'haha', 'giggle', 'chuckle', 'lmao'], 'emote-laughing', 2.6),
 ]
 
-async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
-    cleaned_msg = message.strip().lower()
+user_loops: dict[str, asyncio.Task] = {}
 
-    # Stop command
-    if cleaned_msg == "stop":
+async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
+    cleaned_msg = message.strip()
+    lower_msg = cleaned_msg.lower()
+
+    # Stop loop command
+    if lower_msg == "stop":
         if user.id in user_loops:
             user_loops[user.id].cancel()
             del user_loops[user.id]
@@ -30,14 +33,17 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             await self.highrise.chat(f"@{user.username}, you have no active loop.")
         return
 
-    # Loop command
-    if any(cleaned_msg.startswith(prefix) for prefix in ("loop ", "/loop ", "!loop ", "-loop ")):
-        emote_name = cleaned_msg.split(" ", 1)[1].strip()
+    # Check if it's a loop command
+    loop_prefixes = ("loop ", "/loop ", "!loop ", "-loop ")
+    if any(lower_msg.startswith(prefix) for prefix in loop_prefixes):
+        emote_name = cleaned_msg.split(" ", 1)[1].strip().lower()
         selected = next((e for e in emote_list if emote_name in [alias.lower() for alias in e[0]]), None)
+
         if not selected:
             await self.highrise.chat("Invalid emote name.")
             return
 
+        # Cancel existing loop if present
         if user.id in user_loops:
             user_loops[user.id].cancel()
 
@@ -45,7 +51,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
 
         async def emote_loop():
             try:
-                await self.highrise.chat(f"@{user.username} is looping '{emote_id}'.")
+                await self.highrise.chat(f"@{user.username} is now looping '{emote_id}'.")
                 while True:
                     await self.highrise.send_emote(emote_id, user.id)
                     await asyncio.sleep(duration)
@@ -55,8 +61,8 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         user_loops[user.id] = asyncio.create_task(emote_loop())
         return
 
-    # One-time emote (direct command like "laugh", "hello")
-    selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
+    # One-time emote
+    selected = next((e for e in emote_list if lower_msg in [alias.lower() for alias in e[0]]), None)
     if selected:
         _, emote_id, _ = selected
         await self.highrise.send_emote(emote_id, user.id)
