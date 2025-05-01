@@ -28,18 +28,15 @@ async def loop(self: BaseBot, user: User, message: str):
         return
     emote_name = parts[1].strip().lower()
 
-    print(f"Debug: Looking for emote '{emote_name}'...")  # Debugging line
-
+    # محاولة إيجاد الإيموجي المطلوب
     selected = next(
         (emote for emote in emote_list if emote_name in [k.lower() for k in emote[0]]), None)
 
     if not selected:
         await self.highrise.chat(f"الإيموجي '{emote_name}' غير موجود.")
-        print(f"Debug: Emote '{emote_name}' not found!")  # Debugging line
         return
 
     _, emote_id, duration = selected
-    print(f"Debug: Found emote '{emote_name}' with ID '{emote_id}' and duration {duration}")  # Debugging line
 
     # إيقاف أي تكرار سابق
     if user.id in user_loops:
@@ -71,12 +68,9 @@ async def stop_loop(self: BaseBot, user: User, message: str):
 # تفعيل الإيموجي تلقائيًا عند كتابة اسمه مباشرة
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     message = message.strip().lower()
-    print(f"Debug: Received message '{message}'")  # Debugging line
-
     found = next((emote for emote in emote_list if message in [k.lower() for k in emote[0]]), None)
 
     if found:
         await loop(self, user, f"loop {message}")
     else:
         await self.highrise.chat(f"الإيموجي '{message}' غير موجود.")
-        print(f"Debug: No match for '{message}'")  # Debugging line
