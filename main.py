@@ -5,7 +5,7 @@ from highrise import*
 from highrise import BaseBot,Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
-from functions.loop_emote import loop, stop_loop, check_and_start_emote_loop
+from functions.loop_emote import check_and_start_emote_loop
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
