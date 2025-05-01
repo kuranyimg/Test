@@ -8,6 +8,7 @@ from highrise import Highrise, GetMessagesRequest
 from functions.loop_emote import loop, stop_loop, check_and_start_emote_loop
 from functions.vip_manager import is_vip, handle_vip_command
 from functions.commands import is_teleport_command, handle_teleport_command
+from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 vip_list = set()
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
@@ -36,11 +37,10 @@ class Bot(BaseBot):
     async def on_chat(self, user: User, message: str) -> None:
         print(f"{user.username}: {message}")    
         username = user.username.lower()
-
         is_owner = username == "raybm"
 
-        # Only OWNER can manage VIPs
-        if message.lower().startswith("vip@"):
+        # Handle VIP command
+        if message.lower().startswith("vip@") or message.lower().startswith("unvip@"):
             if is_owner:
                 response = await handle_vip_command(user, message, vip_list)
             else:
@@ -48,19 +48,28 @@ class Bot(BaseBot):
             await self.highrise.chat(response)
             return
 
-        # VIP-only commands: teleport, summon, -4
-        if is_teleport_command(message) or message.lower().startswith("tele") or message.lower().startswith("summon ") or message.strip() == "-4":
+        # Handle VIP-only commands
+        if (
+            is_teleport_command(message)
+            or message.lower().startswith("tele ")
+            or message.lower().startswith("tele@")
+            or message.lower().startswith("summon ")
+            or message.lower().startswith("summon@")
+            or message.strip() == "-4"
+        ):
             if is_owner or is_vip(username, vip_list):
                 await handle_teleport_command(user, message, self.highrise.send_whisper)
             else:
                 await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
             return
 
-        if message.lower().lstrip("!/ -") == "viplist":
+        # Handle VIP list command
+        normalized_msg = message.lower().lstrip("!/ -").strip()
+        if normalized_msg == "viplist":
             vip_message = get_vip_list(vip_list)
             await self.highrise.send_whisper(user.id, vip_message)
             return
-        
+
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
            await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
