@@ -3,7 +3,7 @@ from highrise import BaseBot
 from highrise.models import User
 
 # قائمة الإيموجيات مع الكلمات الدالة والمدة
-emote_list = [
+all_emote_list: list[tuple[str, str]] = [
     (["kawaii", "Kawaii", "1"], "dance-kawai", 10.851),
     (["hyped", "Hyped", "2"], "emote-hyped", 7.622),
     (["levitate", "Levitate", "3"], "emoji-halo", 6.522),
