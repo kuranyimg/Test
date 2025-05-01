@@ -72,16 +72,8 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id, vip_message)
             return
             
-        if message.lower().startswith("loop "):
-            await loop(self, user, message)
-            return
-
-        if message.lower().startswith("stop"):
-            await stop_loop(self, user, message)
-            return
-
-        # Check for direct emote names
         await check_and_start_emote_loop(self, user, message)
+        # Check for direct emote names
 
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
