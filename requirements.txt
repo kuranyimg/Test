@@ -1,2 +1,1 @@
-flask
-git+https://github.com/highrise-app/highrise-python-sdk.git
+highrise-python-sdk@git+https://github.com/kuranyimg/python-bot-sdk
