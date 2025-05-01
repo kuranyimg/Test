@@ -1,2 +1,2 @@
 flask
-highrise
+git+https://github.com/username/highrise-python-sdk.git
