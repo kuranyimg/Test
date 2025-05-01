@@ -2,40 +2,24 @@ import asyncio
 from highrise import BaseBot
 from highrise.models import User
 
-# قائمة الإيموجيات مع مدتها بالثواني
-emote_list: list[tuple[str, str, float]] = [
-    ('Rest', 'sit-idle-cute', 17.062613),
-    ('Zombie', 'idle_zombie', 28.754937),
-    ('Relaxed', 'idle_layingdown2', 21.546653),
-    ('Attentive', 'idle_layingdown', 24.585168),
-    ('Sleepy', 'idle-sleep', 22.620446),
-    ('Pouty Face', 'idle-sad', 24.377214),
-    ('Posh', 'idle-posh', 21.851256),
-    ('Sleepy', 'idle-loop-tired', 21.959007),
-    ('Tap Loop', 'idle-loop-tapdance', 6.261593),
-    ('Sit', 'idle-loop-sitfloor', 22.321055),
-    ('Shy', 'idle-loop-shy', 16.47449),
-    ('Bummed', 'idle-loop-sad', 6.052999),
-    ('Chillin\'', 'idle-loop-happy', 18.798322),
-    ('Annoyed', 'idle-loop-annoyed', 17.058522),
-    ('Aerobics', 'idle-loop-aerobics', 8.507535),
-    ('Ponder', 'idle-lookup', 22.339865),
-    ('Hero Pose', 'idle-hero', 21.877099),
-    ('Relaxing', 'idle-floorsleeping2', 17.253372),
-    ('Cozy Nap', 'idle-floorsleeping', 13.935264),
-    ('Enthused', 'idle-enthusiastic', 15.941537),
-    ('Boogie Swing', 'idle-dance-swinging', 13.198551),
-    ('Feel The Beat', 'idle-dance-headbobbing', 25.367458),
-    ('Irritated', 'idle-angry', 25.427848),
-    ('Yes', 'emote-yes', 2.565001),
-    ('Hello', 'emote-hello', 2.734844),
-    ('Laugh', 'emote-laughing', 2.69161),
+# Emote list: (aliases, emote_id, duration)
+emote_list: list[tuple[list[str], str, float]] = [
+    (['rest', 'Resting', 'sit', 'Sitdown', 'relax', 'lay'], 'sit-idle-cute', 17.0),
+    (['zombie', 'Zombie', 'undead', 'walkdead', 'zombiemode', 'creep'], 'idle_zombie', 28.7),
+    (['relaxed', 'laying', 'chill', 'sleep', 'relaxing', 'calm'], 'idle_layingdown2', 21.5),
+    (['attentive', 'alert', 'focused', 'ready', 'watching', 'observe'], 'idle_layingdown', 24.5),
+    (['sleepy', 'tired', 'dozing', 'nap', 'snore', 'zzz'], 'idle-sleep', 22.6),
+    (['sad', 'pout', 'cry', 'tears', 'blue', 'unhappy'], 'idle-sad', 24.3),
+    (['posh', 'classy', 'elegant', 'graceful', 'chic', 'fancy'], 'idle-posh', 21.8),
+    (['looping', 'spin', 'repeat', 'cycle', 'replay', 'again'], 'emote-looping', 30.0),
+    (['yes', 'yeah', 'sure', 'ok', 'affirmative', 'yep'], 'emote-yes', 2.5),
+    (['hello', 'hi', 'hey', 'greet', 'wave', 'salute'], 'emote-hello', 2.7),
+    (['laugh', 'lol', 'haha', 'giggle', 'chuckle', 'lmao'], 'emote-laughing', 2.6),
 ]
 
-# تخزين التكرار الجاري لكل مستخدم
 user_loops: dict[str, asyncio.Task] = {}
 
-# الدالة الرئيسية للتكرار المستمر للإيموجي
+# Start emote loop
 async def loop(self: BaseBot, user: User, message: str):
     parts = message.strip().split(" ", 1)
     if len(parts) < 2:
@@ -43,16 +27,13 @@ async def loop(self: BaseBot, user: User, message: str):
         return
     emote_name = parts[1].strip().lower()
 
-    # إيجاد الإيموجي المناسب من القائمة
-    selected = next((emote for emote in emote_list
-                     if emote_name == emote[0].lower() or emote_name == emote[1].lower()), None)
+    selected = next((emote for emote in emote_list if emote_name in [alias.lower() for alias in emote[0]]), None)
     if not selected:
         await self.highrise.chat("Invalid emote name.")
         return
 
-    _, emote_id, duration = selected
+    aliases, emote_id, duration = selected
 
-    # إيقاف التكرار السابق إن وجد
     if user.id in user_loops:
         user_loops[user.id].cancel()
 
@@ -68,7 +49,7 @@ async def loop(self: BaseBot, user: User, message: str):
     task = asyncio.create_task(emote_loop())
     user_loops[user.id] = task
 
-# دالة لإيقاف التكرار
+# Stop emote loop
 async def stop_loop(self: BaseBot, user: User, message: str):
     if user.id in user_loops:
         user_loops[user.id].cancel()
@@ -77,12 +58,9 @@ async def stop_loop(self: BaseBot, user: User, message: str):
     else:
         await self.highrise.chat(f"@{user.username}, you have no active loop to stop.")
 
-# دالة لفحص الرسائل بشكل مباشر بدون أمر loop
+# Check direct emote message
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     message = message.strip().lower()
-
-    # هل كتب اسم إيموجي مباشرة؟
-    found = next((emote for emote in emote_list
-                  if message == emote[0].lower() or message == emote[1].lower()), None)
+    found = next((emote for emote in emote_list if message in [alias.lower() for alias in emote[0]]), None)
     if found:
         await loop(self, user, f"loop {message}")
