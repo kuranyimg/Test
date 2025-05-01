@@ -1,24 +1,24 @@
 import asyncio
 from highrise import BaseBot
-from highrise.models import 
+from highrise.models import User  # تأكد من استيراد User إذا كان هذا الكائن موجود
+
 # قائمة الإيموجيات مع الكلمات الدالة والمدة
 emote_list: list[tuple[list[str], str, float]] = [
-    ("kawaii", "Kawaii", "1"): {"id": "dance-kawai", "duration": 10.851},
-    ("hyped", "Hyped", "2"): {"id": "emote-hyped", "duration": 7.622},
-    ("levitate", "Levitate", "3"): {"id": "emoji-halo", "duration": 6.522},
-    ("applause", "Applause", "4"): {"id": "emote-applause", "duration": 6.0},
-    ("stinky", "Stinky", "5"): {"id": "emote-smelly", "duration": 5.5},
-    ("eyeroll", "Eyeroll", "6"): {"id": "emote-eyeroll", "duration": 5.8},
-    ("kissy", "Kissy", "7"): {"id": "emoji-kiss", "duration": 6.5},
-    ("yawn", "Yawn", "8"): {"id": "emoji-yawn", "duration": 6.3},
-    ("giggle", "Giggle", "9"): {"id": "emote-giggle", "duration": 5.7},
-    ("bored", "Bored", "10"): {"id": "emote-bored", "duration": 6.2},
- # إضافة باقي الإيموجيات هنا بنفس الطريقة
-}
+    (["kawaii", "Kawaii", "1"], "dance-kawai", 10.851),
+    (["hyped", "Hyped", "2"], "emote-hyped", 7.622),
+    (["levitate", "Levitate", "3"], "emoji-halo", 6.522),
+    (["applause", "Applause", "4"], "emote-applause", 6.0),
+    (["stinky", "Stinky", "5"], "emote-smelly", 5.5),
+    (["eyeroll", "Eyeroll", "6"], "emote-eyeroll", 5.8),
+    (["kissy", "Kissy", "7"], "emoji-kiss", 6.5),
+    (["yawn", "Yawn", "8"], "emoji-yawn", 6.3),
+    (["giggle", "Giggle", "9"], "emote-giggle", 5.7),
+    (["bored", "Bored", "10"], "emote-bored", 6.2),
+    # إضافة باقي الإيموجيات هنا بنفس الطريقة
+]
 
 # تخزين المهام المتكررة لكل مستخدم
 user_loops = {}
-
 
 # تفعيل التكرار
 async def loop(self: BaseBot, user: User, message: str):
