@@ -8,7 +8,7 @@ from highrise import Highrise, GetMessagesRequest
 from functions.loop_emote import loop, stop_loop, check_and_start_emote_loop
 from functions.vip_manager import is_vip, handle_vip_command
 from functions.commands import is_teleport_command, handle_teleport_command
-
+vip_list = set()
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
@@ -34,8 +34,21 @@ class Bot(BaseBot):
         await self.highrise.react("heart", user.id)
         
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")     
+        print(f"{user.username}: {message}") 
+        username = user.username.lower()
+        # Add new VIPs
+        if message.lower().startswith("vip@"):
+            response = await handle_vip_command(user, message, vip_list)
+            await self.highrise.chat(response)
+            return
 
+        # Handle teleport commands for VIPs only
+        if is_teleport_command(message):
+            if is_vip(username, vip_list):
+                await handle_teleport_command(user, message, self.highrise.send_whisper)
+            else:
+                await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
+            return
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
            await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
