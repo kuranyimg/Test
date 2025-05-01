@@ -1,17 +1,32 @@
+vip_list = set()
+
+OWNER_USERNAME = "raybm"
+
 def is_vip(username: str, vip_list: set) -> bool:
-    return username.lower() in vip_list
+    return username == OWNER_USERNAME or username in vip_list
 
 async def handle_vip_command(user, message: str, vip_list: set) -> str:
-    if not user.username.lower() in vip_list:
-        return "Only VIPs can add other VIPs."
+    username = user.username.lower()
+    
+    if username != OWNER_USERNAME:
+        return f"Sorry {user.username}, only the bot owner can manage VIPs."
 
-    parts = message.split("@", 1)
-    if len(parts) != 2:
-        return "Invalid VIP command format. Use vip@username."
+    if message.lower().startswith("vip@"):
+        target_username = message.split("@", 1)[1].strip().lower()
+        if not target_username:
+            return "Please specify a username to add as VIP."
+        if target_username in vip_list:
+            return f"{target_username} is already a VIP."
+        vip_list.add(target_username)
+        return f"✅ {target_username} has been added to the VIP list."
 
-    new_vip = parts[1].strip().lower()
-    if new_vip in vip_list:
-        return f"{new_vip} is already a VIP."
+    if message.lower().startswith("unvip@"):
+        target_username = message.split("@", 1)[1].strip().lower()
+        if not target_username:
+            return "Please specify a username to remove from VIP."
+        if target_username not in vip_list:
+            return f"{target_username} is not in the VIP list."
+        vip_list.remove(target_username)
+        return f"❌ {target_username} has been removed from the VIP list."
 
-    vip_list.add(new_vip)
-    return f"{new_vip} has been added to the VIP list."
+    return "Invalid VIP command format. Use vip@username or unvip@username."
