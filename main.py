@@ -37,10 +37,9 @@ class Bot(BaseBot):
         print(f"{user.username}: {message}")    
         username = user.username.lower()
 
-        # OWNER: always has full access
         is_owner = username == "raybm"
 
-        # --- Add or Remove VIPs (Only OWNER) ---
+        # Only OWNER can manage VIPs
         if message.lower().startswith("vip@"):
             if is_owner:
                 response = await handle_vip_command(user, message, vip_list)
@@ -49,8 +48,8 @@ class Bot(BaseBot):
             await self.highrise.chat(response)
             return
 
-        # --- VIP-only commands ---
-        if is_teleport_command(message) or message.lower().startswith("tele") or message.lower().startswith("summon") or message.strip() == "-4":
+        # VIP-only commands: teleport, summon, -4
+        if is_teleport_command(message) or message.lower().startswith("tele") or message.lower().startswith("summon ") or message.strip() == "-4":
             if is_owner or is_vip(username, vip_list):
                 await handle_teleport_command(user, message, self.highrise.send_whisper)
             else:
