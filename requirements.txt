@@ -1,1 +1,2 @@
 flask
+git+https://github.com/kuranyimg/python-bot-sdk.git#egg=highrise
