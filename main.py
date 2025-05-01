@@ -37,18 +37,22 @@ class Bot(BaseBot):
         print(f"{user.username}: {message}") 
         username = user.username.lower()
         # Add new VIPs
-        if message.lower().startswith("vip@"):
+        # Only YOU can add VIPs (replace 'your_username' with your actual username)
+    if message.lower().startswith("vip@"):
+        if username == "raybm":  # <-- replace with your real username, lowercase
             response = await handle_vip_command(user, message, vip_list)
-            await self.highrise.chat(response)
-            return
+        else:
+            response = f"Sorry {user.username}, only the bot owner can add VIPs."
+        await self.highrise.chat(response)
+        return
 
-        # Handle teleport commands for VIPs only
-        if is_teleport_command(message):
-            if is_vip(username, vip_list):
-                await handle_teleport_command(user, message, self.highrise.send_whisper)
-            else:
-                await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
-            return
+    # Teleport commands (VIP only)
+    if is_teleport_command(message):
+        if is_vip(username, vip_list):
+            await handle_teleport_command(user, message, self.highrise.send_whisper)
+        else:
+            await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
+        return
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
            await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
