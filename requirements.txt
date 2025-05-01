@@ -1,1 +1,1 @@
-highrise-python-sdk@git+https://github.com/highrise-app/highrise-python-sdk.git
+flask
