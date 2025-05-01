@@ -34,48 +34,49 @@ class Bot(BaseBot):
         await self.highrise.react("heart", user.id)
         
     async def on_chat(self, user: User, message: str) -> None:
-    print(f"{user.username}: {message}") 
-    username = user.username.lower()
+       print(f"{user.username}: {message}") 
+       username = user.username.lower()
 
-    # Add VIP (only raybm)
-    if message.lower().startswith("vip@"):
-        if username == "raybm":
-            response = await handle_vip_command(user, message, vip_list)
-        else:
-            response = f"Sorry {user.username}, only the bot owner can add VIPs."
-        await self.highrise.chat(response)
-        return
+       # Add VIP (only raybm)
+       if message.lower().startswith("vip@"):
+           if username == "raybm":
+               response = await handle_vip_command(user, message, vip_list)
+           else:
+               response = f"Sorry {user.username}, only the bot owner can add VIPs."
+           await self.highrise.chat(response)
+           return
 
-    # Remove VIP (only raybm)
-    if message.lower().startswith("unvip@"):
-        if username == "raybm":
-            target = message[6:].strip().lower()
-            if target in vip_list:
-                vip_list.remove(target)
-                response = f"{target} has been removed from the VIP list."
-            else:
-                response = f"{target} is not in the VIP list."
-        else:
-            response = f"Sorry {user.username}, only the bot owner can remove VIPs."
-        await self.highrise.chat(response)
-        return
+       # Remove VIP (only raybm)
+       if message.lower().startswith("unvip@"):
+           if username == "raybm":
+               target = message[6:].strip().lower()
+               if target in vip_list:
+                   vip_list.remove(target)
+                   response = f"{target} has been removed from the VIP list."
+               else:
+                   response = f"{target} is not in the VIP list."
+           else:
+               response = f"Sorry {user.username}, only the bot owner can remove VIPs."
+           await self.highrise.chat(response)
+           return
 
-    # VIP-only teleport command
-    if is_teleport_command(message):
-        if is_vip(username, vip_list):
-            await handle_teleport_command(user, message, self.highrise.send_whisper)
-        else:
-            await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
-        return
+       # VIP-only teleport command
+       if is_teleport_command(message):
+           if is_vip(username, vip_list):
+               await handle_teleport_command(user, message, self.highrise.send_whisper)
+           else:
+               await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
+           return
 
     # VIP-only f4 or -4
-    if message.strip().lower() in ("f4", "-4"):
-        if is_vip(username, vip_list):
-            await self.highrise.chat(f"{user.username} used the VIP-only F4 command!")
-            # Your F4 command logic here
-        else:
-            await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
-        return
+       if message.strip().lower() in ("f4", "-4"):
+           if is_vip(username, vip_list):
+               await self.highrise.chat(f"{user.username} used the VIP-only F4 command!")
+               # Your F4 command logic here
+           else:
+               await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
+           return
+
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
            await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
