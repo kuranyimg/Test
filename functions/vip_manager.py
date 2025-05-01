@@ -4,7 +4,12 @@ OWNER_USERNAME = "raybm"
 
 def is_vip(username: str, vip_list: set) -> bool:
     return username == OWNER_USERNAME or username in vip_list
-
+    
+def get_vip_list(vip_list: set) -> str:
+    if not vip_list:
+        return "VIP list is empty."
+    return "VIPs:\n" + "\n".join(f"- {vip}" for vip in sorted(vip_list))
+    
 async def handle_vip_command(user, message: str, vip_list: set) -> str:
     username = user.username.lower()
     
