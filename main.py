@@ -56,6 +56,11 @@ class Bot(BaseBot):
                 await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
             return
 
+        if message.lower().lstrip("!/ -") == "viplist":
+            vip_message = get_vip_list(vip_list)
+            await self.highrise.send_whisper(user.id, vip_message)
+            return
+        
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
            await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
