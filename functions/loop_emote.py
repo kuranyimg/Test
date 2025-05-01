@@ -78,7 +78,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['72', 'greedy', 'Greedy'], 'emote-greedy', 4.64),
     (['73', 'graceful', 'Graceful'], 'emote-graceful', 3.75),
     (['74', 'moonwalk', 'Moonwalk'], 'emote-gordonshuffle', 8.05),
-    (['75', 'ghost float', 'Ghost float', 'ghost', 'Ghost'], 'emote-ghost-idle', 19.00),
+    (['75', 'ghost float', 'Ghost float', 'ghost', 'Ghost'], 'emote-ghost-idle', 18.20),
     (['76', 'gangnam style', 'Gangnam style', 'gangnam'], 'emote-gangnam', 7.28),
     (['77', 'frolic', 'Frolic'], 'emote-frollicking', 3.70),
     (['78', 'faint', 'Faint'], 'emote-fainting', 18.42),
