@@ -1,1 +1,2 @@
-git+https://github.com/kuranyimg/Test.git
+flask
+git+https://github.com/highrise-app/highrise-python-sdk.git
