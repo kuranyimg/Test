@@ -1,7 +1,6 @@
 import random
 from highrise import BaseBot, Position, Highrise
 from highrise.models import SessionMetadata, User, AnchorPosition
-
 from functions.loop_emote import check_and_start_emote_loop, handle_loop_command, start_emote_loop
 from functions.state import user_loops
 from functions.vip_data import init_vip_db
