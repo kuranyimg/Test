@@ -2,11 +2,12 @@ import random
 from highrise import BaseBot, Position, Highrise
 from highrise.models import SessionMetadata, User, AnchorPosition
 
-from functions.loop_emote import check_and_start_emote_loop
-from functions.state import user_loops, last_emote_name
+from functions.loop_emote import check_and_start_emote_loop, handle_loop_command, start_emote_loop
+from functions.state import user_loops
 from functions.vip_data import init_vip_db
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
+from functions.emote_list import emote_list
 
 # Initialize database
 vip_list = init_vip_db()
@@ -26,6 +27,14 @@ class Bot(BaseBot):
         await self.highrise.send_emote("dance-hipshake")
         await self.highrise.send_emote("emote-lust", user.id)
         await self.highrise.react("heart", user.id)
+
+    async def on_user_move(self, user: User, position: Position):
+        # استئناف التكرار فورًا إذا تحرك المستخدم
+        if user.username in user_loops:
+            emote_name = user_loops[user.username]["emote_name"]
+            duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
+            if duration:
+                await start_emote_loop(self, user, emote_name, duration)
 
     async def on_chat(self, user: User, message: str) -> None:
         username = user.username.lower()
@@ -53,7 +62,22 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id, get_vip_list(vip_list))
             return
 
-        # Emote loop trigger
+        # Loop command
+        if message.lower().startswith(("loop", "/loop", "!loop", "-loop")):
+            class Msg:
+                content = message
+                author = user
+                channel = None
+            await handle_loop_command(self, Msg())
+            return
+
+        # One-time emote if name matches
+        for aliases, emote, _ in emote_list:
+            if message.lower() in aliases:
+                await self.highrise.send_emote(emote, user.id)
+                return
+
+        # Emote loop trigger (fallback)
         await check_and_start_emote_loop(self, user, message)
 
         # Floor teleport shortcuts
@@ -142,7 +166,7 @@ class Bot(BaseBot):
                 await self.highrise.chat("🤍.")
                 return
 
-            username = parts[1][1:]  # Remove @
+            username = parts[1][1:]
             users = (await self.highrise.get_room_users()).content
             user_to_kick = next((u for u, _ in users if u.username.lower() == username.lower()), None)
 
