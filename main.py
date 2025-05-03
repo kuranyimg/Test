@@ -289,10 +289,6 @@ class Bot(BaseBot):
             Teleports the user to the specified user or coordinate
             Usage: /teleport <username> <x,y,z>
                                                                 """
-        #separates the message into parts
-        #part 1 is the command "/teleport"
-        #part 2 is the name of the user to teleport to (if it exists)
-        #part 3 is the coordinates to teleport to (if it exists)
         try:
             command, username, coordinate = message.split(" ")
         except:
@@ -330,7 +326,6 @@ async def on_user_move(self, user: User, position: Position, *args, **kwargs):
         await self.highrise.send_whisper(user.id, "تم إيقاف التكرار مؤقتًا لأنك بدأت تتحرك.")
 
 # Handle when user stops moving
-# في main.py
 async def on_user_stop_moving(self, user: User):
     if user.id not in user_loops:
         last_emote = last_emote_name.get(user.id, '')
@@ -364,34 +359,43 @@ async def command_handler(self, user: User, message: str):
 # Whisper handler to print incoming whispers for debugging
 async def on_whisper(self, user: User, message: str) -> None:
     print(f"{user.username} whispered: {message}")
-         
-        # Handle private messages for RayBM and botmes
-        if user.username.lower() == "raybm" or user.username.lower() == "botmes":
-            await self.highrise.chat(message)
-            print(f"Broadcasted private message to the room: {message}")
 
-        # ... (Your existing logic for other commands)
+    # Broadcast messages from RayBM or botmes
+    if user.username.lower() == "raybm" or user.username.lower() == "botmes":
+        await self.highrise.chat(message)
+        print(f"Broadcasted private message to the room: {message}")
 
-        if        message.startswith("tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
-          if user.username == "FallonXOXO" or user.username == "Its.Melly.Moo.XoXo" or user.username == "sh1n1gam1699" or user.username == "Abbie_38" or user.username == "hidinurbasement" or user.username == "@emping" or user.username == "BabygirlFae"  or user.username == "RayBM":
+    # Handle teleport-related commands
+    if message.startswith(("tele", "/tp", "/fly", "!tele", "!tp", "!fly")):
+        if user.username in [
+            "FallonXOXO", "Its.Melly.Moo.XoXo", "sh1n1gam1699", "Abbie_38", 
+            "hidinurbasement", "@emping", "BabygirlFae", "RayBM"
+        ]:
             await self.teleporter(message)
 
-        if        message.startswith("/") or              message.startswith("-") or              message.startswith(".") or          message.startswith("!"):
-            await self.command_handler(user, message)
+    # Handle general commands
+    if message.startswith(("/", "-", ".", "!")):
+        await self.command_handler(user, message)
 
-        if                            message.startswith("Summon") or         message.startswith("Summom") or         message.startswith("!summom") or        message.startswith("/summom") or        message.startswith("/summon") or  message.startswith("!summon"):
-          if user.username == "FallonXOXO" or user.username == "Shaun_Knox" or user.username == "@Its.Melly.Moo.XoXo" or user.username == "@RayBM" or user.username == "Dreamy._.KY":
-           target_username = message.split("@")[-1].strip()
-           await self.teleport_user_next_to(target_username, user)
+    # Handle summon commands
+    if message.startswith(("Summon", "Summom", "!summom", "/summom", "/summon", "!summon")):
+        if user.username in [
+            "FallonXOXO", "Shaun_Knox", "@Its.Melly.Moo.XoXo", "@RayBM", "Dreamy._.KY"
+        ]:
+            target_username = message.split("@")[-1].strip()
+            await self.teleport_user_next_to(target_username, user)
 
-        if              message.startswith("Carteira") or  message.startswith("Wallet") or    message.startswith("wallet") or       message.startswith("carteira"):
-          if user.username == "FallonXOXO" or user.username == "sh1n1gam1699" or user.username == "RayBM":
+    # Handle wallet info
+    if message.startswith(("Carteira", "Wallet", "wallet", "carteira")):
+        if user.username in ["FallonXOXO", "sh1n1gam1699", "RayBM"]:
             wallet = (await self.highrise.get_wallet()).content
-            await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
+            await self.highrise.send_whisper(user.id, f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
 
-    async def on_user_move(self, user: User, pos: Position) -> None:
-        print (f"{user.username} moved to {pos}")
+# Optional debug movement logging
+async def on_user_move(self, user: User, pos: Position) -> None:
+    print(f"{user.username} moved to {pos}")
 
-    async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
-        print(f"{user.username} emoted: {emote_id}")
+# Optional debug emote logging
+async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
+    print(f"{user.username} emoted: {emote_id}")
