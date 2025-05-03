@@ -6,7 +6,6 @@ from functions.state import user_loops
 from functions.vip_data import init_vip_db
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
-from functions.emote_list import emote_list
 
 # Initialize database
 vip_list = init_vip_db()
