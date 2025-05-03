@@ -1,6 +1,7 @@
 import asyncio
 from highrise import BaseBot
 from highrise.models import User
+from functions.state import user_movement, last_emote_name, user_loops
 
 # Emote list: (aliases, emote_id, duration)
 emote_list: list[tuple[list[str], str, float]] = [
