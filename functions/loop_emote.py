@@ -81,7 +81,7 @@ emote_list = [
     (['74', 'moonwalk', 'Moonwalk'], 'emote-gordonshuffle', 8.05),
     (['75', 'ghost float', 'Ghost float', 'ghost', 'Ghost'], 'emote-ghost-idle', 18.20),
     (['76', 'gangnam style', 'Gangnam style', 'gangnam'], 'emote-gangnam', 7.28),
-    (['77', 'frolic', 'Frolic'], 'emote-frolic', 5.40)
+    (['77', 'frolic', 'Frolic'], 'emote-frolic', 5.40),
     (['78', 'faint', 'Faint'], 'emote-fainting', 18.42),
     (['79', 'clumsy', 'Clumsy'], 'emote-fail2', 6.48),
     (['80', 'fall', 'Fall'], 'emote-fail1', 5.62),
