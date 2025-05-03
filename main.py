@@ -1,15 +1,13 @@
 import random
 import os
-import importlib.util
-from highrise import*
-from highrise import BaseBot,Position
+from highrise import BaseBot, Position, Highrise  # Be more specific in imports from highrise
 from highrise.models import SessionMetadata
-from highrise import Highrise, GetMessagesRequest
+from highrise import GetMessagesRequest  # If you are using this later
 from functions.loop_emote import check_and_start_emote_loop
+from functions.state import user_loops, last_emote_name
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
-
 vip_list = load_vip_list()
 
 class Bot(BaseBot):
@@ -322,38 +320,48 @@ class Bot(BaseBot):
         #teleports the user to the specified coordinate
         await self.highrise.teleport(user_id = user_id, dest = Position(float(x), float(y), float(z)))
 
-    async def on_user_move(self, user: User, position: Position, *args, **kwargs):
-        # Detect if user starts or stops walking
+# Handle when user starts moving
+async def on_user_move(self, user: User, position: Position, *args, **kwargs):
+    # Check if user has an active loop
+    if user.id in user_loops:
+        # Cancel the loop when user starts moving
+        user_loops[user.id].cancel()
+        await self.highrise.send_whisper(user.id, "Your loop has been paused because you're walking.")
+
+# Handle when user stops moving
+async def on_user_stop_moving(self, user: User):
+    if user.id in user_loops:
+        # Send whisper when resuming loop after user stops moving
+        await self.highrise.send_whisper(user.id, "Resuming your loop!")
+        # Resume the emote loop
+        await check_and_start_emote_loop(self, user, f"loop {last_emote_name.get(user.id, '')}")
+
+# Command handler for loop and stop
+async def command_handler(self, user: User, message: str):
+    parts = message.strip().split(" ")
+    command = parts[0].lower()
+
+    if command.startswith("-"):
+        command = command[1:]
+
+    # Handle loop command
+    if command == "loop":
+        await check_and_start_emote_loop(self, user, message)
+        return
+
+    # Handle stop command
+    if command == "stop":
         if user.id in user_loops:
-            # Cancel the loop when user starts walking
             user_loops[user.id].cancel()
-            await self.highrise.send_whisper(user.id, "Your loop has been paused because you're walking.")
+            del user_loops[user.id]
+            await self.highrise.send_whisper(user.id, "Your emote loop has been stopped.")
+        else:
+            await self.highrise.send_whisper(user.id, "No loop running.")
+        return
 
-    async def on_user_stop_moving(self, user: User):
-        # When user stops moving, restart the loop
-        if user.id in user_loops:
-            await self.highrise.send_whisper(user.id, "Resuming your loop!")
-            await check_and_start_emote_loop(self, user, f"loop {last_emote_name[user.id]}")
-
-    async def command_handler(self, user: User, message: str):
-        parts = message.strip().split(" ")
-        command = parts[0].lower()
-
-        if command.startswith("-"):
-            command = command[1:]
-
-        if command == "loop":
-            await check_and_start_emote_loop(self, user, message)
-            return
-
-        if command == "stop":
-            if user.id in user_loops:
-                user_loops[user.id].cancel()
-                del user_loops[user.id]
-                await self.highrise.send_whisper(user.id, "Your emote loop has been stopped.")
-            else:
-                await self.highrise.send_whisper(user.id, "No loop running.")
-            return
+# Whisper handler to print incoming whispers for debugging
+async def on_whisper(self, user: User, message: str) -> None:
+    print(f"{user.username} whispered: {message}")
          
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
