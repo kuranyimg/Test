@@ -1,5 +1,3 @@
 user_movement = {}
-last_emote_name = {}
-user_loops = {}
-# في ملف state.py
-last_emote_name = {}  # لتخزين آخر إيموجي استخدمه كل مستخدم
+last_emote_name = {}  # هنا يتم تخزين آخر إيموجي لكل مستخدم
+user_loops = {}  # هنا يتم تخزين الحلقات الجارية
