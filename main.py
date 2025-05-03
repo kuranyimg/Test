@@ -323,20 +323,19 @@ class Bot(BaseBot):
 # Handle when user starts moving
 async def on_user_move(self, user: User, position: Position, *args, **kwargs):
     if user.id in user_loops:
-        # إيقاف الحلقة فورًا عند الحركة
-        user_loops[user.id].cancel()
-        del user_loops[user.id]  # حذف الـtask الحالي
-        await self.highrise.send_whisper(user.id, "Your loop has been paused because you're walking.")
+        task = user_loops[user.id]
+        if not task.cancelled():
+            task.cancel()
+        del user_loops[user.id]
+        await self.highrise.send_whisper(user.id, "تم إيقاف التكرار مؤقتًا لأنك بدأت تتحرك.")
 
 # Handle when user stops moving
 # في main.py
 async def on_user_stop_moving(self, user: User):
-    if user.id in user_loops:
-        # إرسال رسالة قبل إعادة تشغيل الإيموجي
-        await self.highrise.send_whisper(user.id, "Resuming your loop!")
-        # استئناف الحلقة بعد التوقف
+    if user.id not in user_loops:
         last_emote = last_emote_name.get(user.id, '')
         if last_emote:
+            await self.highrise.send_whisper(user.id, "جارٍ استئناف التكرار...")
             await check_and_start_emote_loop(self, user, f"loop {last_emote}")
 
 # Command handler for loop and stop
@@ -347,19 +346,19 @@ async def command_handler(self, user: User, message: str):
     if command.startswith("-"):
         command = command[1:]
 
-    # Handle loop command
     if command == "loop":
         await check_and_start_emote_loop(self, user, message)
         return
 
-    # Handle stop command
     if command == "stop":
         if user.id in user_loops:
-            user_loops[user.id].cancel()
+            task = user_loops[user.id]
+            if not task.cancelled():
+                task.cancel()
             del user_loops[user.id]
-            await self.highrise.send_whisper(user.id, "Your emote loop has been stopped.")
+            await self.highrise.send_whisper(user.id, "تم إيقاف التكرار.")
         else:
-            await self.highrise.send_whisper(user.id, "No loop running.")
+            await self.highrise.send_whisper(user.id, "لا يوجد تكرار قيد التشغيل.")
         return
 
 # Whisper handler to print incoming whispers for debugging
