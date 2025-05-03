@@ -9,6 +9,9 @@ from functions.loop_emote import check_and_start_emote_loop
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
+user_movement = {}
+last_emote_name = {}
+user_loops = {}
 
 vip_list = load_vip_list()
 
@@ -16,6 +19,17 @@ class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
         await self.highrise.walk_to(Position(17.5 , 0.0 , 12.5, "FrontRight"))
+
+    async def on_user_walk(self, user: User, destination: Position):
+        user_movement[user.id] = True
+        if user.id in user_loops:
+            user_loops[user.id].cancel()
+            del user_loops[user.id]
+
+    async def on_user_stop(self, user: User):
+        user_movement[user.id] = False
+        if user.id in last_emote_name:
+            await check_and_start_emote_loop(self, user, last_emote_name[user.id])
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
