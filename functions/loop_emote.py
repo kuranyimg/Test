@@ -4,7 +4,7 @@ from highrise.models import User
 from functions.state import user_movement, last_emote_name, user_loops
 
 # Emote list: (aliases, emote_id, duration)
-emote_list: list[tuple[list[str], str, float]] = [
+emote_list = [
     (['1', 'rest', 'Rest'], 'sit-idle-cute', 17.06),
     (['2', 'zombie', 'Zombie'], 'idle_zombie', 28.75),
     (['3', 'relaxed', 'Relaxed'], 'idle_layingdown2', 20.55),
@@ -81,7 +81,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['74', 'moonwalk', 'Moonwalk'], 'emote-gordonshuffle', 8.05),
     (['75', 'ghost float', 'Ghost float', 'ghost', 'Ghost'], 'emote-ghost-idle', 18.20),
     (['76', 'gangnam style', 'Gangnam style', 'gangnam'], 'emote-gangnam', 7.28),
-    (['77', 'frolic', 'Frolic'], 'emote-frollicking', 3.70),
+    (['77', 'frolic', 'Frolic'], 'emote-frolic', 5.40)
     (['78', 'faint', 'Faint'], 'emote-fainting', 18.42),
     (['79', 'clumsy', 'Clumsy'], 'emote-fail2', 6.48),
     (['80', 'fall', 'Fall'], 'emote-fail1', 5.62),
@@ -227,45 +227,59 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["220", "wop dance", "Wop Dance"], "dance-tiktok11", 11),
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
+]
 
-# Start or stop a looped emote based on user input
-async def handle_emote_command(user: User, message: str):
-    # Check if the message is an emote command
-    for aliases, emote_id, duration in emote_list:
-        if message.lower() in aliases:
-            # If the emote is already in a loop, stop it
-            if user_loops.get(user.id) == emote_id:
-                await stop_emote_loop(user)
-                return f"Stopped looping the emote: {message}"
-            
-            # Otherwise, start the looped emote
-            await start_emote_loop(user, emote_id, duration)
-            return f"Started looping the emote: {message} for {duration} seconds"
+# Map each alias to its respective emote
+emote_dict = {alias: (emote, duration) for aliases, emote, duration in emote_list for alias in aliases}
+
+# Start loop for a given emote
+async def start_emote_loop(bot, user, emote_name, duration):
+    if user.username not in user_loops:
+        user_loops[user.username] = {'emote_name': emote_name, 'task': None}
     
-    return "No matching emote found."
+    # Cancel any existing loop task for the user
+    if user_loops[user.username]['task'] is not None:
+        user_loops[user.username]['task'].cancel()
+    
+    # Start a new loop
+    async def loop():
+        while True:
+            if user.username not in user_loops:
+                break
+            await bot.send_emote(user, emote_name)
+            await asyncio.sleep(duration)
+    
+    user_loops[user.username]['task'] = asyncio.create_task(loop())
 
-# Start an emote loop
-async def start_emote_loop(user: User, emote_id: str, duration: float):
-    user_loops[user.id] = emote_id
-    user_movement[user.id] = emote_id
-    await user.send_emote(emote_id)  # Send the initial emote to start the loop
+# Stop loop for a given user
+async def stop_emote_loop(bot, user):
+    if user.username in user_loops and user_loops[user.username]['task'] is not None:
+        user_loops[user.username]['task'].cancel()
+        del user_loops[user.username]
 
-    # Loop the emote for the specified duration
-    while user_loops.get(user.id) == emote_id:
-        await asyncio.sleep(duration)
-        await user.send_emote(emote_id)
-
-# Stop an emote loop
-async def stop_emote_loop(user: User):
-    emote_id = user_loops.pop(user.id, None)
-    if emote_id:
-        await user.send_emote(emote_id)  # Send the final emote
-        await user.send_message("Emote loop stopped.")
-
-# Handle messages and commands from users
-async def on_message_received(user: User, message: str):
-    if message.startswith("loop") or message.startswith("/loop"):
-        response = await handle_emote_command(user, message)
-        await user.send_message(response)
-
-# Example usage: Assuming the bot listens to messages and calls on_message_received
+# Handle the loop command in chat
+async def handle_loop_command(bot, message):
+    command = message.content.split()
+    if len(command) < 2:
+        return await bot.send_message(message.channel, "Please specify an emote.")
+    
+    emote_name = command[1].lower()
+    
+    # Check if the emote is valid
+    if emote_name not in emote_dict:
+        return await bot.send_message(message.channel, "Invalid emote name.")
+    
+    emote, duration = emote_dict[emote_name]
+    
+    if len(command) == 2:  # Start loop
+        user = message.author
+        await start_emote_loop(bot, user, emote, duration)
+        return await bot.send_message(message.channel, f"Started looping emote: {emote_name}.")
+    
+    elif len(command) == 3 and command[2].lower() in ['stop', 'end']:  # Stop loop
+        user = message.author
+        await stop_emote_loop(bot, user)
+        return await bot.send_message(message.channel, f"Stopped looping emote: {emote_name}.")
+    
+    else:
+        await bot.send_message(message.channel, "Invalid command format. Use 'loop <emote>' to start, or 'loop <emote> stop' to stop.")
