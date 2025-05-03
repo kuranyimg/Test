@@ -72,46 +72,6 @@ class Bot(BaseBot):
             
         await check_and_start_emote_loop(self, user, message)
         # Check for direct emote names
-
-        if message.startswith("/carp"):
-           await self.highrise.react("clap",user.id)
-           await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
-          
-        if message.startswith("/shrimp "):
-           await self.highrise.react("clap",user.id)
-           await self.highrise.send_whisper(user.id,"💎You Caught 1x Diamond Shrimp💎YOU WON THE MEDAL: (DIAMANTE MASTER FISHERMAN  )")                                
-        if message.startswith("/curative"):
-           await self.highrise.react("heart",user.id)
-
-        if message.startswith("/shield"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username} 🛡 You Used The Shield 🛡")
-
-        if message.startswith("whiskey") or      message.startswith("whisky") or      message.startswith("Whiskey") or             message.startswith("drink") or             message.startswith("Drink") or message.startswith("!whiskey"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username}  Whiskey: because adulting is hard and sometimes you need a little liquid encouragement! 🥃")
-
-        if message.startswith("beer") or  message.startswith("Beer") or  message.startswith("alcohol") or message.startswith("Alcohol") or  message.startswith("!beer") or message.startswith("!Drunk"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username}  on the house drive safe 🍺")
-
-        if message.startswith("wine") or  message.startswith("redwine") or  message.startswith("red wine") or message.startswith("plonk") or  message.startswith("Plonk") or message.startswith("vino"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username}  Ah, red wine—fancy!🍷 Trying to look sophisticated, or just hoping for purple teeth?🍷")
-        
-        if message.startswith("champagne") or  message.startswith("vodka") or  message.startswith("Vodka") or message.startswith("Champagne") or  message.startswith("celebration") or message.startswith("celebrate"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username}  Ah, “Let’s raise a glass to celebrate the good times and the friends who make them unforgettable.”🍸🎉")
-      
-       
-        if message.startswith("cocktail") or  message.startswith("mixed") or  message.startswith("mojito") or message.startswith("Potion") or  message.startswith("tonic") or message.startswith("julep"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username}  “Cheers to the moments that turn into memories, one drink at a time.🥂")
-                                          
-         
-        if message.startswith("Water") or message.startswith("water") or message.startswith("thirsty") or message.startswith("Thirsty") or  message.startswith("dry") or message.startswith("Dry"):
-           await self.highrise.react("heart",user.id)
-           await self.highrise.send_whisper(user.id,f"@{user.username}  You could say, “Ah, water—because staying hydrated is the real adventure!”🚰💧")
                       
             
         if        message.startswith("/tele") or              message.startswith("/tp") or              message.startswith("/fly") or     message.startswith("!tele") or      message.startswith("!tp") or     message.startswith("!fly"):
@@ -166,42 +126,7 @@ class Bot(BaseBot):
             await self.highrise.chat(f"{user.username} all activation codes must be used >> ! or/")
             await self.highrise.send_emote("dance-floss")
           
-        if        message.startswith("😡") or      message.startswith("🤬") or      message.startswith("😤") or             message.startswith("🤨") or             message.startswith("😒") or message.startswith("🙄"):
-            await self.highrise.send_emote("emote-boxer",user.id)
    
-        if        message.startswith("🤔") or      message.startswith("🧐") or      message.startswith("🥸") or             message.startswith("🫤") or message.startswith("😕"):
-            await self.highrise.send_emote("emote-confused",user.id)
-
-        if        message.startswith("🤣") or      message.startswith("😂") or             message.startswith("ja") or             message.startswith("Ha") or         message.startswith("Ka") or           message.startswith("Ja") or           message.startswith("ha") or          message.startswith("ks") or             message.startswith("kk") or             message.startswith("Kk") or message.startswith("😁") or message.startswith("😀"):
-            await self.highrise.send_emote("emote-laughing",user.id)
-
-        if        message.startswith("😗") or      message.startswith("😘") or      message.startswith("😙") or             message.startswith("💋") or             message.startswith("😚"):
-            await self.highrise.send_emote("emote-kiss",user.id)
-            await self.highrise.send_emote("emote-blowkisses")
-
-        if        message.startswith("😊") or      message.startswith("🥰") or      message.startswith("😳") or message.startswith("🤗"):
-            await self.highrise.send_emote("idle-uwu",user.id)
-            await self.highrise.send_emote("emote-blowkisses")
-
-        if        message.startswith("🤢") or      message.startswith("🤮") or      message.startswith("🤧") or             message.startswith("😵‍💫") or message.startswith("🤒"):
-            await self.highrise.send_emote("emoji-gagging",user.id)
-
-        if        message.startswith("😱") or      message.startswith("😬") or      message.startswith("😰") or             message.startswith("😫") or message.startswith("😨"):
-            await self.highrise.send_emote("idle-nervous",user.id)
-
-        if message.startswith("🤯"):
-            await self.highrise.send_emote("emote-headblowup",user.id)
-
-        if        message.startswith("☺️") or      message.startswith("🫣") or       message.startswith("😍") or      message.startswith("🥺") or message.startswith("🥹"):
-            await self.highrise.send_emote("emote-shy2",user.id)
-
-        if        message.startswith("😏") or     message.startswith("🙃") or     message.startswith("🤤") or     message.startswith("😋") or     message.startswith("😏") or message.startswith("😈"):
-            await self.highrise.send_emote("emote-lust",user.id)           
-
-        if        message.startswith("🥵") or message.startswith("🫠"):
-            await self.highrise.send_emote("emote-hot",user.id)
-                                   
-            
         if        message.startswith("/tp") or      message.startswith("!tp") or      message.startswith("tele") or          message.startswith("Tp") or          message.startswith("Tele") or  message.startswith("!tele"):
           target_username =         message.split("@")[-1].strip()
           await                     self.teleport_to_user(user, target_username)
