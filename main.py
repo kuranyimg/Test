@@ -322,6 +322,18 @@ class Bot(BaseBot):
         #teleports the user to the specified coordinate
         await self.highrise.teleport(user_id = user_id, dest = Position(float(x), float(y), float(z)))
 
+    async def on_user_move(self, user: User, position: Position, *args, **kwargs):
+        # Detect if user starts or stops walking
+        if user.id in user_loops:
+            # Cancel the loop when user starts walking
+            user_loops[user.id].cancel()
+            await self.highrise.send_whisper(user.id, "Your loop has been paused because you're walking.")
+
+    async def on_user_stop_moving(self, user: User):
+        # When user stops moving, restart the loop
+        if user.id in user_loops:
+            await self.highrise.send_whisper(user.id, "Resuming your loop!")
+            await check_and_start_emote_loop(self, user, f"loop {last_emote_name[user.id]}")
 
     async def command_handler(self, user: User, message: str):
         parts = message.strip().split(" ")
@@ -330,33 +342,18 @@ class Bot(BaseBot):
         if command.startswith("-"):
             command = command[1:]
 
-    # التعامل مع أوامر loop و stop مباشرة
         if command == "loop":
-            await loop(self, user, message)
+            await check_and_start_emote_loop(self, user, message)
             return
 
         if command == "stop":
-            await stop_loop(self, user, message)
+            if user.id in user_loops:
+                user_loops[user.id].cancel()
+                del user_loops[user.id]
+                await self.highrise.send_whisper(user.id, "Your emote loop has been stopped.")
+            else:
+                await self.highrise.send_whisper(user.id, "No loop running.")
             return
-
-    # محاولة تنفيذ أوامر من ملفات في مجلد functions
-        functions_folder = "functions"
-        for file_name in os.listdir(functions_folder):
-            if file_name.endswith(".py"):
-                module_name = file_name[:-3]
-                module_path = os.path.join(functions_folder, file_name)
-
-                spec = importlib.util.spec_from_file_location(module_name, module_path)
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-
-                if hasattr(module, command) and callable(getattr(module, command)):
-                    function = getattr(module, command)
-                    await function(self, user, message)
-                    return
-
-    # إذا لم يكن هناك أمر معروف، فربما كتب اسم إيموجي مباشرة
-        await check_and_start_emote_loop(self, user, message)
          
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
