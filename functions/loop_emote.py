@@ -1,7 +1,6 @@
 import asyncio
 from highrise import BaseBot
 from highrise.models import User, Message
-from functions.emote_list import emote_list  # تأكد أن هذا الملف موجود وفيه emote_list
 from functions.state import user_loops, last_emote_name
 # Emote list: (aliases, emote_id, duration)
 emote_list = [
