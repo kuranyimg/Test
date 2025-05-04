@@ -386,8 +386,11 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
 
-    async def on_user_move(self, user: User, pos: Position) -> None:
-        print (f"{user.username} moved to {pos}")
+
+    async def on_user_move(self, user, position, state):
+        user_id = user.user_id
+        is_moving = state == "moving"  # هذا يعتمد على كيف Highrise SDK يحدد الحركة
+        await loop_emote.handle_movement(self, user_id, is_moving)
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
