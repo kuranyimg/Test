@@ -1,6 +1,5 @@
 import logging
 from functions.loop_emote import emote_loop
-from functions.commands import handle_commands
 from functions.state import State  # If needed for state management
 from functions.loop_emote import handle_loop_command, stop_emote_loop, handle_user_movement, handle_user_stopped
 # Setup logging for easier debugging
