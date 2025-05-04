@@ -413,13 +413,11 @@ class Bot(BaseBot):
                 emote_name = loop_data["emote_name"]
                 task = loop_data["task"]
 
-                # إذا تحرك: أوقف التكرار الحالي فورًا
                 if previous and not positions_are_close(pos, previous):
                     if task and not task.done():
                         task.cancel()
                         user_loops[user.id]["task"] = None
 
-                # إذا توقف عن الحركة: أعد تشغيل التكرار مباشرة
                 elif previous and positions_are_close(pos, previous):
                     if task is None or task.done():
                         selected = next((e for e in emote_list if e[1] == emote_name), None)
@@ -428,6 +426,9 @@ class Bot(BaseBot):
 
                             async def emote_loop():
                                 try:
+                                    # تشغيل أول فوري
+                                    await self.highrise.send_emote(emote_id, user.id)
+                                    await asyncio.sleep(duration)
                                     while True:
                                         await self.highrise.send_emote(emote_id, user.id)
                                         await asyncio.sleep(duration)
@@ -437,5 +438,7 @@ class Bot(BaseBot):
                             new_task = asyncio.create_task(emote_loop())
                             user_loops[user.id]["task"] = new_task
 
+        except Exception as e:
+            print(f"Error in on_user_move: {e}")
         except Exception as e:
             print(f"Error in on_user_move: {e}")
