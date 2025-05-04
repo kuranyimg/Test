@@ -6,6 +6,15 @@ from functions.state import user_loops
 from functions.vip_data import init_vip_db
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
+import math
+
+def positions_are_close(pos1, pos2, tolerance=0.1):
+    return math.isclose(pos1.x, pos2.x, abs_tol=tolerance) and \
+           math.isclose(pos1.y, pos2.y, abs_tol=tolerance) and \
+           math.isclose(pos1.z, pos2.z, abs_tol=tolerance)
+
+last_positions = {}  # add this near the top of main.py (global dictionary)
+
 
 # تهيئة قاعدة بيانات الـ VIP
 vip_list = init_vip_db()
@@ -33,25 +42,25 @@ class Bot(BaseBot):
             print(f"Error on user join: {e}")
 
     async def on_user_move(self, user: User, position: Position):
-        try:
-            if user.username in user_loops:
-                emote_name = user_loops[user.username]["emote_name"]
-                duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
-                
-                # إذا كان المستخدم في حالة تكرار، توقفه مؤقتًا أثناء التحرك
-                if duration:
-                    user_loops[user.username]["active"] = False  # توقف التكرار أثناء الحركة
-                    await self.highrise.send_whisper(user.id, "Loop paused due to movement.")
-                
-            # عندما يتوقف المستخدم عن الحركة، نعيد تشغيل التكرار مباشرة
-            if user.username in user_loops and user_loops[user.username]["active"]:
+    try:
+        if user.username in user_loops:
+            last_pos = last_positions.get(user.username)
+
+            if last_pos and positions_are_close(position, last_pos):
+                # المستخدم توقف عن المشي - استئناف التكرار
                 emote_name = user_loops[user.username]["emote_name"]
                 duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
                 if duration:
                     await start_emote_loop(self, user, emote_name, duration)
-        except Exception as e:
-            print(f"Error on user move: {e}")
-            
+            else:
+                # المستخدم يتحرك - إيقاف التكرار مؤقتًا
+                user_loops.pop(user.username, None)
+
+            # تحديث آخر موقع للمستخدم
+            last_positions[user.username] = position
+    except Exception as e:
+        print(f"Error on user move: {e}")
+    
     async def on_chat(self, user: User, message: str) -> None:
         try:
             username = user.username.lower()
