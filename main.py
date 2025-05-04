@@ -4,84 +4,78 @@ from highrise.models import User
 
 class Bot(BaseBot):
     emote_dict = {
+        "1": {"emote": "dance-macarena", "delay": 12.5},
+        "2": {"emote": "sit-relaxed", "delay": 29.9},
+        "3": {"emote": "idle_layingdown", "delay": 24.6},
         "dance": {"emote": "dance-macarena", "delay": 12.5},
-        "relaxed": {"emote": "sit-relaxed", "delay": 29.8},
-        "attentive": {"emote": "idle_layingdown", "delay": 24.5}
+        "relaxed": {"emote": "sit-relaxed", "delay": 29.9},
+        "attentive": {"emote": "idle_layingdown", "delay": 24.6}
     }
 
     user_loops = {}
-    user_moving = {}
 
-    async def send_emote_continuously(self, emote_data: dict, user_id: str):
+    async def send_emote_loop(self, emote_data, user_id):
         try:
             while user_id in self.user_loops:
-                if not self.user_moving.get(user_id, False):
-                    try:
-                        await self.highrise.send_emote(emote_data["emote"], user_id)
-                    except Exception as e:
-                        print(f"[EMOTE ERROR] Failed to send emote: {e}")
+                await self.highrise.send_emote(emote_data["emote"], user_id)
                 await asyncio.sleep(emote_data["delay"])
         except asyncio.CancelledError:
-            print(f"[LOOP STOPPED] Loop cancelled for user: {user_id}")
+            pass
         except Exception as e:
-            print(f"[LOOP CRASH] Loop failed for user {user_id}: {e}")
-        finally:
+            print(f"[ERROR] send_emote_loop: {e}")
             self.user_loops.pop(user_id, None)
-            self.user_moving.pop(user_id, None)
 
-    async def start_loop_for_user(self, user: User, emote_name: str):
-        if emote_name not in self.emote_dict:
-            await self.highrise.chat(f"Emote '{emote_name}' not found.")
-            return
-
-        await self.stop_loop_for_user(user, silent=True)
-
-        emote_data = self.emote_dict[emote_name]
-        task = asyncio.create_task(self.send_emote_continuously(emote_data, user.user_id))
-        self.user_loops[user.user_id] = {"command": emote_data, "loop": task}
-        self.user_moving[user.user_id] = False
-        await self.highrise.chat(f"Started loop for {user.username}: {emote_name}")
-
-    async def stop_loop_for_user(self, user: User, silent=False):
-        loop_data = self.user_loops.get(user.user_id)
-        if loop_data:
-            loop_data["loop"].cancel()
+    async def stop_loop(self, user: User):
+        if user.user_id in self.user_loops:
+            self.user_loops[user.user_id]['loop'].cancel()
             self.user_loops.pop(user.user_id, None)
-            self.user_moving.pop(user.user_id, None)
-            if not silent:
-                await self.highrise.chat(f"Stopped loop for {user.username}.")
+            await self.highrise.chat(f"{user.username}, loop stopped.")
+
+    async def start_loop(self, user: User, emote_key: str):
+        emote_data = self.emote_dict.get(emote_key.lower())
+        if emote_data:
+            if user.user_id in self.user_loops:
+                await self.stop_loop(user)
+            task = asyncio.create_task(self.send_emote_loop(emote_data, user.user_id))
+            self.user_loops[user.user_id] = {'command': emote_data, 'loop': task}
+            await self.highrise.chat(f"{user.username}, looping: {emote_key}")
+        else:
+            await self.highrise.chat(f"Unknown emote: {emote_key}")
+
+    async def do_emote_once(self, user: User, emote_key: str):
+        emote_data = self.emote_dict.get(emote_key.lower())
+        if emote_data:
+            await self.highrise.send_emote(emote_data["emote"], user.user_id)
+        else:
+            await self.highrise.chat(f"Unknown emote: {emote_key}")
 
     async def handle_message(self, user: User, message: str):
         msg = message.strip()
+        msg_lower = msg.lower()
 
-        if msg.lower() in ["stop"]:
-            await self.stop_loop_for_user(user)
+        if msg_lower in ["stop"]:
+            await self.stop_loop(user)
+            return
 
-        elif any(msg.lower().startswith(prefix) for prefix in ["loop ", "!loop ", "-loop "]):
-            parts = msg.split()
-            if len(parts) > 1:
-                await self.start_loop_for_user(user, parts[1].lower())
-            else:
-                await self.start_loop_for_user(user, "dance")
+        for prefix in ["loop ", "!loop ", "-loop ", "Loop "]:
+            if msg_lower.startswith(prefix):
+                emote_key = msg[len(prefix):].strip()
+                await self.start_loop(user, emote_key)
+                return
 
-        elif msg.lower() in self.emote_dict:
-            await self.start_loop_for_user(user, msg.lower())
+        # If just emote name or number
+        await self.do_emote_once(user, msg)
 
-    async def on_whisper(self, user: User, message: str):
+    async def on_whisper(self, user: User, message: str) -> None:
         print(f"[WHISPER] {user.username}: {message}")
         await self.handle_message(user, message)
 
-    async def on_chat(self, user: User, message: str):
+    async def on_chat(self, user: User, message: str) -> None:
         print(f"[CHAT] {user.username}: {message}")
         await self.handle_message(user, message)
 
-    async def on_position_update(self, user: User, position: Position):
-        user_id = user.user_id
-        moving = position.is_moving
-
-        if user_id in self.user_loops:
-            if moving:
-                self.user_moving[user_id] = True
-            else:
-                if self.user_moving.get(user_id, False):
-                    self.user_moving[user_id] = False
+    async def on_position_update(self, user: User, position: Position) -> None:
+        if user.user_id in self.user_loops and not position.is_moving:
+            current = self.user_loops[user.user_id]
+            task = asyncio.create_task(self.send_emote_loop(current['command'], user.user_id))
+            self.user_loops[user.user_id]['loop'] = task
