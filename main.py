@@ -403,9 +403,9 @@ class Bot(BaseBot):
     
         # أوامر الإيموت
         await check_and_start_emote_loop(self, user, message.content)
-
     async def on_user_move(self, user: User, pos: Position) -> None:
         try:
+            # Store and track previous positions to detect movement
             previous = last_positions.get(user.id)
             last_positions[user.id] = pos
 
@@ -416,20 +416,20 @@ class Bot(BaseBot):
 
             moved = previous and not positions_are_close(pos, previous)
 
-            # Stop the loop when the user moves
+            # If the user moves, stop the loop immediately
             if moved:
                 if task and not task.done():
-                    task.cancel()
+                    task.cancel()  # Cancel the current loop task
                 user_loops[user.id]["task"] = None
 
-            # Start the loop immediately when the user stops moving
+            # If the user stops moving, restart the loop immediately
             elif not moved:
                 if task is None or task.done():
                     selected = next((e for e in emote_list if e[1] == emote_name), None)
                     if selected:
                         _, emote_id, duration = selected
 
-                        # Immediately send the emote and start the loop without waiting for the previous duration
+                        # Immediately send the emote and start the loop
                         await self.highrise.send_emote(emote_id, user.id)
 
                         async def emote_loop():
@@ -440,10 +440,9 @@ class Bot(BaseBot):
                             except asyncio.CancelledError:
                                 pass
 
-                        # Create a new task for the loop
+                        # Create and assign the new task to restart the loop
                         new_task = asyncio.create_task(emote_loop())
                         user_loops[user.id]["task"] = new_task
 
         except Exception as e:
             print(f"Error in on_user_move: {e}")
-
