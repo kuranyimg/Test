@@ -387,10 +387,14 @@ class Bot(BaseBot):
     async def on_user_move(self, user: User, pos: Position):
         user_id = user.id
         if user_id in user_loops:
+            # إذا يتحرك
             if pos.y > 0.01:
                 user_loops[user_id]["paused"] = True
             else:
-                # Cancel old task
+                # إذا توقف، نعيد تشغيل الإيموت من البداية
+                user_loops[user_id]["paused"] = False
+
+                # أولًا نلغي الحلقة القديمة
                 user_loops[user_id]["task"].cancel()
 
                 emote_id = user_loops[user_id]["emote_id"]
@@ -405,9 +409,9 @@ class Bot(BaseBot):
                     except asyncio.CancelledError:
                         pass
 
+                # تشغيل مهمة جديدة وتحديثها في التخزين
                 new_task = asyncio.create_task(emote_loop())
                 user_loops[user_id]["task"] = new_task
-                user_loops[user_id]["paused"] = False
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
