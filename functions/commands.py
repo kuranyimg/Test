@@ -38,3 +38,13 @@ async def handle_command(bot, user, message):
             return await bot.send_whisper(user.id, "هذا الأمر مخصص للـ VIP فقط.")
         target = message.split(" ", 1)[1]
         await bot.summon_user(target)
+
+def is_teleport_command(message: str) -> bool:
+    return message.startswith("tp@") or message.startswith("summon@")
+
+def handle_teleport_command(message: str):
+    if message.startswith("tp@"):
+        return "tp", message.split("@", 1)[1].strip()
+    if message.startswith("summon@"):
+        return "summon", message.split("@", 1)[1].strip()
+    return None, None
