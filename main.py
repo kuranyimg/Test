@@ -440,5 +440,3 @@ class Bot(BaseBot):
 
         except Exception as e:
             print(f"Error in on_user_move: {e}")
-        except Exception as e:
-            print(f"Error in on_user_move: {e}")
