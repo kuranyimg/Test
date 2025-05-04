@@ -5,11 +5,12 @@ from highrise import*
 from highrise import BaseBot,Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
-from functions.loop_emote import check_and_start_emote_loop
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
-
+from functions.loop_emote import emote_list, check_and_start_emote_loop, start_emote_loop
+from functions.state import user_loops, last_positions
+import math, asyncio
 vip_list = load_vip_list()
 
 class Bot(BaseBot):
@@ -385,9 +386,48 @@ class Bot(BaseBot):
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
+from functions.loop_emote import emote_list, check_and_start_emote_loop, start_emote_loop
+from functions.state import user_loops, last_positions
+import math, asyncio
 
-    async def on_user_move(self, user: User, pos: Position) -> None:
-        print (f"{user.username} moved to {pos}")
+def positions_are_close(pos1, pos2, tolerance=0.05):
+    return math.isclose(pos1.x, pos2.x, abs_tol=tolerance) and \
+           math.isclose(pos1.z, pos2.z, abs_tol=tolerance)
 
+# تحديث on_user_move:
+async def on_user_move(self, user: User, pos: Position) -> None:
+    try:
+        previous = last_positions.get(user.id)
+        last_positions[user.id] = pos  # تحديث آخر موقع دائمًا
+
+        if user.id in user_loops:
+            loop_data = user_loops[user.id]
+            emote_name = loop_data["emote_name"]
+            task = loop_data["task"]
+
+            # إذا يتحرك: أوقف التكرار
+            if previous and not positions_are_close(pos, previous):
+                if not task.done():
+                    task.cancel()
+            # إذا توقف عن الحركة: أعد تشغيل التكرار فورًا
+            elif previous and positions_are_close(pos, previous) and task.done():
+                selected = next((e for e in emote_list if e[1] == emote_name), None)
+                if selected:
+                    _, emote_id, duration = selected
+
+                    async def emote_loop():
+                        try:
+                            while True:
+                                await self.highrise.send_emote(emote_id, user.id)
+                                await asyncio.sleep(duration)
+                        except asyncio.CancelledError:
+                            pass
+
+                    new_task = asyncio.create_task(emote_loop())
+                    user_loops[user.id]["task"] = new_task
+
+    except Exception as e:
+        print(f"Error in on_user_move: {e}")
+        
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
