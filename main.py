@@ -4,14 +4,13 @@ from highrise.models import (
     SessionMetadata,
     EmoteEvent,
     ChatEvent,
-    UserJoinEvent,
     UserMoveEvent,
     UserLeaveEvent,
 )
 from functions.loop_emote import emote_list, emote_durations
-# تخزين حالات التكرار لكل مستخدم
+
 looping_users = {}  # user_id -> asyncio.Task
-paused_users = {}   # user_id -> {"emote_data": ..., "position": ...}
+paused_users = {}   # user_id -> {"position": ...}
 
 class Bot(BaseBot):
     def __init__(self):
@@ -24,17 +23,14 @@ class Bot(BaseBot):
         msg = event.message.strip()
         user_id = event.user.id
 
-        # إيقاف التكرار عند كتابة stop
         if msg.lower() == "stop":
             await self.stop_emote_loop(user_id)
             return
 
-        # تشغيل إيموت مرة واحدة
         if msg.lower() in emote_list:
             await self.send_emote_once(msg.lower(), user_id)
             return
 
-        # بدء التكرار
         if msg.lower().startswith(("loop ", "!loop ", "-loop ", "/loop ")):
             parts = msg.split()
             if len(parts) > 1:
@@ -42,7 +38,6 @@ class Bot(BaseBot):
                 await self.start_emote_loop(emote_name, user_id)
             return
 
-        # تشغيل بالإيموت رقم
         if msg.isdigit():
             emote_index = int(msg)
             if 0 <= emote_index < len(emote_list):
@@ -85,19 +80,14 @@ class Bot(BaseBot):
         user_id = event.user.id
         position = event.position
 
-        # إذا كان يتحرك وأصلاً لديه تكرار، أوقفه مؤقتاً
         if user_id in looping_users:
             paused_users[user_id] = {"position": position}
-        # إذا توقف، استأنف التكرار
         elif user_id in paused_users:
             last_pos = paused_users[user_id]["position"]
             if (position.x, position.y, position.z) == (last_pos.x, last_pos.y, last_pos.z):
                 del paused_users[user_id]
 
     async def on_user_leave(self, event: UserLeaveEvent) -> None:
-        await self.stop_emote_loop(event.user.id)
-
-    async def on_user_join(self, event: UserJoinEvent) -> None:
         await self.stop_emote_loop(event.user.id)
 
 if __name__ == "__main__":
