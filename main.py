@@ -8,8 +8,7 @@ from highrise.models import (
     UserMoveEvent,
     UserLeaveEvent,
 )
-from functions.emote_loop import emote_list, emote_durations
-
+from functions.loop_emote import emote_list, emote_durations
 # تخزين حالات التكرار لكل مستخدم
 looping_users = {}  # user_id -> asyncio.Task
 paused_users = {}   # user_id -> {"emote_data": ..., "position": ...}
