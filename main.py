@@ -386,9 +386,6 @@ class Bot(BaseBot):
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
-from functions.loop_emote import emote_list, check_and_start_emote_loop, start_emote_loop
-from functions.state import user_loops, last_positions
-import math, asyncio
 
 def positions_are_close(pos1, pos2, tolerance=0.05):
     return math.isclose(pos1.x, pos2.x, abs_tol=tolerance) and \
