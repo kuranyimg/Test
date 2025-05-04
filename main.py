@@ -7,6 +7,7 @@ from functions.vip_data import init_vip_db
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 
+# تهيئة قاعدة بيانات الـ VIP
 vip_list = init_vip_db()
 
 class Bot(BaseBot):
