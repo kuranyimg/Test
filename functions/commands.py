@@ -39,12 +39,12 @@ async def handle_command(bot, user, message):
         target = message.split(" ", 1)[1]
         await bot.summon_user(target)
 
+
+# الدالتين الإضافيتين هنا:
 def is_teleport_command(message: str) -> bool:
-    return message.startswith("tp@") or message.startswith("summon@")
+    return message.startswith("teleport ")
 
 def handle_teleport_command(message: str):
-    if message.startswith("tp@"):
-        return "tp", message.split("@", 1)[1].strip()
-    if message.startswith("summon@"):
-        return "summon", message.split("@", 1)[1].strip()
+    if message.startswith("teleport "):
+        return "teleport", message.split(" ", 1)[1].strip()
     return None, None
