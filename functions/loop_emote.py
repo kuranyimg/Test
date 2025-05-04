@@ -1,5 +1,5 @@
-# functions/loop_emot.py
 
+# قائمة الإيموتات بالأسماء والـ IDs الخاصة بها
 emote_list = {
     "wave": "emote_wave",
     "dance": "emote_dance",
@@ -14,6 +14,7 @@ emote_list = {
     # أضف المزيد حسب الحاجة
 }
 
+# المدة الخاصة بكل إيموت (بالملي ثانية)
 emote_durations = {
     "wave": 3000,
     "dance": 5000,
@@ -25,5 +26,5 @@ emote_durations = {
     "yawn": 3000,
     "salute": 2800,
     "shrug": 2600,
-    # نفس الأسماء مع مدة كل إيموت بالملي ثانية
+    # أضف المزيد بنفس الترتيب
 }
