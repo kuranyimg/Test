@@ -347,7 +347,7 @@ class Bot(BaseBot):
                 spec = importlib.util.spec_from_file_location(module_name, module_path)
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-
+https://github.com/kuranyimg/Test/edit/main/main.py
                 if hasattr(module, command) and callable(getattr(module, command)):
                     function = getattr(module, command)
                     await function(self, user, message)
@@ -387,29 +387,23 @@ class Bot(BaseBot):
     async def on_user_move(self, user: User, pos: Position):
         user_id = user.id
         if user_id in user_loops:
-            # إذا يتحرك
             if pos.y > 0.01:
                 user_loops[user_id]["paused"] = True
             else:
-                # إذا توقف، نعيد تشغيل الإيموت من البداية
                 user_loops[user_id]["paused"] = False
-
-                # أولًا نلغي الحلقة القديمة
-                user_loops[user_id]["task"].cancel()
-
-                emote_id = user_loops[user_id]["emote_id"]
-                duration = user_loops[user_id]["duration"]
+                # Restart loop immediately from beginning
+                loop_info = user_loops[user_id]
+                loop_info["task"].cancel()
 
                 async def emote_loop():
                     try:
-                        while True:
-                            if not user_loops[user_id]["paused"]:
-                                await self.highrise.send_emote(emote_id, user_id)
-                            await asyncio.sleep(duration)
+                       while True:
+                           if not loop_info["paused"]:
+                               await self.highrise.send_emote(loop_info["emote_id"], user_id)
+                           await asyncio.sleep(loop_info["duration"])
                     except asyncio.CancelledError:
-                        pass
+                       pass
 
-                # تشغيل مهمة جديدة وتحديثها في التخزين
                 new_task = asyncio.create_task(emote_loop())
                 user_loops[user_id]["task"] = new_task
 
