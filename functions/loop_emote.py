@@ -1,7 +1,8 @@
 import asyncio
 from highrise import BaseBot
 from highrise.models import User, Message
-from functions.state import user_loops, last_emote_name
+from functions.state import user_loops
+
 # Emote list: (aliases, emote_id, duration)
 emote_list = [
     (['1', 'rest', 'Rest'], 'sit-idle-cute', 17.06),
@@ -227,67 +228,39 @@ emote_list = [
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
+async def start_emote_loop(bot, user, emote_name, duration):
+    try:
+        user_loops[user.username] = {"emote_name": emote_name, "running": True}
+        while user_loops.get(user.username, {}).get("running", False):
+            await bot.highrise.send_emote(emote_name, user.id)
+            await sleep(duration)
+    except Exception as e:
+        print(f"Loop Error: {e}")
+    finally:
+        user_loops[user.username]["running"] = False
 
-# تحويل قائمة الإيموتات إلى قاموس: alias => (emote_name, duration)
-emote_dict = {alias: (emote, duration) for aliases, emote, duration in emote_list for alias in aliases}
+# فحص وتنفيذ التكرار
+async def check_and_start_emote_loop(bot, user, message):
+    msg_lower = message.lower()
+    for aliases, emote, duration in emote_list:
+        if msg_lower in aliases:
+            await start_emote_loop(bot, user, emote, duration)
+            return
 
-# دالة لبدء تكرار الإيموت
-async def start_emote_loop(bot: BaseBot, user: User, emote_name: str, duration: float):
-    # إلغاء أي تكرار سابق لنفس المستخدم
-    if user.username in user_loops and user_loops[user.username]['task']:
-        user_loops[user.username]['task'].cancel()
+# معالجة أوامر loop
+async def handle_loop_command(bot, message):
+    content = message.content.lower()
+    username = message.author.username
 
-    # إنشاء تكرار جديد
-    async def loop():
-        while True:
-            if user.username not in user_loops:
-                break
-            await bot.send_emote(user, emote_name)
-            await asyncio.sleep(duration)
+    if content.strip() in ["stop", "/stop", "-stop", "!stop"]:
+        if username in user_loops:
+            user_loops[username]["running"] = False
+            await bot.highrise.send_whisper(message.author.id, "Loop stopped.")
+        else:
+            await bot.highrise.send_whisper(message.author.id, "No loop is running.")
+        return
 
-    task = asyncio.create_task(loop())
-    user_loops[user.username] = {'emote_name': emote_name, 'task': task}
-    last_emote_name[user.username] = emote_name
-
-# دالة لإيقاف تكرار الإيموت
-async def stop_emote_loop(bot: BaseBot, user: User):
-    if user.username in user_loops:
-        task = user_loops[user.username]['task']
-        if task:
-            task.cancel()
-        del user_loops[user.username]
-
-# دالة التحقق وبدء التكرار (تُستخدم في main.py)
-async def check_and_start_emote_loop(bot: BaseBot, user: User, emote: str):
-    if emote not in emote_dict:
-        return  # إيموت غير معروف
-    emote_name, duration = emote_dict[emote]
-    await start_emote_loop(bot, user, emote_name, duration)
-
-# دالة التعامل مع أمر التكرار من الرسائل
-async def handle_loop_command(bot: BaseBot, message: Message):
-    command = message.content.split()
-    if len(command) < 2:
-        return await bot.send_message(message.channel, "اكتب اسم الإيموت بعد الأمر.")
-
-    emote_name = command[1].lower()
-
-    if emote_name not in emote_dict:
-        return await bot.send_message(message.channel, "الإيموت غير موجود.")
-
-    emote, duration = emote_dict[emote_name]
-    user = message.author
-
-    if len(command) == 2:
-        await start_emote_loop(bot, user, emote, duration)
-        return await bot.send_message(message.channel, f"بدأ تكرار الإيموت: {emote_name}.")
-
-    elif len(command) == 3 and command[2].lower() in ['stop', 'end']:
-        await stop_emote_loop(bot, user)
-        return await bot.send_message(message.channel, f"تم إيقاف تكرار الإيموت: {emote_name}.")
-
-    else:
-        return await bot.send_message(
-            message.channel,
-            "صيغة الأمر غير صحيحة. استخدم: 'loop <emote>' للتشغيل أو 'loop <emote> stop' للإيقاف."
-        )
+    for aliases, emote, duration in emote_list:
+        if any(content.startswith(prefix + alias) for prefix in ("loop", "/loop", "!loop", "-loop") for alias in aliases):
+            await start_emote_loop(bot, message.author, emote, duration)
+            return
