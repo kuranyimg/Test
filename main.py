@@ -403,6 +403,7 @@ class Bot(BaseBot):
     
         # أوامر الإيموت
         await check_and_start_emote_loop(self, user, message.content)
+
     async def on_user_move(self, user: User, pos: Position) -> None:
         try:
             previous = last_positions.get(user.id)
@@ -413,30 +414,33 @@ class Bot(BaseBot):
                 emote_name = loop_data["emote_name"]
                 task = loop_data["task"]
 
-                if previous and not positions_are_close(pos, previous):
+                moved = previous and not positions_are_close(pos, previous)
+
+                # أوقف التكرار لو تحرك
+                if moved:
                     if task and not task.done():
                         task.cancel()
-                        user_loops[user.id]["task"] = None
+                    user_loops[user.id]["task"] = None
 
-                elif previous and positions_are_close(pos, previous):
-                    if task is None or task.done():
-                        selected = next((e for e in emote_list if e[1] == emote_name), None)
-                        if selected:
-                            _, emote_id, duration = selected
+                # إذا توقف عن الحركة، ابدأ الإيموت فورًا
+                elif not moved and (task is None or task.done()):
+                    selected = next((e for e in emote_list if e[1] == emote_name), None)
+                    if selected:
+                        _, emote_id, duration = selected
 
-                            async def emote_loop():
-                                try:
-                                    # تشغيل أول فوري
+                        async def emote_loop():
+                            try:
+                                while True:
                                     await self.highrise.send_emote(emote_id, user.id)
                                     await asyncio.sleep(duration)
-                                    while True:
-                                        await self.highrise.send_emote(emote_id, user.id)
-                                        await asyncio.sleep(duration)
-                                except asyncio.CancelledError:
-                                    pass
+                            except asyncio.CancelledError:
+                                pass
 
-                            new_task = asyncio.create_task(emote_loop())
-                            user_loops[user.id]["task"] = new_task
+                        # إرسال الإيموت مباشرة بدون انتظار
+                        await self.highrise.send_emote(emote_id, user.id)
+                        new_task = asyncio.create_task(emote_loop())
+                        user_loops[user.id]["task"] = new_task
 
         except Exception as e:
             print(f"Error in on_user_move: {e}")
+
