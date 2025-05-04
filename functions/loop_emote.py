@@ -2,6 +2,7 @@ import asyncio
 from highrise import BaseBot
 from highrise.models import User
 from typing import Dict
+from highrise import Position
 
 # Emote list: (aliases, emote_id, duration)
 emote_list: list[tuple[list[str], str, float]] = [
@@ -228,6 +229,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
+
 
 # Store user loops: user_id => {"emote_name": str, "task": asyncio.Task}
 user_loops: Dict[str, dict] = {}
