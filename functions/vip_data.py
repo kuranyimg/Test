@@ -1,26 +1,16 @@
-import sqlite3
+import json
+import os
 
-DB_NAME = "vip_data.db"
+VIP_FILE = "vip_list.json"
 
-def init_vip_db():
-    with sqlite3.connect(DB_NAME) as conn:
-        conn.execute("CREATE TABLE IF NOT EXISTS vip_users (username TEXT PRIMARY KEY)")
+def load_vip_list():
+    if not os.path.exists(VIP_FILE):
+        return set()
+    with open(VIP_FILE, "r") as f:
+        # Load as a set directly
+        return set(json.load(f))
 
-def add_vip(username):
-    with sqlite3.connect(DB_NAME) as conn:
-        conn.execute("INSERT OR IGNORE INTO vip_users (username) VALUES (?)", (username,))
-
-def remove_vip(username):
-    with sqlite3.connect(DB_NAME) as conn:
-        conn.execute("DELETE FROM vip_users WHERE username = ?", (username,))
-
-def is_vip(username):
-    if username.lower() == "raybm":
-        return True
-    with sqlite3.connect(DB_NAME) as conn:
-        cur = conn.execute("SELECT 1 FROM vip_users WHERE username = ?", (username,))
-        return cur.fetchone() is not None
-
-def get_all_vips():
-    with sqlite3.connect(DB_NAME) as conn:
-        return [row[0] for row in conn.execute("SELECT username FROM vip_users")]
+def save_vip_list(vip_list):
+    # Ensure the list is sorted before saving (but convert back to a list)
+    with open(VIP_FILE, "w") as f:
+        json.dump(sorted(list(vip_list)), f)
