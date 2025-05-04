@@ -227,87 +227,76 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
+# حفظ الحلقات النشطة لكل مستخدم
+active_loops = {}
+# حفظ مؤقت لكل مستخدم لتوقيف واستئناف الحلقات
+loop_tasks = {}
+# حفظ حالة حركة المستخدم
+user_movement = {}
 
-# تخزين الحلقات النشطة للمستخدمين
-user_loops: dict[str, asyncio.Task] = {}
+# بدء حلقة الإيموت
+async def start_loop(bot, user, emote, duration):
+    user_id = user.user_id
 
-# تخزين آخر إيموت تم استخدامه لكل مستخدم
-last_user_emotes: dict[str, tuple[str, float]] = {}
+    # إيقاف أي حلقة سابقة
+    await stop_loop(user_id)
 
-async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
-    cleaned_msg = message.strip().lower()
+    # حفظ بيانات الحلقة
+    active_loops[user_id] = {
+        "emote": emote,
+        "duration": duration,
+        "stopped_by_user": False  # لتتبع إذا أوقفها المستخدم أم بسبب الحركة
+    }
 
-    # STOP command
-    if any(cleaned_msg == prefix for prefix in ("stop", "/stop", "!stop", "-stop")):
-        if user.id in user_loops:
-            user_loops[user.id].cancel()
-            del user_loops[user.id]
-            await self.highrise.send_whisper(user.id, "تم إيقاف تكرار الإيموت.")
+    async def loop():
+        while user_id in active_loops and not active_loops[user_id]["stopped_by_user"]:
+            await bot.highrise.send_emote(user_id, emote)
+            await asyncio.sleep(duration)
+
+    # بدء الحلقة
+    loop_tasks[user_id] = asyncio.create_task(loop())
+
+# إيقاف الحلقة
+async def stop_loop(user_id, by_user=False):
+    if user_id in active_loops:
+        if by_user:
+            active_loops[user_id]["stopped_by_user"] = True
         else:
-            await self.highrise.send_whisper(user.id, "لا يوجد إيموت مفعّل حالياً.")
-        return
+            del active_loops[user_id]
+    if user_id in loop_tasks:
+        loop_tasks[user_id].cancel()
+        del loop_tasks[user_id]
 
-    # LOOP command
-    loop_prefixes = ("loop ", "/loop ", "!loop ", "-loop ")
-    if any(cleaned_msg.startswith(prefix) for prefix in loop_prefixes):
-        emote_name = cleaned_msg.split(" ", 1)[1].strip()
-        selected = next((e for e in emote_list if emote_name in [alias.lower() for alias in e[0]]), None)
-        if not selected:
-            await self.highrise.send_whisper(user.id, "اسم الإيموت غير صحيح.")
-            return
+# معالجة أوامر المستخدم
+async def handle_emote_command(bot, user, message):
+    user_id = user.user_id
+    msg = message.lower()
 
-        # إلغاء التكرار السابق إن وُجد
-        if user.id in user_loops:
-            user_loops[user.id].cancel()
+    if msg == "stop":
+        await stop_loop(user_id, by_user=True)
+        await bot.highrise.send_message(user_id, "تم إيقاف الحلقة.")
 
-        aliases, emote_id, duration = selected
-        display_name = aliases[0].capitalize()
+    elif msg.startswith(("loop ", "/loop ", "!loop ", "-loop ")):
+        emote_name = msg.split(" ", 1)[1]
+        duration = get_emote_duration(emote_name)
+        await start_loop(bot, user, emote_name, duration)
+        await bot.highrise.send_message(user_id, f"بدء حلقة {emote_name}.")
 
-        # حفظ الإيموت الأخير لهذا المستخدم
-        last_user_emotes[user.id] = (emote_id, duration)
+# دالة لحساب مدة الإيموت (يمكن تعديلها حسب قاعدة البيانات)
+def get_emote_duration(emote):
+    return 8  # مدة افتراضية بالثواني
 
-        async def emote_loop():
-            try:
-                while True:
-                    await self.highrise.send_emote(emote_id, user.id)
-                    await asyncio.sleep(duration)
-            except asyncio.CancelledError:
-                pass
-
-        task = asyncio.create_task(emote_loop())
-        user_loops[user.id] = task
-
-        await self.highrise.send_whisper(user.id, f"تم تفعيل تكرار الإيموت: **{display_name}**.\nاكتب `stop` لإيقافه.")
-        return
-
-    # تنفيذ الإيموت مرة واحدة إذا تطابق الاسم
-    selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
-    if selected:
-        _, emote_id, _ = selected
-        await self.highrise.send_emote(emote_id, user.id)
-
-# تشغيل اللوب مرة أخرى بعد توقف المستخدم
-async def on_user_move(self: BaseBot, user: User, pos: Position):
-    if user.id in user_loops:
-        # إلغاء اللوب عند التحرك
-        user_loops[user.id].cancel()
-        del user_loops[user.id]
-
-        # إذا وُجد آخر إيموت لهذا المستخدم، نعيد تشغيله
-        if user.id in last_user_emotes:
-            emote_id, duration = last_user_emotes[user.id]
-
-            async def restart_loop():
-                await asyncio.sleep(0.6)  # انتظار بسيط للسماح بالتوقف عن المشي
-                async def loop():
-                    try:
-                        while True:
-                            await self.highrise.send_emote(emote_id, user.id)
-                            await asyncio.sleep(duration)
-                    except asyncio.CancelledError:
-                        pass
-
-                task = asyncio.create_task(loop())
-                user_loops[user.id] = task
-
-            asyncio.create_task(restart_loop())
+# تتبع الحركة
+async def handle_movement(bot, user_id, is_moving):
+    if is_moving:
+        # أوقف الحلقة مؤقتًا
+        if user_id in active_loops and not active_loops[user_id]["stopped_by_user"]:
+            await stop_loop(user_id)
+            user_movement[user_id] = "moving"
+    else:
+        # استئناف إذا كان لديه حلقة سابقة وتوقفت بسبب الحركة
+        if user_movement.get(user_id) == "moving" and user_id in active_loops:
+            emote = active_loops[user_id]["emote"]
+            duration = active_loops[user_id]["duration"]
+            await start_loop(bot, type("User", (), {"user_id": user_id}), emote, duration)
+        user_movement[user_id] = "idle"
