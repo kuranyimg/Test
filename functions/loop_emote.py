@@ -1,8 +1,7 @@
 import asyncio
-from highrise import BaseBot
+from highrise import BaseBot, Position
 from highrise.models import User
 from typing import Dict
-from highrise import Position
 
 # Emote list: (aliases, emote_id, duration)
 emote_list: list[tuple[list[str], str, float]] = [
@@ -230,7 +229,6 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-
 # Store user loops: user_id => {"emote_name": str, "task": asyncio.Task}
 user_loops: Dict[str, dict] = {}
 
@@ -242,10 +240,9 @@ def positions_are_close(pos1, pos2, tolerance=0.05):
     return abs(pos1.x - pos2.x) <= tolerance and abs(pos1.z - pos2.z) <= tolerance
 
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
-    """Start or stop the emote loop based on the command."""
     cleaned_msg = message.strip().lower()
 
-    # Stop command
+    # Stop loop command
     if any(cleaned_msg == prefix for prefix in ("stop", "/stop", "!stop", "-stop")):
         if user.id in user_loops:
             user_loops[user.id]["task"].cancel()
@@ -268,10 +265,11 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         aliases, emote_id, duration = selected
         display_name = aliases[0].capitalize()
 
-        # Stop previous loop if any
+        # Cancel previous loop if exists
         if user.id in user_loops:
             user_loops[user.id]["task"].cancel()
 
+        # Start new loop
         async def emote_loop():
             try:
                 while True:
@@ -286,8 +284,9 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         await self.highrise.send_whisper(user.id, f"تم بدء تكرار الإيموجي: **{display_name}**.\nاكتب `stop` لإيقافه.")
         return
 
-    # Execute emote once (if message is a single emote name)
+    # Execute emote once
     selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
     if selected:
         _, emote_id, _ = selected
         await self.highrise.send_emote(emote_id, user.id)
+
