@@ -1,17 +1,24 @@
 import random
 import os
 import importlib.util
-from highrise import*
-from highrise import BaseBot,Position
+import math
+import asyncio
+
+from highrise import *
+from highrise import BaseBot, Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
+
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
-from functions.vip_data import load_vip_list, save_vip_list
+from functions.vip_data import init_vip_db, is_vip, add_vip, remove_vip, get_all_vips
 from functions.loop_emote import emote_list, check_and_start_emote_loop, start_emote_loop
 from functions.state import user_loops, last_positions
-import math, asyncio
-vip_list = load_vip_list()
+
+# تهيئة قاعدة بيانات VIP
+init_vip_db()
+
+# دالة مقارنة المواقع لتحديد الحركة
 def positions_are_close(pos1, pos2, tolerance=0.05):
     return math.isclose(pos1.x, pos2.x, abs_tol=tolerance) and \
            math.isclose(pos1.z, pos2.z, abs_tol=tolerance)
