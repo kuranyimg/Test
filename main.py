@@ -1,5 +1,6 @@
 import asyncio
 import math
+import logging
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, Message
 from functions.loop_emote import check_and_start_emote_loop, stop_emote_loop, user_loops, emote_list, last_positions
