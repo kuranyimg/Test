@@ -71,7 +71,6 @@ class Bot(BaseBot):
                 class Msg:
                     content = message
                     author = user
-                    channel = None
                 await handle_loop_command(self, Msg())
                 return
 
