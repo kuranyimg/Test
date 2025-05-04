@@ -387,7 +387,7 @@ class Bot(BaseBot):
     async def on_user_move(self, user: User, pos: Position):
         user_id = user.id
         if user_id in user_loops:
-            if pos.y > 0.01:
+            if pos.y > 2.0:
                 user_loops[user_id]["paused"] = True
             else:
                 # Cancel old loop
