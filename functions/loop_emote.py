@@ -1,7 +1,8 @@
-importimport asyncio
+import asyncio
 from typing import Dict
-from highrise import Position
-from highrise.models import User
+from highrise import BaseBot, User
+from highrise.models import SessionMetadata
+
 # قائمة الإيموتات مع المدة
 emote_list: list[tuple[list[str], str, float]] = [
     (['1', 'rest', 'Rest'], 'sit-idle-cute', 17.06),
@@ -228,24 +229,54 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-# المستخدمين والتكرارات النشطة
-user_loops: Dict[str, Dict] = {}  # user_id → { "task": task, "emote_name": str, "paused": bool }
-last_positions: Dict[str, Position] = {}
+# حالة التكرار لكل مستخدم
+looping_emotes: Dict[str, bool] = {}
+paused_loops: Dict[str, bool] = {}
 
-# التحقق وتشغيل التكرار
-async def check_and_start_emote_loop(bot, user: User, message: str):
-    msg = message.strip().lower()
+# بدء تكرار الإيموت
+async def start_emote_loop(bot: BaseBot, user: User, emote_id: str, duration: float):
+    user_id = user.id
+    looping_emotes[user_id] = True
+    paused_loops[user_id] = False
 
-    if msg.startswith("loop "):
-        name = msg.split(" ", 1)[1].strip()
-        selected = next((e for e in emote_list if name in [alias.lower() for alias in e[0]]), None)
+    while looping_emotes.get(user_id, False):
+        if paused_loops.get(user_id, False):
+            await asyncio.sleep(1)
+            continue
+        await bot.send_emote(emote_id, user_id=user_id)
+        await asyncio.sleep(duration)
 
-        if not selected:
-            await bot.highrise.send_whisper(user.id, "الإيموت غير موجود.")
+# إيقاف التكرار
+def stop_emote_loop(user_id: str):
+    looping_emotes[user_id] = False
+    paused_loops[user_id] = False
+
+# إيقاف مؤقت عند الحركة
+def pause_emote_loop(user_id: str):
+    if looping_emotes.get(user_id, False):
+        paused_loops[user_id] = True
+
+# استئناف بعد التوقف
+def resume_emote_loop(user_id: str):
+    if looping_emotes.get(user_id, False):
+        paused_loops[user_id] = False
+
+# التحقق من أمر المستخدم
+async def handle_loop_command(bot: BaseBot, user: User, message: str):
+    for triggers, emote_id, duration in emote_list:
+        if any(message.lower().startswith(prefix.lower()) for prefix in ["loop ", "/loop ", "!loop ", "-loop "]):
+            for trigger in triggers:
+                if trigger.lower() in message.lower():
+                    await start_emote_loop(bot, user, emote_id, duration)
+                    return
+        elif message.lower() == trigger.lower():
+            await bot.send_emote(emote_id, user_id=user.id)
             return
 
-        _, emote_id, duration = selected
-        await bot.start_emote_loop(user.id, emote_id, duration)
+# عند تحرك المستخدم
+def handle_user_movement(user_id: str):
+    pause_emote_loop(user_id)
 
-    elif msg in ("stop", "/stop", "!stop", "-stop"):
-        await bot.stop_emote_loop(user.id)
+# عند توقف المستخدم عن الحركة
+def handle_user_stopped(user_id: str):
+    resume_emote_loop(user_id)
