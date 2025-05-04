@@ -47,14 +47,17 @@ class Bot(BaseBot):
                 last_pos = last_positions.get(user.username)
 
                 if last_pos and positions_are_close(position, last_pos):
-                    # المستخدم توقف عن المشي - استئناف التكرار
-                    emote_name = user_loops[user.username]["emote_name"]
-                    duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
-                    if duration:
-                        await start_emote_loop(self, user, emote_name, duration)
+                    # المستخدم توقف عن المشي - استئناف التكرار إذا كان متوقف مؤقتًا
+                    loop_data = user_loops[user.username]
+                    if loop_data.get("paused"):
+                        loop_data["paused"] = False
+                        emote_name = loop_data["emote_name"]
+                        duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
+                        if duration:
+                            await start_emote_loop(self, user, emote_name, duration)
                 else:
-                    # المستخدم يتحرك - إيقاف التكرار مؤقتًا
-                    user_loops.pop(user.username, None)
+                    # المستخدم يتحرك - توقيف التكرار مؤقتًا
+                    user_loops[user.username]["paused"] = True
 
                 # تحديث آخر موقع للمستخدم
                 last_positions[user.username] = position
