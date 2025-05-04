@@ -79,7 +79,9 @@ class Bot(BaseBot):
             await self.stop_user_loop(user)
 
     async def on_chat(self, user: User, message: str) -> None:
+        # هنا يتم التحقق من الشات
         await self.handle_emote_message(user, message)
 
     async def on_whisper(self, user: User, message: str) -> None:
+        # هنا يتم التحقق من الهمس
         await self.handle_emote_message(user, message)
