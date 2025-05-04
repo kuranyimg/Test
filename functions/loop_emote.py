@@ -228,13 +228,13 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-# Store active loops per user
+# Store user loops with full info (task, emote_id, duration, paused)
 user_loops: dict[str, dict] = {}
 
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     cleaned_msg = message.strip().lower()
 
-    # STOP commands
+    # STOP command
     if any(cleaned_msg == prefix for prefix in ("stop", "Stop", "/stop", "!stop", "-stop")):
         if user.id in user_loops:
             user_loops[user.id]["task"].cancel()
@@ -244,7 +244,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             await self.highrise.send_whisper(user.id, "You have no active emote loop.")
         return
 
-    # LOOP commands
+    # LOOP command
     loop_prefixes = ("loop ", "Loop ", "/loop ", "!loop ", "-loop ")
     if any(cleaned_msg.startswith(prefix.lower()) for prefix in loop_prefixes):
         emote_name = cleaned_msg.split(" ", 1)[1].strip()
@@ -256,7 +256,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         aliases, emote_id, duration = selected
         display_name = aliases[0].capitalize()
 
-        # Cancel previous loop if exists
+        # Cancel existing loop if any
         if user.id in user_loops:
             user_loops[user.id]["task"].cancel()
 
@@ -272,15 +272,15 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         task = asyncio.create_task(emote_loop())
         user_loops[user.id] = {
             "task": task,
-            "paused": False,
             "emote_id": emote_id,
-            "duration": duration
+            "duration": duration,
+            "paused": False,
         }
 
         await self.highrise.send_whisper(user.id, f"You are now looping the emote: **{display_name}**.\nType `stop` to stop.")
         return
 
-    # One-time emote by direct name
+    # One-time emote trigger
     selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
     if selected:
         _, emote_id, _ = selected
