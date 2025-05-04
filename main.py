@@ -385,13 +385,28 @@ class Bot(BaseBot):
             await self.highrise.send_emote("emote-blowkisses")
               
     async def on_user_move(self, user: User, pos: Position):
-        print(f"{user.username} moved to {pos}")
         user_id = user.id
         if user_id in user_loops:
-            # إذا تحرك اللاعب (مثل المشي)، نوقف مؤقتاً
             if pos.y > 0.01:
                 user_loops[user_id]["paused"] = True
             else:
+                # Cancel old loop
+                user_loops[user_id]["task"].cancel()
+
+                # Restart same emote from beginning
+                emote_id = user_loops[user_id]["emote_id"]
+                duration = user_loops[user_id]["duration"]
+
+                async def emote_loop():
+                    try:
+                        while True:
+                            await self.highrise.send_emote(emote_id, user_id)
+                            await asyncio.sleep(duration)
+                    except asyncio.CancelledError:
+                        pass
+
+                new_task = asyncio.create_task(emote_loop())
+                user_loops[user_id]["task"] = new_task
                 user_loops[user_id]["paused"] = False
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
