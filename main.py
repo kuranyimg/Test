@@ -10,11 +10,6 @@ from highrise.__main__ import *
 from equip import equip
 from keep_alive import keep_alive
 from remove_outfit import remove
-
-keep_alive()
-from highrise import *
-from highrise import BaseBot, Position
-from highrise.models import *
 from highrise.models import (
   AnchorPosition,
   Position,
