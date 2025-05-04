@@ -12,7 +12,7 @@ from highrise import Highrise, GetMessagesRequest
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import init_vip_db, is_vip, add_vip, remove_vip, get_all_vips
-from functions.loop_emote import emote_list, check_and_start_emote_loop, start_emote_loop
+from functions.loop_emote import emote_list, check_and_start_emote_loop
 from functions.state import user_loops, last_positions
 
 # تهيئة قاعدة بيانات VIP
