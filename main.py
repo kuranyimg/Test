@@ -387,24 +387,28 @@ class Bot(BaseBot):
         user_id = user.id
         if user_id in user_loops:
             if pos.y > 0.01:
+                # اللاعب يمشي - نوقف اللوب مؤقتاً
                 user_loops[user_id]["paused"] = True
+                if user_loops[user_id]["task"]:
+                    user_loops[user_id]["task"].cancel()
             else:
-                user_loops[user_id]["paused"] = False
-                # Restart loop immediately from beginning
-                loop_info = user_loops[user_id]
-                loop_info["task"].cancel()
+                # توقف عن المشي - نعيد تشغيل اللوب من البداية
+                if user_loops[user_id]["paused"]:
+                    user_loops[user_id]["paused"] = False
+                    emote_id = user_loops[user_id]["emote_id"]
+                    duration = user_loops[user_id]["duration"]
 
-                async def emote_loop():
-                    try:
-                       while True:
-                           if not loop_info["paused"]:
-                               await self.highrise.send_emote(loop_info["emote_id"], user_id)
-                           await asyncio.sleep(loop_info["duration"])
-                    except asyncio.CancelledError:
-                       pass
+                    async def emote_loop():
+                        try:
+                            while True:
+                                if not user_loops[user_id]["paused"]:
+                                    await self.highrise.send_emote(emote_id, user_id)
+                                await asyncio.sleep(duration)
+                        except asyncio.CancelledError:
+                            pass
 
-                new_task = asyncio.create_task(emote_loop())
-                user_loops[user_id]["task"] = new_task
+                    task = asyncio.create_task(emote_loop())
+                    user_loops[user_id]["task"] = task
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
