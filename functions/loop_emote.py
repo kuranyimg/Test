@@ -230,6 +230,10 @@ emote_list = [
 ]
 
 async def start_emote_loop(bot: BaseBot, user: User, emote_name: str, duration: float):
+    # تأكد من عدم وجود تكرار لإيموجي نفس المستخدم
+    if user.username in user_loops and user_loops[user.username]["active"]:
+        user_loops[user.username]["active"] = False  # إيقاف التكرار القديم
+
     user_loops[user.username] = {"emote_name": emote_name, "active": True}
     while user.username in user_loops and user_loops[user.username]["active"]:
         await bot.highrise.send_emote(emote_name, user.id)
@@ -245,12 +249,18 @@ async def handle_loop_command(bot: BaseBot, message):
     content = message.content.lower()
     author = message.author
 
+    # تأكد من أن المستخدم ليس لديه تكرار بالفعل
     for aliases, emote, duration in emote_list:
         if any(alias in content for alias in aliases):
+            if author.username in user_loops and user_loops[author.username]["active"]:
+                # إيقاف التكرار الحالي قبل بدء تكرار جديد
+                user_loops[author.username]["active"] = False
+            
             user_loops[author.username] = {"emote_name": emote, "active": True}
             await start_emote_loop(bot, author, emote, duration)
             return
 
+    # التعامل مع إيقاف التكرار
     if "stop" in content:
         if author.username in user_loops:
             user_loops[author.username]["active"] = False
