@@ -2,7 +2,7 @@ import random
 import os
 import importlib.util
 from highrise import BaseBot, Position
-from highrise.models import SessionMetadata, User
+from highrise.models import SessionMetadata, Position, User, AnchorPosition
 from functions.loop_emote import check_and_start_emote_loop, user_loops
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
