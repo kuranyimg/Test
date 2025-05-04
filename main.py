@@ -347,7 +347,6 @@ class Bot(BaseBot):
                 spec = importlib.util.spec_from_file_location(module_name, module_path)
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-https://github.com/kuranyimg/Test/edit/main/main.py
                 if hasattr(module, command) and callable(getattr(module, command)):
                     function = getattr(module, command)
                     await function(self, user, message)
