@@ -1,10 +1,10 @@
 import asyncio
-from typing import Dict, Tuple
-from highrise import Highrise, Position  # <-- Add this import
+from typing import Dict
+from highrise import Position
 from highrise.models import User
 
 # Emote list: (aliases, emote_id, duration)
-emote_list: list[tuple[list[str], str, float]] = [
+emote_list = [
     (['1', 'rest', 'Rest'], 'sit-idle-cute', 17.06),
     (['2', 'zombie', 'Zombie'], 'idle_zombie', 28.75),
     (['3', 'relaxed', 'Relaxed'], 'idle_layingdown2', 20.55),
@@ -229,44 +229,42 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-# Store user emote loops and positions
-user_loops: Dict[str, Dict] = {}  # user_id -> {"task": task, "emote_name": emote_name}
+user_loops: Dict[str, Dict] = {}  # user_id -> {"task", "emote_id", "duration"}
 last_positions: Dict[str, Position] = {}
 
-# Function to check and start the emote loop
 async def check_and_start_emote_loop(bot, user: User, message: str):
-    cleaned_msg = message.strip().lower()
-    
-    if cleaned_msg.startswith("loop "):
-        emote_name = cleaned_msg.split(" ", 1)[1].strip()
-        selected = next((e for e in bot.emote_list if emote_name in [alias.lower() for alias in e[0]]), None)
+    msg = message.strip().lower()
+
+    if msg.startswith("loop "):
+        keyword = msg.split(" ", 1)[1].strip()
+        selected = next((e for e in emote_list if keyword in [alias.lower() for alias in e[0]]), None)
 
         if not selected:
             await bot.highrise.send_whisper(user.id, "Emote not found.")
             return
-        
-        _, emote_id, duration = selected
-        await bot.start_emote_loop(user.id, emote_id, duration)
 
-    elif cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
+        _, emote_id, duration = selected
+
+        if user.id in user_loops:
+            user_loops[user.id]["task"].cancel()
+
+        task = asyncio.create_task(bot.emote_loop(emote_id, user.id, duration))
+        user_loops[user.id] = {
+            "task": task,
+            "emote_id": emote_id,
+            "duration": duration
+        }
+
+        await bot.highrise.send_whisper(user.id, "Emote loop started. Say 'stop' to end it.")
+
+    elif msg in ("stop", "/stop", "!stop", "-stop"):
         await bot.stop_emote_loop(user.id)
 
-# Helper function for starting the emote loop
-async def start_emote_loop(bot, user_id: str, emote_id: str, duration: float):
-    if user_id in user_loops:
-        user_loops[user_id]["task"].cancel()
-    
-    # Create a new task for emote loop
-    task = asyncio.create_task(bot.emote_loop(emote_id, user_id, duration))
-    user_loops[user_id] = {"task": task, "emote_name": emote_id}
-    
-    await bot.highrise.send_whisper(user_id, "Emote loop started. Say 'stop' to end it.")
-
-# Function to stop the emote loop
 async def stop_emote_loop(bot, user_id: str):
     if user_id in user_loops:
         user_loops[user_id]["task"].cancel()
         del user_loops[user_id]
-        await bot.highrise.send_whisper(user_id, "Emote loop has been stopped.")
+        await bot.highrise.send_whisper(user_id, "Emote loop stopped.")
     else:
-        await bot.highrise.send_whisper(user_id, "You don't have an active emote loop.")
+        await bot.highrise.send_whisper(user_id, "No active emote loop.")
+
