@@ -414,19 +414,23 @@ class Bot(BaseBot):
                 emote_name = loop_data["emote_name"]
                 task = loop_data["task"]
 
-                moved = previous and not positions_are_close(pos, previous)
+            moved = previous and not positions_are_close(pos, previous)
 
-                # أوقف التكرار لو تحرك
-                if moved:
-                    if task and not task.done():
-                        task.cancel()
-                    user_loops[user.id]["task"] = None
+            # Stop the loop when the user moves
+            if moved:
+                if task and not task.done():
+                    task.cancel()
+                user_loops[user.id]["task"] = None
 
-                # إذا توقف عن الحركة، ابدأ الإيموت فورًا
-                elif not moved and (task is None or task.done()):
+            # Start the loop immediately when the user stops moving
+            elif not moved:
+                if task is None or task.done():
                     selected = next((e for e in emote_list if e[1] == emote_name), None)
                     if selected:
                         _, emote_id, duration = selected
+
+                        # Immediately send the emote and start the loop without waiting for the previous duration
+                        await self.highrise.send_emote(emote_id, user.id)
 
                         async def emote_loop():
                             try:
@@ -436,8 +440,7 @@ class Bot(BaseBot):
                             except asyncio.CancelledError:
                                 pass
 
-                        # إرسال الإيموت مباشرة بدون انتظار
-                        await self.highrise.send_emote(emote_id, user.id)
+                        # Create a new task for the loop
                         new_task = asyncio.create_task(emote_loop())
                         user_loops[user.id]["task"] = new_task
 
