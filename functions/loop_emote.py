@@ -228,26 +228,24 @@ emote_list = [
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
+
 async def start_emote_loop(bot, user, emote_name, duration):
     try:
         user_loops[user.username] = {"emote_name": emote_name, "running": True}
         while user_loops.get(user.username, {}).get("running", False):
             await bot.highrise.send_emote(emote_name, user.id)
-            await sleep(duration)
+            await asyncio.sleep(duration)
     except Exception as e:
-        print(f"Loop Error: {e}")
+        print(f"Loop error: {e}")
     finally:
         user_loops[user.username]["running"] = False
 
-# فحص وتنفيذ التكرار
 async def check_and_start_emote_loop(bot, user, message):
-    msg_lower = message.lower()
     for aliases, emote, duration in emote_list:
-        if msg_lower in aliases:
+        if message.lower() in aliases:
             await start_emote_loop(bot, user, emote, duration)
             return
 
-# معالجة أوامر loop
 async def handle_loop_command(bot, message):
     content = message.content.lower()
     username = message.author.username
