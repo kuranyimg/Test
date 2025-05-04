@@ -18,4 +18,3 @@ async def emote(self: BaseBot, user: User, message: str) -> None:
         await self.highrise.send_emote(emote_name, user_id)
     except Exception as e:
         await self.highrise.chat(f"Failed to send emote: {e}")
-        return
