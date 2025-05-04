@@ -79,3 +79,4 @@ class Bot(BaseBot):
 def positions_are_close(pos1, pos2, tolerance=0.05):
     return math.isclose(pos1.x, pos2.x, abs_tol=tolerance) and \
            math.isclose(pos1.z, pos2.z, abs_tol=tolerance)
+    
