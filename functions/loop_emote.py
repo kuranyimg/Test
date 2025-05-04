@@ -229,20 +229,21 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-# التخزين: user_id => {"emote_name": str, "task": asyncio.Task}
+# Store user loops: user_id => {"emote_name": str, "task": asyncio.Task}
 user_loops: Dict[str, dict] = {}
 
-# التخزين: user_id => آخر موقع مسجل
-last_positions: Dict[str, object] = {}
+# Store last position for each user: user_id => Position
+last_positions: Dict[str, Position] = {}
 
-# فحص التشابه في المواقع
+# Check if two positions are close to each other
 def positions_are_close(pos1, pos2, tolerance=0.05):
     return abs(pos1.x - pos2.x) <= tolerance and abs(pos1.z - pos2.z) <= tolerance
 
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
+    """Start or stop the emote loop based on the command."""
     cleaned_msg = message.strip().lower()
 
-    # أوامر الإيقاف
+    # Stop command
     if any(cleaned_msg == prefix for prefix in ("stop", "/stop", "!stop", "-stop")):
         if user.id in user_loops:
             user_loops[user.id]["task"].cancel()
@@ -252,7 +253,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             await self.highrise.send_whisper(user.id, "ليس لديك تكرار نشط.")
         return
 
-    # أوامر التكرار
+    # Loop command
     loop_prefixes = ("loop ", "/loop ", "!loop ", "-loop ")
     if any(cleaned_msg.startswith(prefix) for prefix in loop_prefixes):
         emote_name = cleaned_msg.split(" ", 1)[1].strip()
@@ -265,7 +266,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         aliases, emote_id, duration = selected
         display_name = aliases[0].capitalize()
 
-        # إلغاء التكرار السابق إن وجد
+        # Stop previous loop if any
         if user.id in user_loops:
             user_loops[user.id]["task"].cancel()
 
@@ -283,7 +284,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         await self.highrise.send_whisper(user.id, f"تم بدء تكرار الإيموجي: **{display_name}**.\nاكتب `stop` لإيقافه.")
         return
 
-    # تنفيذ الإيموجي مرة واحدة
+    # Execute emote once (if message is a single emote name)
     selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
     if selected:
         _, emote_id, _ = selected
