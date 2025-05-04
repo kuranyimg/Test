@@ -42,24 +42,24 @@ class Bot(BaseBot):
             print(f"Error on user join: {e}")
 
     async def on_user_move(self, user: User, position: Position):
-    try:
-        if user.username in user_loops:
-            last_pos = last_positions.get(user.username)
+        try:
+            if user.username in user_loops:
+                last_pos = last_positions.get(user.username)
 
-            if last_pos and positions_are_close(position, last_pos):
-                # المستخدم توقف عن المشي - استئناف التكرار
-                emote_name = user_loops[user.username]["emote_name"]
-                duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
-                if duration:
-                    await start_emote_loop(self, user, emote_name, duration)
-            else:
-                # المستخدم يتحرك - إيقاف التكرار مؤقتًا
-                user_loops.pop(user.username, None)
+                if last_pos and positions_are_close(position, last_pos):
+                    # المستخدم توقف عن المشي - استئناف التكرار
+                    emote_name = user_loops[user.username]["emote_name"]
+                    duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
+                    if duration:
+                        await start_emote_loop(self, user, emote_name, duration)
+                else:
+                    # المستخدم يتحرك - إيقاف التكرار مؤقتًا
+                    user_loops.pop(user.username, None)
 
-            # تحديث آخر موقع للمستخدم
-            last_positions[user.username] = position
-    except Exception as e:
-        print(f"Error on user move: {e}")
+                # تحديث آخر موقع للمستخدم
+                last_positions[user.username] = position
+        except Exception as e:
+            print(f"Error on user move: {e}")
     
     async def on_chat(self, user: User, message: str) -> None:
         try:
