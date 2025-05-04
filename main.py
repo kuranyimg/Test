@@ -26,6 +26,7 @@ class Bot(BaseBot):
 
             if user.id in user_loops:
                 loop_data = user_loops[user.id]
+                emote_name = loop_data["emote_name"]
                 task = loop_data["task"]
 
                 moved = previous and not positions_are_close(pos, previous)
@@ -35,5 +36,22 @@ class Bot(BaseBot):
                         task.cancel()
                     user_loops[user.id]["task"] = None
 
+                elif not moved:
+                    if task is None or task.done():
+                        selected = next((e for e in emote_list if e[1] == emote_name), None)
+                        if selected:
+                            _, emote_id, duration = selected
+                            await self.highrise.send_emote(emote_id, user.id)
+
+                            async def emote_loop():
+                                try:
+                                    while True:
+                                        await self.highrise.send_emote(emote_id, user.id)
+                                        await asyncio.sleep(duration)
+                                except asyncio.CancelledError:
+                                    pass
+
+                            new_task = asyncio.create_task(emote_loop())
+                            user_loops[user.id]["task"] = new_task
         except Exception as e:
             print(f"Error in on_user_move: {e}")
