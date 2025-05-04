@@ -1,7 +1,6 @@
 import asyncio
 from typing import Dict
 from highrise import BaseBot, User
-from highrise.models import SessionMetadata
 
 # قائمة الإيموتات مع المدة
 emote_list: list[tuple[list[str], str, float]] = [
@@ -228,7 +227,6 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
-
 # حالة التكرار لكل مستخدم
 looping_emotes: Dict[str, bool] = {}
 paused_loops: Dict[str, bool] = {}
@@ -279,4 +277,4 @@ def handle_user_movement(user_id: str):
 
 # عند توقف المستخدم عن الحركة
 def handle_user_stopped(user_id: str):
-    resume_emote_loop(user_id)
+    resume_emote_loop(user_id)   
