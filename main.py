@@ -37,11 +37,21 @@ class Bot(BaseBot):
             if user.username in user_loops:
                 emote_name = user_loops[user.username]["emote_name"]
                 duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
+                
+                # إذا كان المستخدم في حالة تكرار، توقفه مؤقتًا أثناء التحرك
+                if duration:
+                    user_loops[user.username]["active"] = False  # توقف التكرار أثناء الحركة
+                    await self.highrise.send_whisper(user.id, "Loop paused due to movement.")
+                
+            # عندما يتوقف المستخدم عن الحركة، نعيد تشغيل التكرار مباشرة
+            if user.username in user_loops and user_loops[user.username]["active"]:
+                emote_name = user_loops[user.username]["emote_name"]
+                duration = next((d for aliases, e, d in emote_list if e == emote_name), None)
                 if duration:
                     await start_emote_loop(self, user, emote_name, duration)
         except Exception as e:
             print(f"Error on user move: {e}")
-
+            
     async def on_chat(self, user: User, message: str) -> None:
         try:
             username = user.username.lower()
