@@ -5,7 +5,6 @@ from highrise.models import SessionMetadata, User, Message
 from functions.loop_emote import check_and_start_emote_loop, user_loops, emote_list, last_positions
 
 def positions_are_close(pos1, pos2, tolerance=0.05):
-    """Check if two positions are close to each other."""
     return math.isclose(pos1.x, pos2.x, abs_tol=tolerance) and \
            math.isclose(pos1.z, pos2.z, abs_tol=tolerance)
 
@@ -21,7 +20,6 @@ class Bot(BaseBot):
         await check_and_start_emote_loop(self, user, message.content)
 
     async def on_user_move(self, user: User, pos: Position) -> None:
-        """Handle user movement."""
         try:
             previous = last_positions.get(user.id)
             last_positions[user.id] = pos
@@ -33,13 +31,11 @@ class Bot(BaseBot):
 
                 moved = previous and not positions_are_close(pos, previous)
 
-                if moved:
-                    # If the user moved, stop the current loop
+                if moved:  # User moved, stop loop
                     if task and not task.done():
                         task.cancel()
                     user_loops[user.id]["task"] = None
-                elif not moved:
-                    # If the user stopped moving, resume the loop automatically
+                else:  # User stopped moving, restart loop
                     if task is None or task.done():
                         selected = next((e for e in emote_list if e[1] == emote_name), None)
                         if selected:
