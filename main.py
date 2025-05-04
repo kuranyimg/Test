@@ -1,11 +1,9 @@
 import random
 import os
 import importlib.util
-from highrise import*
-from highrise import BaseBot,Position
-from highrise.models import SessionMetadata
-from highrise import Highrise, GetMessagesRequest
-from functions.loop_emote import check_and_start_emote_loop
+from highrise import BaseBot, Position
+from highrise.models import SessionMetadata, User
+from functions.loop_emote import check_and_start_emote_loop, user_loops
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
@@ -385,9 +383,16 @@ class Bot(BaseBot):
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
-
-    async def on_user_move(self, user: User, pos: Position) -> None:
-        print (f"{user.username} moved to {pos}")
+              
+    async def on_user_move(self, user: User, pos: Position):
+        print(f"{user.username} moved to {pos}")
+        user_id = user.id
+        if user_id in user_loops:
+            # إذا تحرك اللاعب (مثل المشي)، نوقف مؤقتاً
+            if pos.y > 0.01:
+                user_loops[user_id]["paused"] = True
+            else:
+                user_loops[user_id]["paused"] = False
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
