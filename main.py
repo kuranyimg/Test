@@ -8,6 +8,7 @@ from highrise import *
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata
 from highrise import Highrise, GetMessagesRequest
+from highrise.models import Message
 
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
