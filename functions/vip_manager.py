@@ -1,5 +1,3 @@
-from .vip_data import save_vip_list  # import save function
-
 OWNER_USERNAME = "raybm"
 
 def is_vip(username: str, vip_list: set) -> bool:
