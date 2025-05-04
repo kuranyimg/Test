@@ -8,8 +8,17 @@ class Bot(BaseBot):
             "emote": "dance-macarena",
             "delay": 12.5
         },
-        # Add more emotes here
-    }
+
+        "Relaxed":[
+      "sit-relaxed",
+      29.889858,
+      false
+   ],
+   "Attentive":[
+      "idle_layingdown",
+      24.585168,
+      false
+   }
 
     user_loops = {}
 
