@@ -1,6 +1,6 @@
 import asyncio
 from typing import Dict, Tuple
-from highrise import Highrise
+from highrise import Highrise, Position  # <-- Add this import
 from highrise.models import User
 
 # Emote list: (aliases, emote_id, duration)
