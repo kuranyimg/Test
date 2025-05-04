@@ -57,10 +57,12 @@ class Bot(BaseBot):
         msg = message.strip()
         msg_lower = msg.lower()
 
+        # If stop command
         if msg_lower == "stop":
             await self.stop_loop(user)
             return
 
+        # Check for loop commands
         for prefix in ["loop ", "!loop ", "-loop ", "Loop "]:
             if msg_lower.startswith(prefix):
                 emote_key = msg[len(prefix):].strip()
@@ -68,7 +70,13 @@ class Bot(BaseBot):
                 return
 
         # If just emote name or number
-        await self.do_emote_once(user, msg)
+        # First check if it's a valid number in emote_dict, then check the name.
+        if msg_lower in self.emote_dict:
+            await self.do_emote_once(user, msg_lower)
+        elif msg.isdigit() and msg in self.emote_dict:
+            await self.do_emote_once(user, msg)
+        else:
+            await self.highrise.chat(f"Unknown emote: {msg}")
 
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"[WHISPER] {user.username}: {message}")
