@@ -228,34 +228,34 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-# Store active loops per user
-user_loops: dict[str, asyncio.Task] = {}
+# Store active loops per user with task and pause status
+user_loops: dict[str, dict[str, object]] = {}
 
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     cleaned_msg = message.strip().lower()
 
     # STOP commands
-    if any(cleaned_msg == prefix for prefix in ("stop", "Stop", "/stop", "!stop", "-stop")):
+    if cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
         if user.id in user_loops:
-            user_loops[user.id].cancel()
+            user_loops[user.id]["task"].cancel()
             del user_loops[user.id]
-            await self.highrise.send_whisper(user.id, "Your emote loop has been stopped.")
+            await self.highrise.send_whisper(user.id, "تم إيقاف التكرار.")
         else:
-            await self.highrise.send_whisper(user.id, "You have no active emote loop.")
+            await self.highrise.send_whisper(user.id, "ليس لديك تكرار نشط.")
         return
 
     # LOOP commands
-    loop_prefixes = ("loop ", "Loop ", "/loop ", "!loop ", "-loop ")
-    if any(cleaned_msg.startswith(prefix.lower()) for prefix in loop_prefixes):
+    loop_prefixes = ("loop ", "/loop ", "!loop ", "-loop ")
+    if any(cleaned_msg.startswith(prefix.strip()) for prefix in loop_prefixes):
         emote_name = cleaned_msg.split(" ", 1)[1].strip()
         selected = next((e for e in emote_list if emote_name in [alias.lower() for alias in e[0]]), None)
         if not selected:
-            await self.highrise.send_whisper(user.id, "Invalid emote name.")
+            await self.highrise.send_whisper(user.id, "اسم الإيموت غير صالح.")
             return
 
         # Cancel previous loop
         if user.id in user_loops:
-            user_loops[user.id].cancel()
+            user_loops[user.id]["task"].cancel()
 
         aliases, emote_id, duration = selected
         display_name = aliases[0].capitalize()
@@ -263,18 +263,24 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         async def emote_loop():
             try:
                 while True:
+                    if user_loops[user.id]["paused"]:
+                        await asyncio.sleep(1)  # تحقق كل ثانية
+                        continue
                     await self.highrise.send_emote(emote_id, user.id)
                     await asyncio.sleep(duration)
             except asyncio.CancelledError:
                 pass
 
         task = asyncio.create_task(emote_loop())
-        user_loops[user.id] = task
+        user_loops[user.id] = {
+            "task": task,
+            "paused": False
+        }
 
-        await self.highrise.send_whisper(user.id, f"You are now looping the emote: **{display_name}**.\nType `stop` to stop.")
+        await self.highrise.send_whisper(user.id, f"تم بدء التكرار: **{display_name}**.\nاكتب `stop` للإيقاف.")
         return
 
-    # One-time emote by direct name
+    # One-time emote
     selected = next((e for e in emote_list if cleaned_msg in [alias.lower() for alias in e[0]]), None)
     if selected:
         _, emote_id, _ = selected
