@@ -7,7 +7,6 @@ from functions.vip_data import init_vip_db
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 
-# Initialize database
 vip_list = init_vip_db()
 
 class Bot(BaseBot):
@@ -47,7 +46,7 @@ class Bot(BaseBot):
             username = user.username.lower()
             is_owner = username == "raybm"
 
-            # VIP management commands
+            # VIP management
             if message.lower().startswith(("vip@", "unvip@")):
                 if is_owner:
                     response = await handle_vip_command(user, message, vip_list)
@@ -56,7 +55,6 @@ class Bot(BaseBot):
                 await self.highrise.chat(response)
                 return
 
-            # VIP-only commands (teleport, summon)
             if is_teleport_command(message) or message.lower().startswith(("tele ", "summon ", "tele@", "summon@")):
                 if is_owner or is_vip(username, vip_list):
                     await handle_teleport_command(user, message, self.highrise.send_whisper)
@@ -64,12 +62,10 @@ class Bot(BaseBot):
                     await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
                 return
 
-            # Show VIP list
             if message.lower().lstrip("!/ -").strip() == "viplist":
                 await self.highrise.send_whisper(user.id, get_vip_list(vip_list))
                 return
 
-            # Loop command
             if message.lower().startswith(("loop", "/loop", "!loop", "-loop")):
                 class Msg:
                     content = message
@@ -78,16 +74,13 @@ class Bot(BaseBot):
                 await handle_loop_command(self, Msg())
                 return
 
-            # One-time emote if name matches
             for aliases, emote, _ in emote_list:
                 if message.lower() in aliases:
                     await self.highrise.send_emote(emote, user.id)
                     return
 
-            # Emote loop trigger (fallback)
             await check_and_start_emote_loop(self, user, message)
 
-            # Floor teleport shortcuts
             floors = {
                 "floor1": Position(9.5, 0.0, 16.5),
                 "floor2": Position(14.5, 9.0, 6.0),
@@ -99,19 +92,16 @@ class Bot(BaseBot):
                     await self.highrise.teleport(user.id, pos)
                     return
 
-            # Emote list command
             if message.lower().startswith(("!lista", "!emote list", "!list", "/lista", "/emote list", "/list")):
-                from functions.commands import emote_list
-                for group in emote_list:
+                from functions.commands import emote_list as command_list
+                for group in command_list:
                     await self.highrise.send_whisper(user.id, group)
                 return
 
-            # Emote all
             if message.lower().startswith(("!emoteall", "/emoteall")):
                 await self.highrise.send_emote("dance-floss")
                 return
 
-            # Help command
             if message.lower().startswith(("-help", "/help", "!help")):
                 await self.highrise.chat(f"/lista | /pessoas | /emotes | /marry me? | /play /fish /userinfo @ | !emoteall | !tele @ | !summon @ | !kick @ | !tele z,y,x | !tele @ z,y,x")
                 await self.highrise.chat(f"[Emote] All | !emote all [Emote]")
@@ -119,20 +109,17 @@ class Bot(BaseBot):
                 await self.highrise.send_emote("dance-floss")
                 return
 
-            # Teleport to user
             if message.lower().startswith(("!tp", "/tp", "tele")):
                 target_username = message.split("@")[-1].strip()
                 await self.teleport_to_user(user, target_username)
                 return
 
-            # Summon user
             if message.lower().startswith(("summon", "!summon", "/summon")):
                 if user.username in ["FallonXOXO", "Its.Melly.Moo.XoXo", "Shaun_Knox", "sh1n1gam1699", "Dreamy._.KY", "hidinurbasement", "@emping", "_irii_", "RayBM"]:
                     target_username = message.split("@")[-1].strip()
                     await self.teleport_user_next_to(target_username, user)
                 return
 
-            # Kick command
             if message.lower().startswith("!kick"):
                 if user.username not in ["FallonXOXO", "RayBM"]:
                     await self.highrise.chat("🤍.")
