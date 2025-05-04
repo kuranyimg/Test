@@ -1,6 +1,6 @@
 import asyncio
 from highrise import BaseBot
-from highrise.models import User, Message
+from highrise.models import User
 from functions.state import user_loops
 
 # Emote list: (aliases, emote_id, duration)
@@ -229,36 +229,32 @@ emote_list = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-async def start_emote_loop(bot, user, emote_name, duration):
-    try:
-        user_loops[user.username] = {"emote_name": emote_name, "running": True}
-        while user_loops.get(user.username, {}).get("running", False):
-            await bot.highrise.send_emote(emote_name, user.id)
-            await asyncio.sleep(duration)
-    except Exception as e:
-        print(f"Loop error: {e}")
-    finally:
-        user_loops[user.username]["running"] = False
+async def start_emote_loop(bot: BaseBot, user: User, emote_name: str, duration: float):
+    user_loops[user.username] = {"emote_name": emote_name, "active": True}
+    while user.username in user_loops and user_loops[user.username]["active"]:
+        await bot.highrise.send_emote(emote_name, user.id)
+        await asyncio.sleep(duration)
 
-async def check_and_start_emote_loop(bot, user, message):
+async def check_and_start_emote_loop(bot: BaseBot, user: User, message: str):
     for aliases, emote, duration in emote_list:
         if message.lower() in aliases:
-            await start_emote_loop(bot, user, emote, duration)
+            await bot.highrise.send_emote(emote, user.id)
             return
 
-async def handle_loop_command(bot, message):
+async def handle_loop_command(bot: BaseBot, message):
     content = message.content.lower()
-    username = message.author.username
-
-    if content.strip() in ["stop", "/stop", "-stop", "!stop"]:
-        if username in user_loops:
-            user_loops[username]["running"] = False
-            await bot.highrise.send_whisper(message.author.id, "Loop stopped.")
-        else:
-            await bot.highrise.send_whisper(message.author.id, "No loop is running.")
-        return
+    author = message.author
 
     for aliases, emote, duration in emote_list:
-        if any(content.startswith(prefix + alias) for prefix in ("loop", "/loop", "!loop", "-loop") for alias in aliases):
-            await start_emote_loop(bot, message.author, emote, duration)
+        if any(alias in content for alias in aliases):
+            user_loops[author.username] = {"emote_name": emote, "active": True}
+            await start_emote_loop(bot, author, emote, duration)
             return
+
+    if "stop" in content:
+        if author.username in user_loops:
+            user_loops[author.username]["active"] = False
+            await bot.highrise.send_whisper(author.id, "Loop stopped.")
+        return
+
+    await bot.highrise.send_whisper(author.id, "Emote not found for loop.")
