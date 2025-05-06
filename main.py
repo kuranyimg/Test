@@ -10,7 +10,7 @@ from functions.vip_data import load_vip_list, save_vip_list
 
 vip_list = load_vip_list()
 
-class Bot(BaseBot):
+  class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
         await self.highrise.walk_to(Position(15.5 , 0.0 , 27.5, "FrontRight"))
