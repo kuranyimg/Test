@@ -7,40 +7,43 @@ from functions.loop_emote import check_and_start_emote_loop, user_loops
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
-from functions.json import data_mappings
+from functions.json import data_mappings, save_data
 
+# تحميل قائمة الـ VIP من البيانات المخزنة
 vip_list = load_vip_list()
 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        print("working")
-        await self.highrise.walk_to(Position(17.5 , 0.0 , 12.5, "FrontRight"))
-             
+        print("البوت يعمل")
+        bot_location = data_mappings["bot_location"]
+        # الانتقال إلى الموقع المخزن عند بدء تشغيل البوت
+        await self.highrise.walk_to(Position(**bot_location))
+
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        # Only the bot prints the message in the console
+        # فقط البوت يقوم بطباعة الرسالة في الكونسول
         print(f"{user.username} (ID: {user.id})")
 
-        # Announce the user has joined the room publicly
+        # إعلان انضمام المستخدم إلى الغرفة
         await self.highrise.chat(f"{user.username} joined!")
 
-        # Send welcome whispers to the user
+        # إرسال رسائل ترحيب للمستخدم
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
         await self.highrise.send_whisper(user.id, f"❤Type F3 F2 and F1 to teleport between the floor 🤍.")
 
-        # Send emotes
+        # إرسال الإيموتات
         await self.highrise.send_emote("dance-hipshake")
         await self.highrise.send_emote("emote-lust", user.id)
 
-       # React with a heart emoji
+        # رد فعل باستخدام إيموت القلب
         await self.highrise.react("heart", user.id)
-        
+
     async def on_chat(self, user: User, message: str) -> None:
         print(f"{user.username}: {message}")    
         username = user.username.lower()
         is_owner = username == "raybm"
 
-        # Handle VIP command
+        # التعامل مع أوامر VIP
         if message.lower().startswith("vip@") or message.lower().startswith("unvip@"):
             if is_owner:
                 response = await handle_vip_command(user, message, vip_list)
@@ -49,7 +52,7 @@ class Bot(BaseBot):
             await self.highrise.chat(response)
             return
 
-        # Handle VIP-only commands
+        # التعامل مع أوامر VIP-only
         if (
             is_teleport_command(message)
             or message.lower().startswith("tele ")
@@ -64,15 +67,15 @@ class Bot(BaseBot):
                 await self.highrise.chat(f"Sorry {user.username}, this command is for VIPs only.")
             return
 
-        # Handle VIP list command
+        # التعامل مع أمر "viplist"
         normalized_msg = message.lower().lstrip("!/ -").strip()
         if normalized_msg == "viplist":
             vip_message = get_vip_list(vip_list)
             await self.highrise.send_whisper(user.id, vip_message)
             return
-            
+
+        # التحقق وبدء حلقة الإيموت
         await check_and_start_emote_loop(self, user, message)
-        # Check for direct emote names
 
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
