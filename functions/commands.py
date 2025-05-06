@@ -6,7 +6,7 @@ highrise = Highrise()
 
 async def on_chat(self, user, message):
     # When the bot owner sets the location
-    if message == "/setbot" and user.username in data_mappings["ownerz"]:
+    if message == "/sbot" and user.username in data_mappings["ownerz"]:
         try:
             room_users = await self.highrise.get_room_users()
             for room_user, pos in room_users.content:
