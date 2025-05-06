@@ -1,6 +1,6 @@
 highrise-bot-sdk @ git+https://github.com/itzvini/python-bot-sdk
 flask
-aiofiles 
-aiohttp 
-mutagen 
-yt-dlp
+aiofiles
+aiohttp
+mutagen
+yt_dlp
