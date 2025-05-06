@@ -43,7 +43,7 @@ class Bot(BaseBot):
         username = user.username.lower()
         is_owner = username == "raybm"
 
-        # التعامل مع أوامر VIP
+        # التعامل مع أوامر VIP 
         if message.lower().startswith("vip@") or message.lower().startswith("unvip@"):
             if is_owner:
                 response = await handle_vip_command(user, message, vip_list)
