@@ -7,6 +7,8 @@ class Bot(BaseBot):
     def __init__(self):
         super().__init__()
         self.user_loops = {}  # key: user.id, value: { stop_event, pause_event, task }
+        await self.highrise.walk_to(Position(17.5, 0.0, 12.5, "FrontRight"))
+        print("Bot is ready."
 
     async def on_start(self, highrise: Highrise):
         self.highrise = highrise
