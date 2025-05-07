@@ -3,7 +3,7 @@ from highrise import Highrise, BaseBot
 from highrise.models import User, Position
 from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
 
-class MyBot(BaseBot):
+class Bot(BaseBot):
     def __init__(self):
         super().__init__()
         self.user_loops = {}  # key: user.id, value: { stop_event, pause_event, task }
