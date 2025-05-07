@@ -11,9 +11,12 @@ from functions.vip_data import load_vip_list, save_vip_list
 vip_list = load_vip_list()
 
 class Bot(BaseBot):
+    def __init__(self):
+        super().__init__()
+        self.user_loops = {}  # تعريف دائم للحلقات الخاصة بكل مستخدم
+
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
-        self.user_loops = {}  # تعريف المتغير هنا
         await self.highrise.walk_to(Position(17.5 , 0.0 , 12.5, "FrontRight"))
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
@@ -66,10 +69,9 @@ class Bot(BaseBot):
             vip_message = get_vip_list(vip_list)
             await self.highrise.send_whisper(user.id, vip_message)
             return
-            
+        # التحقق من أمر الإيموت
         await check_and_start_emote_loop(self, user, message)
-        # Check for direct emote names
-
+        
         if message.startswith("/carp"):
            await self.highrise.react("clap",user.id)
            await self.highrise.send_whisper(user.id,"🟡You Caught 1x Golden Carp🟡 YOU WON THE MEDAL: (MEGA FISHERMAN) ")
