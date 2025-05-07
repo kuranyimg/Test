@@ -3,7 +3,7 @@ import os
 import importlib.util
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, Position, User, AnchorPosition
-from functions.loop_emote import check_and_start_emote_loop, user_loops
+from functions.loop_emote import check_and_start_emote_loop
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
@@ -13,15 +13,12 @@ vip_list = load_vip_list()
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("working")
+        self.user_loops = {}  # تعريف المتغير هنا
         await self.highrise.walk_to(Position(17.5 , 0.0 , 12.5, "FrontRight"))
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
         print(f"{user.username} (ID: {user.id})")
-
-        # Announce the user has joined the room publicly
-        await self.highrise.chat(f"{user.username} joined!")
-
         # Send welcome whispers to the user
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
