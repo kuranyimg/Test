@@ -1,7 +1,7 @@
 import asyncio
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
-from functions.emote import check_and_start_emote_loop, handle_user_movement
+from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
