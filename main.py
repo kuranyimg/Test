@@ -14,6 +14,6 @@ class Bot(BaseBot):
 
     async def on_whisper(self, user: User, message: str) -> None:
         await check_and_start_emote_loop(self, user, message)
-
+        
     async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
-        await handle_user_movement(self, user)
+        await handle_user_movement(self, user, pos)
