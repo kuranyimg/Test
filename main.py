@@ -382,30 +382,35 @@ class Bot(BaseBot):
               
     async def on_user_move(self, user: User, pos: Position):
         user_id = user.id
-        if user_id in user_loops:
+        if user_id in self.looping_users:
             if pos.y > 0.01:
-                # اللاعب يمشي - نوقف اللوب مؤقتاً
-                user_loops[user_id]["paused"] = True
-                if user_loops[user_id]["task"]:
-                    user_loops[user_id]["task"].cancel()
-            else:
-                # توقف عن المشي - نعيد تشغيل اللوب من البداية
-                if user_loops[user_id]["paused"]:
-                    user_loops[user_id]["paused"] = False
-                    emote_id = user_loops[user_id]["emote_id"]
-                    duration = user_loops[user_id]["duration"]
+                # اللاعب بدأ يمشي - نوقف اللوب مؤقتاً
+                self.looping_users[user_id]["paused"] = True
+                if self.looping_users[user_id]["task"]:
+                    self.looping_users[user_id]["task"].cancel()
+
+                # ننتظر ثانيتين للتأكد من توقفه عن الحركة
+                await asyncio.sleep(2)
+
+                # نحصل على الموقع الجديد ونقارن
+                updated_position = await self.highrise.get_user_position(user_id)
+                if updated_position.y <= 0.01:
+                    # إذا فعلاً توقف عن الحركة، نعيد تشغيل الإيموت
+                    self.looping_users[user_id]["paused"] = False
+                    emote_id = self.looping_users[user_id]["emote_id"]
+                    duration = self.looping_users[user_id]["duration"]
 
                     async def emote_loop():
                         try:
                             while True:
-                                if not user_loops[user_id]["paused"]:
+                                if not self.looping_users[user_id]["paused"]:
                                     await self.highrise.send_emote(emote_id, user_id)
                                 await asyncio.sleep(duration)
                         except asyncio.CancelledError:
                             pass
 
                     task = asyncio.create_task(emote_loop())
-                    user_loops[user_id]["task"] = task
+                    self.looping_users[user_id]["task"] = task
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
