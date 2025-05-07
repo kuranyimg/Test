@@ -232,40 +232,46 @@ user_positions = {}
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     msg = message.strip().lower()
 
-    # Stop the loop
+    # إيقاف التكرار
     if msg in ("stop", "/stop", "!stop", "-stop"):
         if user.id in self.user_loops:
-            self.user_loops[user.id]["task"].cancel()
+            self.user_loops[user.id]["stop_event"].set()
             del self.user_loops[user.id]
             await self.highrise.send_whisper(user.id, "Emote loop stopped.")
         else:
             await self.highrise.send_whisper(user.id, "No active emote loop.")
         return
 
-    # Start new loop
+    # بدء التكرار
     selected = next((e for e in emote_list if msg in [a.lower() for a in e[0]]), None)
     if selected:
         aliases, emote_id, duration = selected
 
-        # Cancel old loop
+        # إلغاء القديم
         if user.id in self.user_loops:
-            self.user_loops[user.id]["task"].cancel()
+            self.user_loops[user.id]["stop_event"].set()
 
-        # Create new loop
+        stop_event = asyncio.Event()
+        pause_event = asyncio.Event()
+        pause_event.set()  # غير متوقف
+
         async def loop():
             try:
-                while True:
-                    if not self.user_loops[user.id]["paused"]:
-                        await self.highrise.send_emote(emote_id, user.id)
-                    await asyncio.sleep(duration)
-            except asyncio.CancelledError:
+                while not stop_event.is_set():
+                    await pause_event.wait()
+                    await self.highrise.send_emote(emote_id, user.id)
+                    try:
+                        await asyncio.wait_for(stop_event.wait(), timeout=duration)
+                    except asyncio.TimeoutError:
+                        continue
+            except:
                 pass
 
         task = asyncio.create_task(loop())
+
         self.user_loops[user.id] = {
-            "paused": False,
-            "emote_id": emote_id,
-            "duration": duration,
+            "stop_event": stop_event,
+            "pause_event": pause_event,
             "task": task
         }
 
@@ -275,21 +281,21 @@ async def handle_user_movement(self: BaseBot, user: User):
     if user.id not in self.user_loops:
         return
 
-    self.user_loops[user.id]["paused"] = True
+    self.user_loops[user.id]["pause_event"].clear()
     last_pos = (user.position.x, user.position.y, user.position.z)
     user_positions[user.id] = last_pos
 
-    async def resume_check():
+    async def check_stop():
         try:
             while True:
                 await asyncio.sleep(0.5)
                 current_pos = (user.position.x, user.position.y, user.position.z)
                 if current_pos == user_positions.get(user.id):
-                    self.user_loops[user.id]["paused"] = False
+                    self.user_loops[user.id]["pause_event"].set()
                     break
                 else:
                     user_positions[user.id] = current_pos
         except:
             pass
 
-    asyncio.create_task(resume_check())
+    asyncio.create_task(check_stop())
