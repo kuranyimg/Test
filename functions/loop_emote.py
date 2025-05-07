@@ -227,13 +227,13 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-user_last_positions = {}
+user_positions = {}
 
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
-    cleaned_msg = message.strip().lower()
+    msg = message.strip().lower()
 
-    # Stop loop
-    if cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
+    # Stop the loop
+    if msg in ("stop", "/stop", "!stop", "-stop"):
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
             del self.user_loops[user.id]
@@ -242,17 +242,17 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             await self.highrise.send_whisper(user.id, "No active emote loop.")
         return
 
-    # Start loop
-    selected = next((e for e in emote_list if cleaned_msg in [a.lower() for a in e[0]]), None)
+    # Start new loop
+    selected = next((e for e in emote_list if msg in [a.lower() for a in e[0]]), None)
     if selected:
         aliases, emote_id, duration = selected
 
-        # Cancel old loop if exists
+        # Cancel old loop
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
 
-        # New loop task
-        async def emote_loop():
+        # Create new loop
+        async def loop():
             try:
                 while True:
                     if not self.user_loops[user.id]["paused"]:
@@ -261,7 +261,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             except asyncio.CancelledError:
                 pass
 
-        task = asyncio.create_task(emote_loop())
+        task = asyncio.create_task(loop())
         self.user_loops[user.id] = {
             "paused": False,
             "emote_id": emote_id,
@@ -269,28 +269,27 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             "task": task
         }
 
-        await self.highrise.send_whisper(user.id, f"You are now in the loop for emote number {aliases[0]}")
-        return
+        await self.highrise.send_whisper(user.id, f"You are now in the loop for emote number {aliases[0]}.")
 
 async def handle_user_movement(self: BaseBot, user: User):
     if user.id not in self.user_loops:
         return
 
-    loop_data = self.user_loops[user.id]
-    loop_data["paused"] = True
+    self.user_loops[user.id]["paused"] = True
+    last_pos = (user.position.x, user.position.y, user.position.z)
+    user_positions[user.id] = last_pos
 
-    last_position = (user.position.x, user.position.y, user.position.z)
-
-    async def wait_and_resume():
+    async def resume_check():
         try:
             while True:
-                await asyncio.sleep(1)
-                current = (user.position.x, user.position.y, user.position.z)
-                if current == last_position:
-                    loop_data["paused"] = False
+                await asyncio.sleep(0.5)
+                current_pos = (user.position.x, user.position.y, user.position.z)
+                if current_pos == user_positions.get(user.id):
+                    self.user_loops[user.id]["paused"] = False
                     break
-                last_position = current
-        except Exception as e:
-            print(f"Error resuming emote: {e}")
+                else:
+                    user_positions[user.id] = current_pos
+        except:
+            pass
 
-    asyncio.create_task(wait_and_resume())
+    asyncio.create_task(resume_check())
