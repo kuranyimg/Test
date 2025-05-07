@@ -7,6 +7,7 @@ from functions.loop_emote import check_and_start_emote_loop, user_loops
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
+
 vip_list = load_vip_list()
 
 class Bot(BaseBot):
