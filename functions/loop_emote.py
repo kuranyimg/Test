@@ -237,9 +237,9 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
             del self.user_loops[user.id]
-            await self.highrise.send_whisper(user.id, "Emote loop stopped.")
+            await self.highrise.send_whisper(user.id, "تم إيقاف التكرار.")
         else:
-            await self.highrise.send_whisper(user.id, "No active emote loop.")
+            await self.highrise.send_whisper(user.id, "لا يوجد تكرار نشط.")
         return
 
     # بدء التكرار
@@ -247,11 +247,10 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     if selected:
         aliases, emote_id, duration = selected
 
-        # إلغاء التكرار القديم
+        # إلغاء التكرار القديم إن وجد
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
 
-        # التكرار الجديد
         async def emote_loop():
             try:
                 while True:
@@ -269,19 +268,17 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             "task": task
         }
 
-        await self.highrise.send_whisper(user.id, f"You are now in the loop for emote number {aliases[0]}")
-        return
+        await self.highrise.send_whisper(user.id, f"أنت الآن في تكرار للإيموت رقم {aliases[0]}.")
 
-
-async def handle_user_movement(self: BaseBot, user: User):
+async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
     if user.id not in self.user_loops:
         return
 
     self.user_loops[user.id]["paused"] = True
-    user_last_positions[user.id] = (user.position.x, user.position.y, user.position.z)
+    user_last_positions[user.id] = (pos.x, pos.y, pos.z)
 
     await asyncio.sleep(2)
 
-    current_pos = (user.position.x, user.position.y, user.position.z)
+    current_pos = (pos.x, pos.y, pos.z)
     if user_last_positions.get(user.id) == current_pos:
         self.user_loops[user.id]["paused"] = False
