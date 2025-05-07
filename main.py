@@ -5,7 +5,7 @@ from functions.loop_emote import check_and_start_emote_loop, handle_user_movemen
 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        self.user_loops = {}  # تخزين حالة كل مستخدم
+        self.user_loops = {}  # لتخزين حالة التكرار لكل مستخدم
         await self.highrise.walk_to(Position(17.5, 0.0, 12.5, "FrontRight"))
         print("Bot is ready.")
 
