@@ -280,19 +280,30 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
 
         await self.highrise.send_whisper(user.id, f"You are now in the loop for emote number {aliases[0]}")
         return
-
-
+        
 async def handle_user_movement(self: BaseBot, user: User):
     if user.id not in self.user_loops:
         return
 
-    # Pause the loop when user moves
+    # Pause the loop immediately
     self.user_loops[user.id]["paused"] = True
+
+    # Save the current position
     user_last_positions[user.id] = (user.position.x, user.position.y, user.position.z)
 
-    await asyncio.sleep(2)
+    async def wait_until_still():
+        while True:
+            await asyncio.sleep(1)
+            current_pos = (user.position.x, user.position.y, user.position.z)
+            last_pos = user_last_positions.get(user.id)
 
-    # Resume the loop only if the user stopped moving
-    current_pos = (user.position.x, user.position.y, user.position.z)
-    if user_last_positions.get(user.id) == current_pos:
-        self.user_loops[user.id]["paused"] = False
+            # If the user hasn't moved, resume the loop immediately
+            if last_pos == current_pos:
+                self.user_loops[user.id]["paused"] = False
+                break
+            else:
+                # Update position and keep checking
+                user_last_positions[user.id] = current_pos
+
+    # Start the check for when the user stops moving
+    asyncio.create_task(wait_until_still())
