@@ -1,4 +1,4 @@
-import random
+ import random
 import os
 import importlib.util
 from highrise import BaseBot, Position
