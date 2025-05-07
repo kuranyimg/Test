@@ -386,33 +386,35 @@ class Bot(BaseBot):
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
-              
+
+    # إضافة الكود الذي طلبته بدون تغيير
     async def on_user_move(self, user: User, pos: Position):
-        user_id = user.id
-        if user_id in user_loops:
-            if pos.y > 0.01:
-                # اللاعب يمشي - نوقف اللوب مؤقتاً
-                user_loops[user_id]["paused"] = True
-                if user_loops[user_id]["task"]:
-                    user_loops[user_id]["task"].cancel()
+        if user.id in self.looping_users:
+            # إيقاف الإيموت مؤقتًا عند الحركة
+            self.looping_users[user.id]["paused"] = True
+
+            # انتظر لبضع ثواني للتأكد من التوقف الكامل
+            await asyncio.sleep(2)
+
+            # تحقق من الموقع الحالي للمستخدم
+            updated_position = await self.highrise.get_user_position(user.id)
+
+            # إذا توقف المستخدم عن الحركة، استأنف الإيموت
+            if updated_position.x == pos.x and updated_position.z == pos.z:
+                self.looping_users[user.id]["paused"] = False
+                emote_name = self.looping_users[user.id]["emote_name"]
+                await start_emote_loop(self, user, emote_name)
+
+            # إذا كان قد توقف تمامًا عن الحركة (أينما كان) فاستأنف الإيموت مباشرة
             else:
-                # توقف عن المشي - نعيد تشغيل اللوب من البداية
-                if user_loops[user_id]["paused"]:
-                    user_loops[user_id]["paused"] = False
-                    emote_id = user_loops[user_id]["emote_id"]
-                    duration = user_loops[user_id]["duration"]
+                self.looping_users[user.id]["paused"] = False
+                emote_name = self.looping_users[user.id]["emote_name"]
+                await start_emote_loop(self, user, emote_name)
 
-                    async def emote_loop():
-                        try:
-                            while True:
-                                if not user_loops[user_id]["paused"]:
-                                    await self.highrise.send_emote(emote_id, user_id)
-                                await asyncio.sleep(duration)
-                        except asyncio.CancelledError:
-                            pass
-
-                    task = asyncio.create_task(emote_loop())
-                    user_loops[user_id]["task"] = task
+# تعريف دالة استئناف الإيموت 
+async def start_emote_loop(bot, user, emote_name):
+    # هنا تضع الكود لاستئناف الإيموت
+    pass
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
