@@ -9,10 +9,12 @@ class Bot(BaseBot):
         await self.highrise.walk_to(Position(17.5, 0.0, 12.5, "FrontRight"))
         print("Bot is ready.")
 
-    async def on_chat(self, user: User, message: str) -> None:
+    async def on_chat(self, user: User, message: str):
+        print(f"[CHAT] {user.username}: {message}")
         await check_and_start_emote_loop(self, user, message)
 
-    async def on_whisper(self, user: User, message: str) -> None:
+    async def on_whisper(self, user: User, message: str):
+        print(f"[WHISPER] {user.username}: {message}")
         await check_and_start_emote_loop(self, user, message)
 
     async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
