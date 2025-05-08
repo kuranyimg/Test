@@ -3,10 +3,10 @@ from highrise import BaseBot
 from highrise.models import User
 
 emote_list: list[tuple[list[str], str, float]] = [
-    (['1', 'rest', 'Rest'], 'sit-idle-cute', 17.06),
-    (['2', 'zombie', 'Zombie'], 'idle_zombie', 28.75),
-    (['3', 'relaxed', 'Relaxed'], 'idle_layingdown2', 20.55),
-    (['4', 'attentive', 'Attentive'], 'idle_layingdown', 24.00),
+    (['rest', 'REST', 'Rest'], 'sit-idle-cute', 17.06),
+    (['zombie', 'ZOMBIE', 'Zombie'], 'idle_zombie', 28.75),
+    (['relaxed', 'RElAXED', 'Relaxed'], 'idle_layingdown2', 20.55),
+    (['Att', 'attentive', 'Attentive'], 'idle_layingdown', 24.00),
     (['5', 'sleepy', 'Sleepy'], 'idle-sleep', 22.62),
     (['6', 'pout', 'Pouty', 'Pouty Face'], 'idle-sad', 24.38),
     (['7', 'posh', 'Posh'], 'idle-posh', 21.85),
