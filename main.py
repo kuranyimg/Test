@@ -1,51 +1,61 @@
 import asyncio
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
-from functions import json  # json يحتوي على bot_location و save_data
+
 from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
+from functions.json import bot_location
 
 class Bot(BaseBot):
     def __init__(self):
         super().__init__()
-        self.user_loops = {}  # لتخزين حالة التكرار لكل مستخدم
-        self.bot_position_file = "functions/bot_position.json"
-        self.saved_position = self.load_bot_position()
-
-    def load_bot_position(self):
-        try:
-            if os.path.exists(self.bot_position_file):
-                with open(self.bot_position_file, "r") as f:
-                    data = json.load(f)
-                    return Position(data["x"], data["y"], data["z"], data["facing"])
-        except Exception as e:
-            print("Failed to load bot position:", e)
-
-        # الموقع الافتراضي
-        return Position(17.5, 0.0, 12.5, "FrontRight")
+        self.user_loops = {}
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        await self.highrise.walk_to(self.saved_position)
-        print("Bot is ready and moved to saved position.")
+        if bot_location:
+            try:
+                await self.highrise.walk_to(Position(**bot_location))
+                print("Bot moved to saved position.")
+            except Exception as e:
+                print("Error moving to saved position:", e)
+        print("Bot is ready.")
 
     async def on_chat(self, user: User, message: str):
         print(f"[CHAT] {user.username}: {message}")
         await check_and_start_emote_loop(self, user, message)
 
-        # أمر حفظ موقع البوت
-        if message.lower() == "!sbot" and user.username == "RayBM":
+        # حفظ موقع البوت
+        if message == "!sbot" and user.username == "RayBM":
             try:
                 room_users = await self.highrise.get_room_users()
                 for room_user, pos in room_users.content:
                     if room_user.username == user.username:
-                        json.bot_location["x"] = pos.x
-                        json.bot_location["y"] = pos.y
-                        json.bot_location["z"] = pos.z
-                        json.bot_location["facing"] = pos.facing
-                        await self.highrise.send_whisper(user.id, f"تم حفظ موقع البوت: {json.bot_location}")
+                        bot_location["x"] = pos.x
+                        bot_location["y"] = pos.y
+                        bot_location["z"] = pos.z
+                        bot_location["facing"] = pos.facing
+                        await self.highrise.send_whisper(user.id, f"تم حفظ موقع البوت بنجاح: {bot_location}")
                         break
             except Exception as e:
-                print("Set bot error:", e)
-                await self.highrise.send_whisper(user.id, "حدث خطأ أثناء حفظ موقع البوت.")
+                print("خطأ في حفظ موقع البوت:", e)
+
+        # العودة للموقع المحفوظ
+        if message == "!base":
+            try:
+                if bot_location:
+                    await self.highrise.walk_to(Position(**bot_location))
+            except Exception as e:
+                print("خطأ في تنفيذ !base:", e)
+
+        # أوامر التنقل للطوابق
+        msg = message.lower().replace(" ", "")
+        if msg in ("-floor1", "!floor1", "floor1", "/floor1", "f1", "-1"):
+            await self.highrise.teleport(user.id, Position(9.5, 0.0, 16.5))
+
+        elif msg in ("-floor2", "!floor2", "floor2", "/floor2", "f2", "-2"):
+            await self.highrise.teleport(user.id, Position(14.5, 9.0, 6.0))
+
+        elif msg in ("-floor3", "!floor3", "floor3", "/floor3", "f3", "-3"):
+            await self.highrise.teleport(user.id, Position(12.5, 19.25, 6.5))
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
