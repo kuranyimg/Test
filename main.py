@@ -362,6 +362,7 @@ class Bot(BaseBot):
          
     async def on_whisper(self, user: User, message: str) -> None:
         print(f"{user.username} whispered: {message}")
+        await check_and_start_emote_loop(self, user, message)
 
         # Handle private messages for RayBM and botmes
         if user.username.lower() == "raybm" or user.username.lower() == "botmes":
