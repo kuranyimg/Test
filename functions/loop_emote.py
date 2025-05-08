@@ -229,28 +229,30 @@ emote_list: list[tuple[list[str], str, float]] = [
 
 user_last_positions = {}
 
+# Check and start emote loop based on user message
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     cleaned_msg = message.strip().lower()
 
-    # إيقاف التكرار
+    # Stop the emote loop if user types 'stop'
     if cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
             del self.user_loops[user.id]
-            await self.highrise.send_whisper(user.id, "تم إيقاف التكرار.")
+            await self.highrise.send_whisper(user.id, "Emote loop stopped. (Type any emote name or number to start again)")
         else:
-            await self.highrise.send_whisper(user.id, "لا يوجد تكرار نشط.")
+            await self.highrise.send_whisper(user.id, "You don't have an active emote loop.")
         return
 
-    # بدء التكرار
+    # Find the emote based on message
     selected = next((e for e in emote_list if cleaned_msg in [a.lower() for a in e[0]]), None)
     if selected:
         aliases, emote_id, duration = selected
 
-        # إلغاء التكرار القديم إن وجد
+        # Cancel any existing loop
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
 
+        # Define the loop task
         async def emote_loop():
             try:
                 while True:
@@ -260,6 +262,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             except asyncio.CancelledError:
                 pass
 
+        # Create and store the task
         task = asyncio.create_task(emote_loop())
         self.user_loops[user.id] = {
             "paused": False,
@@ -268,12 +271,17 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             "task": task
         }
 
-        await self.highrise.send_whisper(user.id, f"أنت الآن في تكرار للإيموت رقم {aliases[0]}.")
+        await self.highrise.send_whisper(
+            user.id,
+            f"You are now in a loop for emote number {aliases[0]}. (To stop, type 'stop')"
+        )
 
+# Pause/resume loop when user walks/stops
 async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
     if user.id not in self.user_loops:
         return
 
+    # Pause the emote while user is moving
     self.user_loops[user.id]["paused"] = True
     user_last_positions[user.id] = (pos.x, pos.y, pos.z)
 
