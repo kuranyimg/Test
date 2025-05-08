@@ -1,7 +1,8 @@
 import asyncio
-from highrise import BaseBot, Position
-from highrise.models import User
 import logging
+from highrise import BaseBot, Highrise, Position  # ← هذا السطر الآن يحتوي Highrise
+from highrise.models import User
+from loop_emote import check_and_start_emote_loop, handle_user_movement
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -39,7 +40,6 @@ class Bot(BaseBot):
             logger.error(f"Error processing user move: {e}")
 
     async def on_stop(self):
-        # Properly handle task cancellation and shutdown
         for task in self.running_tasks:
             task.cancel()
         logger.info("All tasks are being canceled")
