@@ -16,4 +16,4 @@ class Bot(BaseBot):
         await check_and_start_emote_loop(self, user, message)
 
     async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
-        await handle_user_movement(self, user)
+        await handle_user_movement(self, user, pos)
