@@ -3,7 +3,10 @@ import threading
 import shutil
 
 data_mappings = {
-    "bot_location": {}
+    "bot_location": {},
+    "floor1_location": {},
+    "floor2_location": {},
+    "floor3_location": {},
 }
 
 globals().update(data_mappings)
@@ -15,7 +18,7 @@ def save_data():
         return
 
     for var_name in data_mappings.keys():
-        filename = f"functions/{var_name}.json"
+        filename = f"{var_name}.json"
         try:
             with open(filename, "w") as f:
                 json.dump(globals()[var_name], f)
@@ -26,7 +29,7 @@ def save_data():
 
 def load_data():
     for var_name, default_value in data_mappings.items():
-        filename = f"functions/{var_name}.json"
+        filename = f"{var_name}.json"
         try:
             with open(filename, "r") as f:
                 globals()[var_name] = json.load(f)
