@@ -10,7 +10,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['6', 'pout', 'Pouty', 'Pouty Face'], 'idle-sad', 24.38),
     (['7', 'posh', 'Posh'], 'idle-posh', 21.85),
     (['8', 'tired', 'Sleepy'], 'idle-loop-tired', 21.96),
-    (['9', 'tap', 'Tap Loop'], 'idle-loop-tapdance', 6.26),
+    (['taploop', 'Taploop', 'tap', 'Tap Loop'], 'idle-loop-tapdance', 6.26),
     (['10', 'sit', 'Sit'], 'idle-loop-sitfloor', 22.32),
     (['11', 'shy', 'Shy'], 'idle-loop-shy', 16.47),
     (['12', 'bummed', 'Bummed'], 'idle-loop-sad', 6.05),
