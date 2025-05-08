@@ -48,7 +48,7 @@ class Bot(BaseBot):
             await self.highrise.teleport(user.id, Position(14.5 , 9.0 , 6.0))
 
         # إضافة أمر !setbot لتحديد مكان البوت وحفظه
-        elif message.lower() == "!setbot" and user.username == "RayBM":
+        elif message.lower() == "!sbot" and user.username == "RayBM":
             pos = await self.highrise.get_position(user.id)
             self.saved_position = pos
             with open(self.bot_position_file, "w") as f:
