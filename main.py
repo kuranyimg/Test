@@ -1,12 +1,6 @@
 import asyncio
-import random
-import os
-import importlib.util
 from highrise import BaseBot, Position
-from highrise.models import SessionMetadata, Position, User, AnchorPosition
-from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
-from functions.commands import is_teleport_command, handle_teleport_command
-from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
+from highrise.models import User
 import logging
 
 # Set up logging
@@ -18,7 +12,6 @@ class Bot(BaseBot):
         super().__init__()
         self.user_loops = {}  # key: user.id, value: { stop_event, pause_event, task }
         self.running_tasks = []  # Keep track of tasks
-        self.user_last_positions = {}  # To track user positions for pausing loops
         print("Bot is initializing...")
 
     async def on_start(self, highrise: Highrise):
