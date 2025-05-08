@@ -1,11 +1,7 @@
 import asyncio
+from highrise import BaseBot
 from highrise.models import User
-import logging
 
-# Set up logging
-logger = logging.getLogger(__name__)
-
-# Emote list with duration (this should already be correct)
 emote_list: list[tuple[list[str], str, float]] = [
     (['ZOMBIE', 'zombie', 'Zombie'], 'idle_zombie', 28.75),
     (['RELAXED', 'relaxed', 'Relaxed'], 'idle_layingdown2', 20.55),
@@ -232,42 +228,43 @@ emote_list: list[tuple[list[str], str, float]] = [
 
 user_last_positions = {}
 
-# Function to check and start the emote loop
-async def check_and_start_emote_loop(self, user: User, message: str):
+async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     cleaned_msg = message.strip().lower()
 
-    # Stop loop if "stop" is typed
     if cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
         if user.id in self.user_loops:
-            task = self.user_loops[user.id]["task"]
-            task.cancel()  # Cancel task
-            del self.user_loops[user.id]  # Remove from user loops
-            await self.highrise.send_whisper(user.id, "Emote loop stopped.")
+            self.user_loops[user.id]["task"].cancel()
+            del self.user_loops[user.id]
+            await self.highrise.send_whisper(user.id, "Loop stopped. (Type the emote name again to start a new loop)")
         else:
-            await self.highrise.send_whisper(user.id, "No active emote loop.")
+            await self.highrise.send_whisper(user.id, "You're not in any loop.")
         return
 
-    # Start loop for matching emote
     selected = next((e for e in emote_list if cleaned_msg in [a.lower() for a in e[0]]), None)
     if selected:
         aliases, emote_id, duration = selected
 
-        # If there's an active loop, cancel it before starting a new one
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
 
-        # Start new loop
         async def emote_loop():
             try:
                 while True:
+                    users = await self.highrise.get_users()
+                    if user.id not in [u.id for u in users]:
+                        print(f"{user.username} left the room. Loop stopped.")
+                        break
+
                     if not self.user_loops[user.id]["paused"]:
-                        await self.highrise.send_emote(emote_id, user.id)
+                        try:
+                            await self.highrise.send_emote(emote_id, user.id)
+                        except Exception as e:
+                            print(f"Error sending emote: {e}")
+                            break
+
                     await asyncio.sleep(duration)
             except asyncio.CancelledError:
                 pass
-            except Exception as e:
-                logger.error(f"Error in emote loop: {e}")
-                await self.highrise.send_whisper(user.id, "An error occurred in the emote loop.")
 
         task = asyncio.create_task(emote_loop())
         self.user_loops[user.id] = {
@@ -277,20 +274,17 @@ async def check_and_start_emote_loop(self, user: User, message: str):
             "task": task
         }
 
-        await self.highrise.send_whisper(user.id, f"You are now in the loop for emote number {aliases[0]}")
-        return
+        await self.highrise.send_whisper(user.id, f"You are now in a loop of emote '{aliases[0]}'. Type 'stop' to cancel it.")
 
-# Handle user movement (pause and resume emote loop)
-async def handle_user_movement(self, user: User):
+async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
     if user.id not in self.user_loops:
         return
 
-    # Pause loop if user moves
     self.user_loops[user.id]["paused"] = True
-    user_last_positions[user.id] = (user.position.x, user.position.y, user.position.z)
+    user_last_positions[user.id] = (pos.x, pos.y, pos.z)
+    await asyncio.sleep(2)
 
-    await asyncio.sleep(2)  # Allow time for the user to stop moving
-
-    current_pos = (user.position.x, user.position.y, user.position.z)
+    current_pos = (pos.x, pos.y, pos.z)
     if user_last_positions.get(user.id) == current_pos:
         self.user_loops[user.id]["paused"] = False
+
