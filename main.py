@@ -19,43 +19,76 @@ class Bot(BaseBot):
                 print("Error moving to saved position:", e)
         print("Bot is ready.")
 
-    async def on_chat(self, user: User, message: str):
-        print(f"[CHAT] {user.username}: {message}")
-        await check_and_start_emote_loop(self, user, message)
+from functions.json import bot_location, floor1_location, floor2_location, floor3_location
+from highrise import Position
 
-        # حفظ موقع البوت
-        if message == "!sbot" and user.username == "RayBM":
-            try:
-                room_users = await self.highrise.get_room_users()
-                for room_user, pos in room_users.content:
-                    if room_user.username == user.username:
-                        bot_location["x"] = pos.x
-                        bot_location["y"] = pos.y
-                        bot_location["z"] = pos.z
-                        bot_location["facing"] = pos.facing
-                        await self.highrise.send_whisper(user.id, f"تم حفظ موقع البوت بنجاح: {bot_location}")
-                        break
-            except Exception as e:
-                print("خطأ في حفظ موقع البوت:", e)
+# حفظ موقع البوت
+if message == "!sbot" and user.username == "RayBM":
+    try:
+        room_users = await self.highrise.get_room_users()
+        for room_user, pos in room_users.content:
+            if room_user.username == user.username:
+                bot_location["x"] = pos.x
+                bot_location["y"] = pos.y
+                bot_location["z"] = pos.z
+                bot_location["facing"] = pos.facing
+                await self.highrise.send_whisper(user.id, f"تم حفظ موقع البوت: {bot_location}")
+                break
+    except Exception as e:
+        print("Set bot error:", e)
 
-        # العودة للموقع المحفوظ
-        if message == "!base":
-            try:
-                if bot_location:
-                    await self.highrise.walk_to(Position(**bot_location))
-            except Exception as e:
-                print("خطأ في تنفيذ !base:", e)
+# يمشي إلى موقع البوت
+if message == "!base" and user.username == "RayBM":
+    try:
+        if bot_location:
+            await self.highrise.walk_to(Position(**bot_location))
+    except Exception as e:
+        print("Error in !base:", e)
 
-        # أوامر التنقل للطوابق
-        msg = message.lower().replace(" ", "")
-        if msg in ("-floor1", "!floor1", "floor1", "/floor1", "f1", "-1"):
-            await self.highrise.teleport(user.id, Position(9.5, 0.0, 16.5))
+# حفظ مواقع الطوابق
+if message == "!sfloor1" and user.username == "RayBM":
+    try:
+        room_users = await self.highrise.get_room_users()
+        for room_user, pos in room_users.content:
+            if room_user.username == user.username:
+                floor1_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                await self.highrise.send_whisper(user.id, f"تم حفظ موقع Floor 1: {floor1_location}")
+                break
+    except Exception as e:
+        print("sfloor1 error:", e)
 
-        elif msg in ("-floor2", "!floor2", "floor2", "/floor2", "f2", "-2"):
-            await self.highrise.teleport(user.id, Position(14.5, 9.0, 6.0))
+if message == "!sfloor2" and user.username == "RayBM":
+    try:
+        room_users = await self.highrise.get_room_users()
+        for room_user, pos in room_users.content:
+            if room_user.username == user.username:
+                floor2_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                await self.highrise.send_whisper(user.id, f"تم حفظ موقع Floor 2: {floor2_location}")
+                break
+    except Exception as e:
+        print("sfloor2 error:", e)
 
-        elif msg in ("-floor3", "!floor3", "floor3", "/floor3", "f3", "-3"):
-            await self.highrise.teleport(user.id, Position(12.5, 19.25, 6.5))
+if message == "!sfloor3" and user.username == "RayBM":
+    try:
+        room_users = await self.highrise.get_room_users()
+        for room_user, pos in room_users.content:
+            if room_user.username == user.username:
+                floor3_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                await self.highrise.send_whisper(user.id, f"تم حفظ موقع Floor 3: {floor3_location}")
+                break
+    except Exception as e:
+        print("sfloor3 error:", e)
+
+# التنقل للطوابق حسب الاختصارات
+msg = message.lower().replace(" ", "")
+if msg in ("!floor1", "floor1", "f1", "-1") and floor1_location:
+    await self.highrise.teleport(user.id, Position(**floor1_location))
+
+elif msg in ("!floor2", "floor2", "f2", "-2") and floor2_location:
+    await self.highrise.teleport(user.id, Position(**floor2_location))
+
+elif msg in ("!floor3", "floor3", "f3", "-3") and floor3_location:
+    await self.highrise.teleport(user.id, Position(**floor3_location))
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
