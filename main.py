@@ -3,17 +3,22 @@ import os
 import importlib.util
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, Position, User, AnchorPosition
-from functions.loop_emote import check_and_start_emote_loop, user_loops
+from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
 from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
 
-vip_list = load_vip_list()
+    async def on_chat(self, user: User, message: str) -> None:
+        await check_and_start_emote_loop(self, user, message)
+
+    async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
+        await handle_user_movement(self, user, pos)
 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        print("working")
-        await self.highrise.walk_to(Position(17.5 , 0.0 , 12.5, "FrontRight"))
+        self.user_loops = {}  # لتخزين حالة التكرار لكل مستخدم
+        await self.highrise.walk_to(Position(17.5, 0.0, 12.5, "FrontRight"))
+        print("Bot is ready.")
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         # Only the bot prints the message in the console
