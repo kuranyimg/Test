@@ -382,33 +382,9 @@ class Bot(BaseBot):
             wallet = (await self.highrise.get_wallet()).content
             await self.highrise.send_whisper(user.id,f"AMOUNT : {wallet[0].amount} {wallet[0].type}")
             await self.highrise.send_emote("emote-blowkisses")
-              
-    async def on_user_move(self, user: User, pos: Position):
-        user_id = user.id
-        if user_id in user_loops:
-            if pos.y > 0.01:
-                # اللاعب يمشي - نوقف اللوب مؤقتاً
-                user_loops[user_id]["paused"] = True
-                if user_loops[user_id]["task"]:
-                    user_loops[user_id]["task"].cancel()
-            else:
-                # توقف عن المشي - نعيد تشغيل اللوب من البداية
-                if user_loops[user_id]["paused"]:
-                    user_loops[user_id]["paused"] = False
-                    emote_id = user_loops[user_id]["emote_id"]
-                    duration = user_loops[user_id]["duration"]
-
-                    async def emote_loop():
-                        try:
-                            while True:
-                                if not user_loops[user_id]["paused"]:
-                                    await self.highrise.send_emote(emote_id, user_id)
-                                await asyncio.sleep(duration)
-                        except asyncio.CancelledError:
-                            pass
-
-                    task = asyncio.create_task(emote_loop())
-                    user_loops[user_id]["task"] = task
+          
+    async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
+        await handle_user_movement(self, user, pos)
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emoted: {emote_id}")
