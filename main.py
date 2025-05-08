@@ -2,7 +2,7 @@ import asyncio
 import logging
 from highrise import BaseBot, Highrise, Position  # ← هذا السطر الآن يحتوي Highrise
 from highrise.models import User
-from loop_emote import check_and_start_emote_loop, handle_user_movement
+from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
