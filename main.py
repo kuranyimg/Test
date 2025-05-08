@@ -4,15 +4,15 @@ import os
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
 
-# استيراد وظائف الـ VIP من vip_manager
+# استيراد وظائف VIP و Loop Emote
 from functions.vip_manager import VIPManager
 from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
 
 class Bot(BaseBot):
     def __init__(self):
         super().__init__()
-        self.vip_manager = VIPManager()  # إنشاء مدير الـ VIP
-        self.user_loops = {}  # لتخزين حالة التكرار لكل مستخدم
+        self.vip_manager = VIPManager()
+        self.user_loops = {}
         self.bot_position_file = "functions/bot_position.json"
         self.saved_position = self.load_bot_position()
 
@@ -21,7 +21,7 @@ class Bot(BaseBot):
             with open(self.bot_position_file, "r") as f:
                 data = json.load(f)
                 return Position(data["x"], data["y"], data["z"], data["facing"])
-        return Position(17.5, 0.0, 12.5, "FrontRight")  # الموقع الافتراضي
+        return Position(17.5, 0.0, 12.5, "FrontRight")
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         await self.highrise.walk_to(self.saved_position)
@@ -31,23 +31,23 @@ class Bot(BaseBot):
         print(f"[CHAT] {user.username}: {message}")
         await check_and_start_emote_loop(self, user, message)
 
-        # تحقق من الرسائل المتعلقة بالنقل
-        if message.startswith("-floor1") or message.startswith("!floor1") or message.startswith("-floor 1") or message.startswith("Floor 1") or message.startswith("Floor1") or message.startswith("/floor1") or message.startswith("floor1") or message.startswith("-1") or message.startswith("floor1") or message.startswith("f1") or message.startswith("f 1") or message.startswith("floor1") or message.startswith("F1") or message.startswith("floor 1") or message.startswith("!floor 1"):
+        # أوامر التنقل بين الطوابق
+        if message.lower() in ["-floor1", "!floor1", "-floor 1", "floor 1", "floor1", "/floor1", "-1", "f1", "f 1", "f 1", "f1", "!floor 1"]:
             await self.highrise.teleport(user.id, Position(9.5 , 0.0 , 16.5))
-        
-        elif message.startswith("-floor3") or message.startswith("!floor3") or message.startswith("-floor 3") or message.startswith("Floor 3") or message.startswith("Floor3") or message.startswith("/floor3") or message.startswith("floor3") or message.startswith("-3") or message.startswith("floor3") or message.startswith("f3") or message.startswith("f 3") or message.startswith("floor3") or message.startswith("F3") or message.startswith("floor 3") or message.startswith("!floor 3"):
+
+        elif message.lower() in ["-floor2", "!floor2", "-floor 2", "floor 2", "floor2", "/floor2", "-2", "f2", "f 2", "f2", "!floor 2"]:
+            await self.highrise.teleport(user.id, Position(14.5 , 9.0 , 6.0))
+
+        elif message.lower() in ["-floor3", "!floor3", "-floor 3", "floor 3", "floor3", "/floor3", "-3", "f3", "f 3", "f3", "!floor 3"]:
             await self.highrise.teleport(user.id, Position(12.5 , 19.25 , 6.5))
 
-        elif message.startswith("-floor4") or message.startswith("!floor4") or message.startswith("-floor 4") or message.startswith("Floor 4") or message.startswith("Floor4") or message.startswith("/floor4") or message.startswith("floor4") or message.startswith("-4") or message.startswith("floor4") or message.startswith("f4") or message.startswith("f 4") or message.startswith("floor4") or message.startswith("F4") or message.startswith("floor 4") or message.startswith("!floor 4"):
-            if self.vip_manager.is_vip(user.id):  # تحقق من إذا كان المستخدم VIP
+        elif message.lower() in ["-floor4", "!floor4", "-floor 4", "floor 4", "floor4", "/floor4", "-4", "f4", "f 4", "f4", "!floor 4"]:
+            if self.vip_manager.is_vip(user.id):
                 await self.highrise.teleport(user.id, Position(14.5 , 20.0 , 1.5))
             else:
                 await self.highrise.send_message(user.id, "You must be a VIP to teleport to floor 4.")
 
-        elif message.startswith("-floor2") or message.startswith("!floor2") or message.startswith("-floor 2") or message.startswith("Floor 2") or message.startswith("Floor2") or message.startswith("/floor2") or message.startswith("floor2") or message.startswith("-2") or message.startswith("floor2") or message.startswith("f2") or message.startswith("f 2") or message.startswith("floor2") or message.startswith("F2") or message.startswith("floor 2") or message.startswith("!floor 2"):
-            await self.highrise.teleport(user.id, Position(14.5 , 9.0 , 6.0))
-
-        # إضافة أمر !setbot لتحديد مكان البوت وحفظه
+        # أمر حفظ موقع البوت
         elif message.lower() == "!sbot" and user.username == "RayBM":
             pos = await self.highrise.get_position(user.id)
             self.saved_position = pos
@@ -58,7 +58,7 @@ class Bot(BaseBot):
                     "z": pos.z,
                     "facing": pos.facing
                 }, f)
-            await self.highrise.send_message(user.id, "تم تحديد موقع البوت وحفظه بنجاح.")
+            await self.highrise.send_message(user.id, "تم حفظ موقع البوت بنجاح!")
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
