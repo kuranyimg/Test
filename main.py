@@ -8,12 +8,6 @@ from functions.vip_manager import is_vip, handle_vip_command, get_vip_list
 from functions.commands import is_teleport_command, handle_teleport_command
 from functions.vip_data import load_vip_list, save_vip_list
 
-    async def on_chat(self, user: User, message: str) -> None:
-        await check_and_start_emote_loop(self, user, message)
-
-    async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
-        await handle_user_movement(self, user, pos)
-
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         self.user_loops = {}  # لتخزين حالة التكرار لكل مستخدم
@@ -40,7 +34,7 @@ class Bot(BaseBot):
         await self.highrise.react("heart", user.id)
         
     async def on_chat(self, user: User, message: str) -> None:
-        print(f"{user.username}: {message}")    
+        print(f"{user.username}: {message}")  
         username = user.username.lower()
         is_owner = username == "raybm"
 
