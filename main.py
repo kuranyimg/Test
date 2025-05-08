@@ -10,25 +10,30 @@ from functions.vip_data import load_vip_list, save_vip_list
 
 class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        self.user_loops = {}  # لتخزين حالة التكرار لكل مستخدم
+        self.user_loops = {}  # Store emote loop states for each user
         await self.highrise.walk_to(Position(17.5, 0.0, 12.5, "FrontRight"))
         print("Bot is ready.")
              
     async def on_user_join(self: BaseBot, user: User, position: Position | AnchorPosition) -> None:
         print(f"{user.username} has joined the room.")
+
+        # Copy current user loops to avoid interference
         current_loops = self.user_loops.copy()
 
         # Send welcome whispers to the user
         await self.highrise.send_whisper(user.id, f"❤️Welcome [{user.username}]! Use: [!emote list] or [1-97] for dances & emotes.")
         await self.highrise.send_whisper(user.id, f"❤️Use: [/help] for more information.")
-        await self.highrise.send_whisper(user.id, f"❤Type F3 F2 and F1 to teleport between the floor 🤍.")
+        await self.highrise.send_whisper(user.id, f"❤Type F3, F2, and F1 to teleport between the floors 🤍.")
 
-        # Send emotes
+        # Send some emotes
         await self.highrise.send_emote("dance-hipshake")
         await self.highrise.send_emote("emote-lust", user.id)
 
-       # React with a heart emoji
+        # React with a heart emoji
         await self.highrise.react("heart", user.id)
+
+        # Ensure user loops state is not modified unintentionally by the user join handler
+        self.user_loops = current_loops
         
     async def on_chat(self, user: User, message: str) -> None:
         print(f"{user.username}: {message}")  
