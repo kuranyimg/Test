@@ -1,9 +1,7 @@
 import asyncio
-import json
-import os
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
-
+from functions import json  # json يحتوي على bot_location و save_data
 from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
 
 class Bot(BaseBot):
@@ -33,22 +31,21 @@ class Bot(BaseBot):
         print(f"[CHAT] {user.username}: {message}")
         await check_and_start_emote_loop(self, user, message)
 
-        # أمر حفظ مكان البوت
+        # أمر حفظ موقع البوت
         if message.lower() == "!sbot" and user.username == "RayBM":
             try:
-                pos = await self.highrise.get_position(user.id)
-                self.saved_position = pos
-                with open(self.bot_position_file, "w") as f:
-                    json.dump({
-                        "x": pos.x,
-                        "y": pos.y,
-                        "z": pos.z,
-                        "facing": pos.facing
-                    }, f)
-                await self.highrise.send_message(user.id, "تم حفظ موقع البوت بنجاح.")
+                room_users = await self.highrise.get_room_users()
+                for room_user, pos in room_users.content:
+                    if room_user.username == user.username:
+                        json.bot_location["x"] = pos.x
+                        json.bot_location["y"] = pos.y
+                        json.bot_location["z"] = pos.z
+                        json.bot_location["facing"] = pos.facing
+                        await self.highrise.send_whisper(user.id, f"تم حفظ موقع البوت: {json.bot_location}")
+                        break
             except Exception as e:
-                print("Error saving bot position:", e)
-                await self.highrise.send_message(user.id, "حدث خطأ أثناء حفظ الموقع.")
+                print("Set bot error:", e)
+                await self.highrise.send_whisper(user.id, "حدث خطأ أثناء حفظ موقع البوت.")
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
