@@ -3,7 +3,7 @@ from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
 
 from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
-from functions.json import bot_location, floor1_location, floor2_location, floor3_location
+from functions.json import bot_location, floor1_location, floor2_location, floor3_location, save_data
 
 
 class Bot(BaseBot):
@@ -31,6 +31,7 @@ class Bot(BaseBot):
                 for room_user, pos in room_users.content:
                     if room_user.username == user.username:
                         bot_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                        save_data()
                         await self.highrise.send_whisper(user.id, f"تم حفظ موقع البوت: {bot_location}")
                         break
             except Exception as e:
@@ -51,6 +52,7 @@ class Bot(BaseBot):
                 for room_user, pos in room_users.content:
                     if room_user.username == user.username:
                         floor1_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                        save_data()
                         await self.highrise.send_whisper(user.id, f"تم حفظ موقع Floor 1: {floor1_location}")
                         break
             except Exception as e:
@@ -62,6 +64,7 @@ class Bot(BaseBot):
                 for room_user, pos in room_users.content:
                     if room_user.username == user.username:
                         floor2_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                        save_data()
                         await self.highrise.send_whisper(user.id, f"تم حفظ موقع Floor 2: {floor2_location}")
                         break
             except Exception as e:
@@ -73,6 +76,7 @@ class Bot(BaseBot):
                 for room_user, pos in room_users.content:
                     if room_user.username == user.username:
                         floor3_location.update(x=pos.x, y=pos.y, z=pos.z, facing=pos.facing)
+                        save_data()
                         await self.highrise.send_whisper(user.id, f"تم حفظ موقع Floor 3: {floor3_location}")
                         break
             except Exception as e:
