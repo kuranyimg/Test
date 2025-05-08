@@ -228,7 +228,6 @@ emote_list: list[tuple[list[str], str, float]] = [
 
 user_last_positions = {}
 
-# Check and start emote loop based on user message
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     cleaned_msg = message.strip().lower()
 
@@ -255,13 +254,24 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
         async def emote_loop():
             try:
                 while True:
+                    # Check if the user is still in the room
+                    users_in_room = await self.highrise.get_users()
+                    if user.id not in [u.id for u in users_in_room]:
+                        print(f"{user.username} left the room. Emote loop stopped.")
+                        break
+
                     if not self.user_loops[user.id]["paused"]:
-                        await self.highrise.send_emote(emote_id, user.id)
+                        try:
+                            await self.highrise.send_emote(emote_id, user.id)
+                        except Exception as e:
+                            print(f"Error sending emote: {e}")
+                            break
+
                     await asyncio.sleep(duration)
             except asyncio.CancelledError:
                 pass
 
-        # Create and store the task
+        # Start the loop
         task = asyncio.create_task(emote_loop())
         self.user_loops[user.id] = {
             "paused": False,
@@ -275,12 +285,12 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             f"You are now in a loop for emote number {aliases[0]}. (To stop, type 'stop')"
         )
 
-# Pause/resume loop when user walks/stops
+# Handle user movement
 async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
     if user.id not in self.user_loops:
         return
 
-    # Pause the emote while user is moving
+    # Pause the loop while the user is moving
     self.user_loops[user.id]["paused"] = True
     user_last_positions[user.id] = (pos.x, pos.y, pos.z)
 
