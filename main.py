@@ -5,6 +5,7 @@ from highrise.models import SessionMetadata, User, AnchorPosition
 from functions.loop_emote import check_and_start_emote_loop, handle_user_movement, emote_list
 from functions.json import bot_location
 
+
 class Bot(BaseBot):
     def __init__(self):
         super().__init__()
@@ -23,20 +24,9 @@ class Bot(BaseBot):
     async def on_chat(self, user: User, message: str):
         print(f"[CHAT] {user.username}: {message}")
 
-        # عرض قائمة الإيموتات
-        try:
-            if message.lower().replace(" ", "") in (
-                "emotelist", "emoteslist", "!emotes", "/emotes",
-                "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
-            ):
-                emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
-                emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
-                await self.highrise.send_whisper(user.id, emote_text)
-                return
-        except Exception as e:
-            print("Error sending emote list:", e)
+        if await self.try_send_emote_list(user, message):
+            return
 
-        # تشغيل الإيموتات التلقائية
         await check_and_start_emote_loop(self, user, message)
 
         # حفظ موقع البوت
@@ -44,7 +34,7 @@ class Bot(BaseBot):
             try:
                 room_users = await self.highrise.get_room_users()
                 for room_user, pos in room_users.content:
-                    if room_user.username == user.username:
+                    if room_user.id == self.user_id:  # نتأكد أنه البوت نفسه
                         bot_location["x"] = pos.x
                         bot_location["y"] = pos.y
                         bot_location["z"] = pos.z
@@ -74,18 +64,8 @@ class Bot(BaseBot):
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
 
-        # عرض قائمة الإيموتات عند الهمس
-        try:
-            if message.lower().replace(" ", "") in (
-                "emotelist", "emoteslist", "!emotes", "/emotes",
-                "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
-            ):
-                emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
-                emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
-                await self.highrise.send_whisper(user.id, emote_text)
-                return
-        except Exception as e:
-            print("Error sending emote list (whisper):", e)
+        if await self.try_send_emote_list(user, message):
+            return
 
         await check_and_start_emote_loop(self, user, message)
 
@@ -94,3 +74,19 @@ class Bot(BaseBot):
 
     async def on_stop(self):
         print("Bot stopped.")
+
+    # دالة موحدة لفحص أوامر عرض قائمة الإيموتات
+    async def try_send_emote_list(self, user: User, message: str) -> bool:
+        try:
+            msg = message.lower().replace(" ", "")
+            if msg in (
+                "emotelist", "emoteslist", "!emotes", "/emotes",
+                "!emote", "/emote", "emotes", "emote", "emotelist"
+            ):
+                emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
+                emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
+                await self.highrise.send_whisper(user.id, emote_text)
+                return True
+        except Exception as e:
+            print("Error sending emote list:", e)
+        return False
