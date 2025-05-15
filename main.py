@@ -24,16 +24,19 @@ class Bot(BaseBot):
         print(f"[CHAT] {user.username}: {message}")
 
         # عرض قائمة الإيموتات
-        if message.lower().replace(" ", "") in (
-            "emotelist", "emoteslist", "!emotes", "/emotes",
-            "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
-        ):
-            emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
-            emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
-            await self.highrise.send_whisper(user.id, emote_text)
-            return
+        try:
+            if message.lower().replace(" ", "") in (
+                "emotelist", "emoteslist", "!emotes", "/emotes",
+                "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
+            ):
+                emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
+                emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
+                await self.highrise.send_whisper(user.id, emote_text)
+                return
+        except Exception as e:
+            print("Error sending emote list:", e)
 
-        # فحص وتشغيل اللوب للإيموتات
+        # تشغيل الإيموتات التلقائية
         await check_and_start_emote_loop(self, user, message)
 
         # حفظ موقع البوت
@@ -59,39 +62,35 @@ class Bot(BaseBot):
             except Exception as e:
                 print("خطأ في تنفيذ !base:", e)
 
-        # أوامر التنقل للطوابق
+        # أوامر الطوابق
         msg = message.lower().replace(" ", "")
         if msg in ("-floor1", "!floor1", "floor1", "/floor1", "f1", "-1"):
             await self.highrise.teleport(user.id, Position(9.5, 0.0, 16.5))
-
         elif msg in ("-floor2", "!floor2", "floor2", "/floor2", "f2", "-2"):
             await self.highrise.teleport(user.id, Position(7.5, 9.5, 6.0))
-
         elif msg in ("-floor3", "!floor3", "floor3", "/floor3", "f3", "-3"):
             await self.highrise.teleport(user.id, Position(10.5, 20.0, 6.5))
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
 
-        # عرض قائمة الإيموتات
-        if message.lower().replace(" ", "") in (
-            "emotelist", "emoteslist", "!emotes", "/emotes",
-            "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
-        ):
-            emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
-            emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
-            await self.highrise.send_whisper(user.id, emote_text)
-            return
+        # عرض قائمة الإيموتات عند الهمس
+        try:
+            if message.lower().replace(" ", "") in (
+                "emotelist", "emoteslist", "!emotes", "/emotes",
+                "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
+            ):
+                emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
+                emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
+                await self.highrise.send_whisper(user.id, emote_text)
+                return
+        except Exception as e:
+            print("Error sending emote list (whisper):", e)
 
         await check_and_start_emote_loop(self, user, message)
 
     async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
         await handle_user_movement(self, user, pos)
-
-    async def on_user_leave(self, user: User) -> None:
-        if user.id in self.user_loops:
-            self.user_loops[user.id]["task"].cancel()
-            del self.user_loops[user.id]
 
     async def on_stop(self):
         print("Bot stopped.")
