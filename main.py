@@ -2,13 +2,14 @@ import asyncio
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
 
-from functions.loop_emote import check_and_start_emote_loop, handle_user_movement
+from functions.loop_emote import check_and_start_emote_loop, handle_user_movement, emote_list
 from functions.json import bot_location
 
 class Bot(BaseBot):
     def __init__(self):
         super().__init__()
         self.user_loops = {}
+        self.loop_emote_list = emote_list
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         if bot_location:
@@ -21,6 +22,18 @@ class Bot(BaseBot):
 
     async def on_chat(self, user: User, message: str):
         print(f"[CHAT] {user.username}: {message}")
+
+        # عرض قائمة الإيموتات
+        if message.lower().replace(" ", "") in (
+            "emotelist", "emoteslist", "!emotes", "/emotes",
+            "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
+        ):
+            emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
+            emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
+            await self.highrise.send_whisper(user.id, emote_text)
+            return
+
+        # فحص وتشغيل اللوب للإيموتات
         await check_and_start_emote_loop(self, user, message)
 
         # حفظ موقع البوت
@@ -59,17 +72,26 @@ class Bot(BaseBot):
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
+
+        # عرض قائمة الإيموتات
+        if message.lower().replace(" ", "") in (
+            "emotelist", "emoteslist", "!emotes", "/emotes",
+            "!emote", "/emote", "emotes", "emote", "emote list", "emotes list"
+        ):
+            emote_names = [aliases[0] for aliases, _, _ in self.loop_emote_list]
+            emote_text = "Available Emotes:\n" + "\n".join(f"- {name}" for name in emote_names)
+            await self.highrise.send_whisper(user.id, emote_text)
+            return
+
         await check_and_start_emote_loop(self, user, message)
 
     async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
         await handle_user_movement(self, user, pos)
 
     async def on_user_leave(self, user: User) -> None:
-        print(f"[LEAVE] {user.username} has left the room.")
         if user.id in self.user_loops:
             self.user_loops[user.id]["task"].cancel()
             del self.user_loops[user.id]
-            print(f"Stopped emote loop for {user.username} on leave.")
 
     async def on_stop(self):
         print("Bot stopped.")
