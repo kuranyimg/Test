@@ -52,10 +52,10 @@ class Bot(BaseBot):
             await self.highrise.teleport(user.id, Position(9.5, 0.0, 16.5))
 
         elif msg in ("-floor2", "!floor2", "floor2", "/floor2", "f2", "-2"):
-            await self.highrise.teleport(user.id, Position(14.5, 9.0, 6.0))
+            await self.highrise.teleport(user.id, Position(7.5, 9.5, 6.0))
 
         elif msg in ("-floor3", "!floor3", "floor3", "/floor3", "f3", "-3"):
-            await self.highrise.teleport(user.id, Position(12.5, 19.25, 6.5))
+            await self.highrise.teleport(user.id, Position(10.5, 20.0, 6.5))
 
     async def on_whisper(self, user: User, message: str):
         print(f"[WHISPER] {user.username}: {message}")
