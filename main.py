@@ -64,5 +64,12 @@ class Bot(BaseBot):
     async def on_user_move(self, user: User, pos: Position | AnchorPosition) -> None:
         await handle_user_movement(self, user, pos)
 
+    async def on_user_leave(self, user: User) -> None:
+        print(f"[LEAVE] {user.username} has left the room.")
+        if user.id in self.user_loops:
+            self.user_loops[user.id]["task"].cancel()
+            del self.user_loops[user.id]
+            print(f"Stopped emote loop for {user.username} on leave.")
+
     async def on_stop(self):
         print("Bot stopped.")
