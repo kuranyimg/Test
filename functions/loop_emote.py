@@ -61,7 +61,6 @@ emote_list: list[tuple[list[str], str, float]] = [
     (['64', 'hug yourself', 'Hug yourself', 'hug'], 'emote-hugyourself', 4.99),
     (['65', 'sweating', 'Sweating'], 'emote-hot', 4.35),
     (['66', 'hero entrance', 'Hero entrance', 'hero'], 'emote-hero', 5.00),
-    (['67', 'hello', 'Hello', 'hi'], 'emote-hello', 2.73),
     (['68', 'headball', 'Headball'], 'emote-headball', 10.07),
     (['69', 'harlem shake', 'Harlem shake'], 'emote-harlemshake', 13.56),
     (['70', 'happy', 'Happy'], 'emote-happy', 3.48),
