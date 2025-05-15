@@ -217,7 +217,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["220", "wop dance", "Wop Dance"], "dance-tiktok11", 11),
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
-
+]
 user_last_positions = {}
 
 # إرسال قائمة الإيموتات للمستخدم
