@@ -212,7 +212,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["216", "guitar", "Guitar"], "idle-guitar", 12.229398),
     (["217", "this is for you", "This Is For You"], "emote-gift", 5.8),
     (["218", "push it", "Push It"], "dance-employee", 8),
-    (["219", "sweet smooch", "Sweet Smooch"], "emote-kissing", 5),
+    (["219", "smooch", "Smooch"], "emote-kissing", 5),
     (["220", "wop dance", "Wop Dance"], "dance-tiktok11", 11),
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
