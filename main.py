@@ -1,8 +1,8 @@
 import asyncio
 from highrise import BaseBot, Position
 from highrise.models import SessionMetadata, User, AnchorPosition
-
-from functions.loop_emote import check_and_start_emote_loop, handle_user_movement, emote_list
+from highrise.models import ChatEvent, UserMoveEvent
+from functions.loop_emote import start_loop_for_user, handle_user_movement
 from functions.json import bot_location
 
 class Bot(BaseBot):
