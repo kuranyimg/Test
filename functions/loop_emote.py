@@ -120,7 +120,7 @@ emote_list: list[tuple[list[str], str, float]] = [
     (["124", "tiktok8", "Savage Dance"], "dance-tiktok8", 10.94),
     (["125", "tiktok2", "Don't Start Now"], "dance-tiktok2", 10.39),
     (["126", "yoga flow", "Yoga Flow"], "dance-spiritual", 15.8),
-    (["127", "smoothwalk", "Smoothwalk"], "dance-smoothwalk", 6.69),
+    (["127", "smoothwalk", "Smoothwalk"], "dance-smoothwalk", 5.69),
     (["128", "ring on it", "Ring on It"], "dance-singleladies", 21.19),
     (["129", "let's go shopping", "Let's Go Shopping"], "dance-shoppingcart", 4.32),
     (["130", "russian dance", "Russian Dance"], "dance-russian", 10.25),
