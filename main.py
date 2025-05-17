@@ -8,6 +8,7 @@ from functions.loop_emote import (
     emote_list
 )
 from functions.json import bot_location
+
 class Bot(BaseBot):
     def __init__(self):
         super().__init__()
