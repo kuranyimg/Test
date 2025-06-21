@@ -13,19 +13,18 @@ class Bot(BaseBot):
         super().__init__()
         self.user_loops = {}
         self.loop_emote_list = emote_list
+        
+    async def on_user_join(self, user: User, pos) -> None:
+        # خزّن موقع المنضم
+        user_last_positions[user.id] = (pos.x, pos.y, pos.z)
 
-      # ✅ أضف هذا داخل كلاس البوت
-  async def on_user_join(self, user: User, pos) -> None:
-      # احفظ موقع الشخص الجديد
-      user_last_positions[user.id] = (pos.x, pos.y, pos.z)
-
-      # أعد إرسال الإيموت لكل من عنده loop شغالة
-      for uid, loop_state in self.user_loops.items():
-          if not loop_state["paused"]:
-              try:
-                  await self.highrise.send_emote(loop_state["emote_id"], uid)
-              except Exception:
-                  pass  # نتجاهل الأخطاء بدون إيقاف اللوب
+        # أعد إرسال الإيموت لكل من لديه Loop
+        for uid, loop_state in self.user_loops.items():
+            if not loop_state["paused"]:
+                try:
+                    await self.highrise.send_emote(loop_state["emote_id"], uid)
+                except Exception:
+                    pass  # تجاهل أي Rate-Limit
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         if bot_location:
