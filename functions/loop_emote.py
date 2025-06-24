@@ -10,7 +10,7 @@ from highrise.models import User
 BOT_LOOP_FILE = "bot_emote_loop.json"
 
 emote_list: list[tuple[list[str], str, float]] = [
-    (['rest', 'REST', 'Rest'], 'sit-idle-cute', 17.06),
+    (['rest', 'REST', 'Rest'], 'sit-idle-cute', 16.50),
     (['zombie', 'ZOMBIE', 'Zombie'], 'idle_zombie', 28.75),
     (['relaxed', 'RElAXED', 'Relaxed'], 'idle_layingdown2', 20.55),
     (['attentive', 'att', 'Attentive'], 'idle_layingdown', 23.55),
