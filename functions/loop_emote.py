@@ -684,6 +684,14 @@ async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
     msg = message.strip()
     lower = msg.lower()
 
+    if lower == "reset loop" or lower == "resetloop":
+        bot_loop_data["emotes"].clear()
+        save_bot_loop()
+        if bot_loop_task and not bot_loop_task.done():
+            bot_loop_task.cancel()
+        await self.highrise.send_whisper(user.id, "✅ Bot loop has been cleared. Add emotes again using `loop emoteName`.")
+        return
+
     if lower == "loop list":
         if not bot_loop_data["emotes"]:
             await self.highrise.send_whisper(user.id, "Bot has no emotes saved.")
@@ -691,7 +699,12 @@ async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
         txt = "🤖 Bot Emote Loop:\n"
         for idx, emote in enumerate(bot_loop_data["emotes"], 1):
             txt += f"{idx}. {emote['emote_id']} - {emote['duration']:.1f}s\n"
-        await self.highrise.send_whisper(user.id, txt)
+
+        # ✅ تجنب الخطأ: تقسيم الرسالة الطويلة
+        chunks = [txt[i:i+450] for i in range(0, len(txt), 450)]
+        for chunk in chunks:
+            await self.highrise.send_whisper(user.id, chunk)
+            await asyncio.sleep(0.2)
         return
 
     if lower.startswith("loopr "):
@@ -731,26 +744,3 @@ async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
                 bot_loop_task = asyncio.create_task(start_bot_loop(self))
         else:
             await self.highrise.send_whisper(user.id, f"❌ Emote not recognized: {emote_name}")
-
-
-async def start_bot_loop(self: BaseBot):
-    try:
-        while True:
-            if not bot_loop_data["emotes"]:
-                await asyncio.sleep(5)
-                continue
-
-            if bot_loop_data["mode"] == "random":
-                chosen = random.choice(bot_loop_data["emotes"])
-            else:
-                for emote in bot_loop_data["emotes"]:
-                    await self.highrise.send_emote(emote["emote_id"])
-                    await asyncio.sleep(emote["duration"])
-                continue
-
-            await self.highrise.send_emote(chosen["emote_id"])
-            await asyncio.sleep(chosen["duration"])
-    except asyncio.CancelledError:
-        pass
-    except Exception:
-        traceback.print_exc()
