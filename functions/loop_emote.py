@@ -1,6 +1,13 @@
 import asyncio
+import json
+import os
+import random
+import traceback
 from highrise import BaseBot
 from highrise.models import User
+
+# ملف لحفظ حالة loop البوت
+BOT_LOOP_FILE = "bot_emote_loop.json"
 
 emote_list: list[tuple[list[str], str, float]] = [
     (['rest', 'REST', 'Rest'], 'sit-idle-cute', 17.06),
@@ -220,132 +227,165 @@ emote_list: list[tuple[list[str], str, float]] = [
 
 user_last_positions = {}
 
-# 📦 لوب الإيموتات الخاص بالمستخدمين
-async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
+# ----------------- إدارة حفظ/تحميل بيانات loop بوت -----------------
+def load_bot_loop_data():
+    if os.path.exists(BOT_LOOP_FILE):
+        try:
+            with open(BOT_LOOP_FILE, "r") as f:
+                return json.load(f)
+        except Exception:
+            traceback.print_exc()
+    # شكل البيانات: {"emotes": ["sit-idle-cute", "idle_zombie"], "mode": "order"}
+    return {"emotes": [], "mode": "order"}
+
+def save_bot_loop_data(data):
     try:
-        cleaned_msg = message.strip().lower()
-
-        # إيقاف اللوب
-        if cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
-            if user.id in self.user_loops:
-                self.user_loops[user.id]["task"].cancel()
-                del self.user_loops[user.id]
-                await self.highrise.send_whisper(
-                    user.id, "Emote loop stopped. (Type any emote name or number to start again)"
-                )
-            else:
-                await self.highrise.send_whisper(user.id, "You don't have an active emote loop.")
-            return
-
-        selected = next((e for e in emote_list if cleaned_msg in [a.lower() for a in e[0]]), None)
-        if selected:
-            aliases, emote_id, duration = selected
-
-            # إلغاء أي لوب سابق
-            if user.id in self.user_loops:
-                self.user_loops[user.id]["task"].cancel()
-
-            async def emote_loop():
-                try:
-                    while True:
-                        if not self.user_loops[user.id]["paused"]:
-                            room_users = await self.highrise.get_room_users()
-                            user_ids = [u.id for u, _ in room_users.content]
-                            if user.id not in user_ids:
-                                print(f"[Loop canceled] {user.username} is no longer in the room.")
-                                self.user_loops[user.id]["task"].cancel()
-                                del self.user_loops[user.id]
-                                return
-
-                            try:
-                                await self.highrise.send_emote(emote_id, user.id)
-                            except Exception as e:
-                                print(f"[Loop error {user.username}] {e}")
-                        await asyncio.sleep(duration)
-                except asyncio.CancelledError:
-                    pass
-                except Exception:
-                    traceback.print_exc()
-
-            task = asyncio.create_task(emote_loop())
-            self.user_loops[user.id] = {
-                "paused": False,
-                "emote_id": emote_id,
-                "duration": duration,
-                "task": task,
-            }
-
-            await self.highrise.send_whisper(
-                user.id,
-                f"You are now in a loop for emote number {aliases[0]}. (To stop, type 'stop')",
-            )
-
+        with open(BOT_LOOP_FILE, "w") as f:
+            json.dump(data, f, indent=2)
     except Exception:
         traceback.print_exc()
 
-# 👣 إيقاف اللوب مؤقتًا عند الحركة
-async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
-    try:
-        if user.id not in self.user_loops:
-            return
-        if user.id == self.user.id:
-            return
+# ----------------- لوب إيموتات البوت نفسه -----------------
+class BotEmoteLooper:
+    def __init__(self, bot: BaseBot):
+        self.bot = bot
+        self.loop_task = None
+        self.data = load_bot_loop_data()
+        # نستخدم هذه لتحويل أسماء الإيموت إلى معرفاتهم ومدة التنفيذ
+        self.emote_map = {aliases[0].lower(): (emote_id, duration) for aliases, emote_id, duration in emote_list}
+        self.running = False
 
-        old_pos = user_last_positions.get(user.id)
-        user_last_positions[user.id] = (pos.x, pos.y, pos.z)
+    def add_emote(self, emote_name: str):
+        emote_name = emote_name.lower()
+        if emote_name in self.emote_map and emote_name not in self.data["emotes"]:
+            self.data["emotes"].append(emote_name)
+            save_bot_loop_data(self.data)
+            return True
+        return False
 
-        if old_pos is None:
-            return
+    def remove_emote(self, emote_name: str):
+        emote_name = emote_name.lower()
+        if emote_name in self.data["emotes"]:
+            self.data["emotes"].remove(emote_name)
+            save_bot_loop_data(self.data)
+            return True
+        return False
 
-        if old_pos != (pos.x, pos.y, pos.z):
-            self.user_loops[user.id]["paused"] = True
-            await asyncio.sleep(2)
-            new_pos = user_last_positions.get(user.id)
-            if new_pos == (pos.x, pos.y, pos.z):
-                self.user_loops[user.id]["paused"] = False
-    except Exception:
-        traceback.print_exc()
+    def list_emotes(self):
+        return self.data["emotes"]
 
-# ------------------------------------------------------------------------------
-# 🧠 جديد: خاص بالبــــوت فقط
-# ------------------------------------------------------------------------------
-bot_emote_list = []
-bot_loop_task = None
+    def set_mode(self, mode: str):
+        if mode.lower() in ("order", "random"):
+            self.data["mode"] = mode.lower()
+            save_bot_loop_data(self.data)
+            return True
+        return False
 
-async def handle_bot_emote_loop(bot: BaseBot, user: User, message: str):
-    global bot_emote_list, bot_loop_task
+    async def start_loop(self):
+        if self.loop_task and not self.loop_task.done():
+            self.loop_task.cancel()
+            await asyncio.sleep(0.1)  # تأخير بسيط لانتظار الإلغاء
 
-    msg = message.strip().lower()
+        if not self.data["emotes"]:
+            return  # لا توجد إيموتات للتكرار
 
-    # أمر إيقاف اللوب
-    if msg == "!botresetloop":
-        bot_emote_list = []
-        if bot_loop_task:
-            bot_loop_task.cancel()
-            bot_loop_task = None
-        await bot.highrise.send_whisper(user.id, "🛑 تم إيقاف لوب الإيموتات للبوت.")
-        return
+        self.running = True
 
-    # البحث عن الإيموت
-    found = next((emote for aliases, emote, _ in emote_list if msg in [a.lower() for a in aliases]), None)
-    if not found:
-        await bot.highrise.send_whisper(user.id, "❌ لم يتم العثور على الإيموت.")
-        return
-
-    # إضافة الإيموت
-    bot_emote_list.append(found)
-    await bot.highrise.send_whisper(user.id, f"🎭 تمت إضافة الإيموت '{found}' للوب الخاص بالبوت.")
-
-    # بدء اللوب
-    if not bot_loop_task:
-        bot_loop_task = asyncio.create_task(bot_emote_loop(bot))
-
-async def bot_emote_loop(bot: BaseBot):
-    global bot_emote_list
-    while bot_emote_list:
-        for emote in bot_emote_list:
+        async def loop_func():
+            idx = 0
             try:
-                await bot.highrise.send_emote(emote)
-            except Exception as e:
-                print(f"خطأ في إيموت البوت: {e}")
-            await asyncio.sleep(3)
+                while self.running:
+                    emotes = self.data["emotes"]
+                    if not emotes:
+                        break
+
+                    if self.data["mode"] == "random":
+                        emote_name = random.choice(emotes)
+                    else:
+                        emote_name = emotes[idx % len(emotes)]
+                        idx += 1
+
+                    emote_id, duration = self.emote_map.get(emote_name, (None, None))
+                    if emote_id is None:
+                        # إيموت غير معروف، نحذفه من القائمة
+                        self.data["emotes"].remove(emote_name)
+                        save_bot_loop_data(self.data)
+                        continue
+
+                    try:
+                        await self.bot.highrise.send_emote(emote_id, self.bot.user.id)
+                    except Exception as e:
+                        print(f"Error sending bot emote '{emote_name}': {e}")
+
+                    await asyncio.sleep(duration)
+            except asyncio.CancelledError:
+                pass
+            except Exception:
+                traceback.print_exc()
+
+        self.loop_task = asyncio.create_task(loop_func())
+
+    async def stop_loop(self):
+        self.running = False
+        if self.loop_task and not self.loop_task.done():
+            self.loop_task.cancel()
+            await asyncio.sleep(0.1)
+
+# --------------- دالة لتعامل مع أوامر بوت اللوب عبر الهمس ---------------
+async def handle_bot_emote_loop(bot: BaseBot, user: User, message: str):
+    # صيغة الرسالة: loop emoteName, loop list, loopr emoteName, loopmode random/order
+    msg = message.strip()
+
+    # نتأكد أن الرسالة تبدأ ب loop أو Loop
+    if not msg.lower().startswith("loop"):
+        return
+
+    parts = msg.split(maxsplit=2)  # ['loop', 'emoteName'] أو ['loopr', 'emoteName'] الخ
+    if len(parts) < 2:
+        await bot.highrise.send_whisper(user.id, "Usage:\n- loop emoteName\n- loop list\n- loopr emoteName\n- loopmode order/random")
+        return
+
+    command = parts[0].lower()
+    param = parts[1].lower() if len(parts) > 1 else ""
+
+    # تأكد من وجود عنصر لوبر البوت
+    if not hasattr(bot, "bot_emote_looper"):
+        bot.bot_emote_looper = BotEmoteLooper(bot)
+
+    looper = bot.bot_emote_looper
+
+    if command == "loop":
+        # أمثلة: loop ghostfloat، loop list
+        if param == "list":
+            emotes = looper.list_emotes()
+            if emotes:
+                await bot.highrise.send_whisper(user.id, "Bot Emote Loop List:\n" + "\n".join(emotes))
+            else:
+                await bot.highrise.send_whisper(user.id, "Bot emote loop list is empty.")
+        else:
+            # أضف الإيموت للقائمة
+            added = looper.add_emote(param)
+            if added:
+                await bot.highrise.send_whisper(user.id, f"Emote '{param}' added to bot loop.")
+                await looper.start_loop()
+            else:
+                await bot.highrise.send_whisper(user.id, f"Emote '{param}' is already in loop or unknown.")
+
+    elif command == "loopr":
+        # حذف إيموت من الحلقة
+        removed = looper.remove_emote(param)
+        if removed:
+            await bot.highrise.send_whisper(user.id, f"Emote '{param}' removed from bot loop.")
+        else:
+            await bot.highrise.send_whisper(user.id, f"Emote '{param}' not found in bot loop.")
+
+    elif command == "loopmode":
+        # تغيير وضع التكرار order/random
+        if param in ("order", "random"):
+            changed = looper.set_mode(param)
+            if changed:
+                await bot.highrise.send_whisper(user.id, f"Bot loop mode set to '{param}'.")
+            else:
+                await bot.highrise.send_whisper(user.id, "Invalid loop mode. Use 'order' or 'random'.")
+        else:
+            await bot.highrise.send_whisper(user.id, "Usage: loopmode order or loopmode random")
