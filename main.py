@@ -12,6 +12,7 @@ from functions.loop_emote import (
 )
 from functions.data_store import load_bot_location, save_bot_location
 from functions.floors import floor_locations, set_floor
+from functions.outfit import handle_outfit_command
 from functions import leaderboard as lb
 
 def chunked(iterable, size):
@@ -284,6 +285,12 @@ class Bot(BaseBot):
                     await self.highrise.send_whisper(user.id, "\n".join(chunk))
                     await asyncio.sleep(0.5)
                 return
+
+           if user.username in self.bot_owners:
+               if message.startswith("!top ") or message.startswith("!bottom ") or message.startswith("!hair ") \
+                  or message.startswith("!remove ") or message.startswith("!fit") or message.startswith("!savefit"):
+                   await handle_outfit_command(self, user, message)
+                   return
 
             await check_and_start_emote_loop(self, user, message)
 
