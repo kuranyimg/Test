@@ -610,4 +610,6 @@
 },
   "blush": {
     "blush-f_blush01": "Blush"
+  }
 }
+ 
