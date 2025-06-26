@@ -606,7 +606,7 @@
     "freckle-n_basic2018freckle10": "Under Eye Fold",
     "freckle-n_basic2018freckle08": "Eye Wrinkles",
     "freckle-n_basic2018freckle04": "Cheekbone",
-    "freckl-n_sharpfaceshadow": "Face Shadow"
+    "freckle-n_sharpfaceshadow": "Face Shadow"
 },
   "blush": {
     "blush-f_blush01": "Blush"
