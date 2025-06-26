@@ -1,9 +1,33 @@
 {
-  "face_hair": {
+ "face_hair": {
     "face_hair-n_newbasicfacehairupper17": "Chevron Mustache",
     "face_hair-n_newbasicfacehairupper16": "Cantinflas",
     "face_hair-n_newbasicfacehairupper15": "Walrus Mustache",
-    ...
+    "face_hair-n_newbasicfacehairupper14": "Toothbrush Mustache",
+    "face_hair-n_newbasicfacehairupper13": "Dali Mustache",
+    "face_hair-n_newbasicfacehairupper08": "The Mario",
+    "face_hair-n_newbasicfacehairupper07": "Downward English",
+    "face_hair-n_newbasicfacehairupper06": "Horseshoe",
+    "face_hair-n_newbasicfacehairupper05": "Handlebar",
+    "face_hair-n_newbasicfacehairupper04": "Dallas Mustache",
+    "face_hair-n_newbasicfacehairupper02": "Long Stubble Mustache",
+    "face_hair-n_newbasicfacehairupper01": "Stubble Mustache",
+    "face_hair-n_newbasicfacehairlower20": "Small Sideburn",
+    "face_hair-n_newbasicfacehairlower18": "Mutton Chops",
+    "face_hair-n_newbasicfacehairlower17": "Long Sideburn",
+    "face_hair-n_newbasicfacehairlower16": "Full Beard",
+    "face_hair-n_newbasicfacehairlower13": "Garibaldi Beard",
+    "face_hair-n_newbasicfacehairlower12": "Shaggy Beard",
+    "face_hair-n_newbasicfacehairlower09": "Long Goatee",
+    "face_hair-n_newbasicfacehairlower08b": "Corporate Beard",
+    "face_hair-n_newbasicfacehairlower07": "Brett Beard",
+    "face_hair-n_newbasicfacehairlower06": "Pointy Chin Beard",
+    "face_hair-n_newbasicfacehairlower05": "Soul Patch",
+    "face_hair-n_newbasicfacehairlower04": "Extended Soul Patch",
+    "face_hair-n_newbasicfacehairlower02new": "Long Stubble",
+    "face_hair-n_newbasicfacehairlower02bnew": "Stubble Goatee",
+    "face_hair-n_newbasicfacehairlower01": "Light Stubble"
+}
   },
   "hair_front": {
     "hair_front-n_malenew33": "Short Short Fro",
