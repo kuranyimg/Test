@@ -499,5 +499,33 @@
     "skirt-n_room12019pleatedskirtgrey": "Pleated Skirt Grey",
     "skirt-n_room12019pleatedskirtblack": "Pleated Black Skirt",
     "skirt-f_gianttutu": "Tutu"
-}
+},
+  "shoes": {
+    "shoes-n_whitedans": "White Dans",
+    "shoes-n_starteritems2019flatswhite": "White Flats",
+    "shoes-n_starteritems2019flatspink": "Pink Flats",
+    "shoes-n_starteritems2019flatsblack": "Black Flats",
+    "shoes-n_starteritems2018conversewhite": "White Converse",
+    "shoes-n_room32019socksneakersgrey": "Grey Sock Sneakers",
+    "shoes-n_room32019socksneakersblack": "Black Sock Sneakers",
+    "shoes-n_room32019chunkysneaks": "White Chunky Sneaks",
+    "shoes-n_room22019kneehighsblack": "Black Knee High Boots",
+    "shoes-n_room22019heelspink": "Basic Pink Heels",
+    "shoes-n_room12019sneakerspink": "Basic Pink Sneakers",
+    "shoes-n_room12019sneakersblack": "Basic Black Sneakers",
+    "shoes-n_room12019sandalsgrey": "Basic Grey Sandals",
+    "shoes-n_room12019hightopsred": "Red High Tops",
+    "shoes-n_room12019hightopsblack": "Black High Tops",
+    "shoes-n_room12019bootsblack": "Basic Black Boots",
+    "shoes-n_platformsneakerblack": "Black Platform Sneakers",
+    "shoes-n_drstompsbootsyellow": "Yellow Dr. Stomp Boots",
+    "shoes-n_drstompsbootswhite": "White Dr. Stomp Boots",
+    "shoes-n_drstompsbootscherry": "Cherry Dr. Stomp Boots",
+    "shoes-n_converse_black": "Black Converse",
+    "shoes-n_converse": "Converse Sneakers"
+
+},
+  "sock": {
+    "shoes-n_room22019tallsocks": "Tall Socks"
+},
 }
