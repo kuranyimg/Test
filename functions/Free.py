@@ -528,4 +528,90 @@
   "sock": {
     "shoes-n_room22019tallsocks": "Tall Socks"
 },
+  "gloves": {
+    "gloves-n_room32019basketball": "Standard Basketball"
+},
+  "glasses": {
+    "glasses-n_starteritems201roundframesbrown": "Round Frames - Brown",
+    "glasses-n_starteritems2019squareframesbrown": "Square Frames - Brown",
+    "glasses-n_starteritems2019squareframesblack": "Square Frames - Black",
+    "glasses-n_starteritems2019roundframesblack": "Round Frames - Black",
+    "glasses-n_room32019smallshades": "Tiny Shades",
+    "glasses-n_room32019shieldsunglassesblack": "Black Shield Glasses",
+    "glasses-n_room32019aviatorshieldsyellow": "Yellow Aviator Shields",
+    "glasses-n_room22019aviators": "Basic Aviators",
+    "glasses-n_room12019halfrimwhite": "White Half Rim Glasses",
+    "glasses-n_room12019halfrimblack": "Black Half Rim Glasses",
+    "glasses-n_room12019circleshades": "Plain Black Circular Shades",
+    "glasses-n_room12019circleframes": "Black Circular Frames"
+},
+  "bag": {
+    "bag-n_room32019sweaterwrapblack": "Black Sweater Wrap",
+    "bag-n_room32019sidebagyellow": "Yellow Mini Pack",
+    "bag-n_room32019sidebagblack": "Black Mini Pack",
+    "bag-n_room32019flannelwrapyellow": "Yellow Flannel Wrap",
+    "bag-n_room32019fannypackblack": "Black Fanny Pack",
+    "bag-n_room12019purse": "Plain Black Purse",
+    "bag-n_room12019messengerbag": "Plain Black Messenger Bag",
+    "bag-n_room12019backpack": "Basic Black Backpack",
+    "bag-n_SCSpring2018sunflowerpurse": "Sunflower Purse"
+},
+  "earrings": {
+    "earrings-n_room32019chainearrings": "Chain Earrings",
+    "earrings-n_room12019goldhoops": "Gold Hoops"
+},
+  "necklace": {
+    "necklace-n_room32019locknecklace": "Padlock Necklace",
+    "necklace-n_room22019scarfgrey": "Grey Fashion Scarf",
+    "necklace-n_room22019scarfblack": "Black Fashion Scarf",
+    "necklace-n_room12019necklace": "Gold Necklace",
+    "necklace-n_room12019chain": "Plain Gold Chain",
+    "necklace-n_SCSpring2018camera": "Retro Camera",
+    "necklace-n_12": "Goth Necklace"
+},
+  "watch": {
+    "watch-n_room32019blackwatch": "Classic Black Watch",
+    "watch-n_room12019watch": "Basic Watch"
+},
+  "handbag": {
+    "handbag-n_room32019skateboardxo": "XOXO Skateboard",
+    "handbag-n_room32019skateboardcamo": "Camo Skateboard",
+    "handbag-n_room22019sucker": "Red Sucker",
+    "handbag-n_room22019rose": "White Rose",
+    "handbag-n_room22019banana": "Banana",
+    "handbag-n_cupcake2019cupcakebear": "Cupcake Bear"
+},
+  "freckle": {
+    "freckle-n_freckle01": "Pink Freckles",
+    "freckle-n_basic2018freckle44": "Cheek Star",
+    "freckle-n_basic2018freckle43": "Cheek Heart",
+    "freckle-n_basic2018freckle42": "White Face Jewels",
+    "freckle-n_basic2018freckle40": "Pink Heart Freckles",
+    "freckle-n_basic2018freckle39": "Cheek Hearts",
+    "freckle-n_basic2018freckle38": "Purple Bandaid",
+    "freckle-n_basic2018freckle37": "Plain Bandaid",
+    "freckle-n_basic2018freckle36": "White Under Eye Shadow",
+    "freckle-n_basic2018freckle35": "Pink Under Eye Shadow",
+    "freckle-n_basic2018freckle34": "Black Under Eye Shadow",
+    "freckle-n_basic2018freckle33": "Face Glitter",
+    "freckle-n_basic2018freckle32": "Sparkle Cheeks",
+    "freckle-n_basic2018freckle31": "Chin Mole",
+    "freckle-n_basic2018freckle30": "Cheek Mole",
+    "freckle-n_basic2018freckle28": "All Over Freckles",
+    "freckle-n_basic2018freckle27": "Cheek Freckles",
+    "freckle-n_basic2018freckle25": "Scattered Freckles",
+    "freckle-n_basic2018freckle22": "Rosy Cheeks",
+    "freckle-n_basic2018freckle21": "Blush Dots",
+    "freckle-n_basic2018freckle19": "Nasal Folds",
+    "freckle-n_basic2018freckle16": "Double Forehead Wrinkle",
+    "freckle-n_basic2018freckle15": "Forehead Wrinkle",
+    "freckle-n_basic2018freckle14": "Under Eye Wrinkle",
+    "freckle-n_basic2018freckle13": "Under Eye Crease",
+    "freckle-n_basic2018freckle10": "Under Eye Fold",
+    "freckle-n_basic2018freckle08": "Eye Wrinkles",
+    "freckle-n_basic2018freckle04": "Cheekbone",
+    "freckl-n_sharpfaceshadow": "Face Shadow"
+},
+  "blush": {
+    "blush-f_blush01": "Blush"
 }
