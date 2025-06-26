@@ -27,7 +27,7 @@
     "face_hair-n_newbasicfacehairlower02new": "Long Stubble",
     "face_hair-n_newbasicfacehairlower02bnew": "Stubble Goatee",
     "face_hair-n_newbasicfacehairlower01": "Light Stubble"
-}
+},
   "eyebrow": {
     "eyebrow-n_basic2018newbrows17": "Wave Brow",
     "eyebrow-n_basic2018newbrows16": "Tapered Brow",
