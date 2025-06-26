@@ -1,5 +1,5 @@
 {
- "face_hair": {
+  "face_hair": {
     "face_hair-n_newbasicfacehairupper17": "Chevron Mustache",
     "face_hair-n_newbasicfacehairupper16": "Cantinflas",
     "face_hair-n_newbasicfacehairupper15": "Walrus Mustache",
@@ -27,7 +27,7 @@
     "face_hair-n_newbasicfacehairlower02new": "Long Stubble",
     "face_hair-n_newbasicfacehairlower02bnew": "Stubble Goatee",
     "face_hair-n_newbasicfacehairlower01": "Light Stubble"
-},
+  },
   "eyebrow": {
     "eyebrow-n_basic2018newbrows17": "Wave Brow",
     "eyebrow-n_basic2018newbrows16": "Tapered Brow",
@@ -64,7 +64,7 @@
     "eyebrow-n_03": "Thick brows",
     "eyebrow-n_02": "Crescent brows",
     "eyebrow-n_01": "Grandpa brows"
-},
+  },
   "eye": {
     "eye-n_basic2018zanyeyes": "Zany Eyes",
     "eye-n_basic2018woaheyes": "Woah Eyes",
@@ -131,7 +131,7 @@
     "eye-n_basic2018blockeyes": "Blocky Eyes",
     "eye-n_basic2018animeeyes": "Basic Anime Eyes",
     "eye-n_basic2018angryeyes": "Angry Eyes"
- },
+  },
   "nose": {
     "nose-n_room22019nosestud": "Nose Stud",
     "nose-n_basic2018newnose20": "Dot Nose",
@@ -158,7 +158,7 @@
     "nose-n_03": "Slope Nose",
     "nose-n_01_b": "Dainty Nose",
     "nose-n_01": "Baby Nose"
-},
+  },
   "mouth": {
     "mouth-n_room22019sillymouth": "Silly Mouth",
     "mouth-n_basic2018widethinround": "Wide Thin Round Lips",
@@ -211,8 +211,8 @@
     "mouth-basic2018chubbymouth": "Chubby Mouth",
     "mouth-basic2018chippermouth": "Chipper Mouth",
     "mouth-basic2018charmer": "Charmer Mouth",
-    "mouth-basic2018bunnyteeth": "Buck Teeth"  
-},
+    "mouth-basic2018bunnyteeth": "Buck Teeth"
+  },
   "hair_front": {
     "hair_front-n_malenew33": "Short Short Fro",
     "hair_front-n_malenew32": "Box Braids",
@@ -306,9 +306,9 @@
     "hair_front-n_basic2018coilsfront": "Coils Front",
     "hair_front-n_basic2018buzzcut": "Bald",
     "hair_front-n_basic2018afropompoms": "Afro Pom Poms",
-    "hair_front-n_basic2018afrofront": "Afro Front"  
-},
- "hair_back": {
+    "hair_front-n_basic2018afrofront": "Afro Front"
+  },
+  "hair_back": {
     "hair_back-n_malenew33": "Short Short Fro",
     "hair_back-n_malenew32": "Box Braids",
     "hair_back-n_malenew31": "Long Undercut Dreads",
@@ -415,7 +415,7 @@
     "hair_back-n_basic2018afromedium": "Afro Medium",
     "hair_back-n_basic2018afrolong": "Afro Long",
     "hair_back-n_basic2018afrohighpony": "Afro High Pony"
-},
+  },
   "shirt": {
     "shirt-n_starteritems2019tankwhite": "Tank - White",
     "shirt-n_starteritems2019tankblack": "Tank - Black",
@@ -453,8 +453,8 @@
     "shirt-f_skullsweaterblack": "Black Skull Sweater",
     "shirt-f_punklace": "Punk Lace",
     "shirt-f_plaidtiedshirtred": "Red Tied Plaid Shirt",
-    "shirt-f_marchingband": "Marching Band Top"  
-},
+    "shirt-f_marchingband": "Marching Band Top"
+  },
   "pants": {
     "shorts-f_pantyhoseshortsnavy": "Navy Shorts w/ Pantyhose",
     "pants-n_starteritems2019mensshortswhite": "Basic Shorts - White",
@@ -485,7 +485,7 @@
     "pants-n_room12019formalslacksblack": "Plain Black Formal Slacks",
     "pants-n_room12019blackacidwashjeans": "Plain Black Acid Wash Jeans",
     "pants-n_2016fallgreyacidwashjeans": "Grey Acid Wash"
-},
+  },
   "skirt": {
     "skirt-n_starteritems2018whiteskirt": "Basic Skirt - White",
     "skirt-n_starteritems2018blueskirt": "Basic Skirt - Blue",
@@ -496,7 +496,7 @@
     "skirt-n_room12019pleatedskirtgrey": "Pleated Skirt Grey",
     "skirt-n_room12019pleatedskirtblack": "Pleated Black Skirt",
     "skirt-f_gianttutu": "Tutu"
-},
+  },
   "shoes": {
     "shoes-n_whitedans": "White Dans",
     "shoes-n_starteritems2019flatswhite": "White Flats",
@@ -520,13 +520,13 @@
     "shoes-n_drstompsbootscherry": "Cherry Dr. Stomp Boots",
     "shoes-n_converse_black": "Black Converse",
     "shoes-n_converse": "Converse Sneakers"
-},
+  },
   "sock": {
     "shoes-n_room22019tallsocks": "Tall Socks"
-},
+  },
   "gloves": {
     "gloves-n_room32019basketball": "Standard Basketball"
-},
+  },
   "glasses": {
     "glasses-n_starteritems201roundframesbrown": "Round Frames - Brown",
     "glasses-n_starteritems2019squareframesbrown": "Square Frames - Brown",
@@ -540,7 +540,7 @@
     "glasses-n_room12019halfrimblack": "Black Half Rim Glasses",
     "glasses-n_room12019circleshades": "Plain Black Circular Shades",
     "glasses-n_room12019circleframes": "Black Circular Frames"
-},
+  },
   "bag": {
     "bag-n_room32019sweaterwrapblack": "Black Sweater Wrap",
     "bag-n_room32019sidebagyellow": "Yellow Mini Pack",
@@ -551,11 +551,11 @@
     "bag-n_room12019messengerbag": "Plain Black Messenger Bag",
     "bag-n_room12019backpack": "Basic Black Backpack",
     "bag-n_SCSpring2018sunflowerpurse": "Sunflower Purse"
-},
+  },
   "earrings": {
     "earrings-n_room32019chainearrings": "Chain Earrings",
     "earrings-n_room12019goldhoops": "Gold Hoops"
-},
+  },
   "necklace": {
     "necklace-n_room32019locknecklace": "Padlock Necklace",
     "necklace-n_room22019scarfgrey": "Grey Fashion Scarf",
@@ -564,11 +564,11 @@
     "necklace-n_room12019chain": "Plain Gold Chain",
     "necklace-n_SCSpring2018camera": "Retro Camera",
     "necklace-n_12": "Goth Necklace"
-},
+  },
   "watch": {
     "watch-n_room32019blackwatch": "Classic Black Watch",
     "watch-n_room12019watch": "Basic Watch"
-},
+  },
   "handbag": {
     "handbag-n_room32019skateboardxo": "XOXO Skateboard",
     "handbag-n_room32019skateboardcamo": "Camo Skateboard",
@@ -576,7 +576,7 @@
     "handbag-n_room22019rose": "White Rose",
     "handbag-n_room22019banana": "Banana",
     "handbag-n_cupcake2019cupcakebear": "Cupcake Bear"
-},
+  },
   "freckle": {
     "freckle-n_freckle01": "Pink Freckles",
     "freckle-n_basic2018freckle44": "Cheek Star",
@@ -607,9 +607,7 @@
     "freckle-n_basic2018freckle08": "Eye Wrinkles",
     "freckle-n_basic2018freckle04": "Cheekbone",
     "freckle-n_sharpfaceshadow": "Face Shadow"
-},
+  },
   "blush": {
     "blush-f_blush01": "Blush"
   }
-}
- 
