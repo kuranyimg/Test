@@ -456,8 +456,48 @@
     "shirt-f_punklace": "Punk Lace",
     "shirt-f_plaidtiedshirtred": "Red Tied Plaid Shirt",
     "shirt-f_marchingband": "Marching Band Top"
-  },
-  "bottom": {
-    ...
-  }
+  
+},
+  "pants": {
+    "shorts-f_pantyhoseshortsnavy": "Navy Shorts w/ Pantyhose",
+    "pants-n_starteritems2019mensshortswhite": "Basic Shorts - White",
+    "pants-n_starteritems2019mensshortsblue": "Basic Shorts - Blue",
+    "pants-n_starteritems2019mensshortsblack": "Basic Shorts - Black",
+    "pants-n_starteritems2019cuffedshortswhite": "Cuffed Shorts - White",
+    "pants-n_starteritems2019cuffedshortsblue": "Cuffed Shorts - Blue",
+    "pants-n_starteritems2019cuffedshortsblack": "Cuffed Shorts - Black",
+    "pants-n_starteritems2019cuffedjeanswhite": "Cuffed Jeans - White",
+    "pants-n_starteritems2019cuffedjeansblue": "Cuffed Jeans - Blue",
+    "pants-n_starteritems2019cuffedjeansblack": "Cuffed Jeans - Black",
+    "pants-n_room32019rippedpantswhite": "Ripped White Jeans",
+    "pants-n_room32019rippedpantsblue": "Ripped Blue Jeans",
+    "pants-n_room32019longtrackshortscamo": "Camo Track Shorts",
+    "pants-n_room32019longshortswithsocksgrey": "Grey Long Shorts",
+    "pants-n_room32019longshortswithsocksblack": "Black Long Shorts",
+    "pants-n_room32019highwasittrackshortsblack": "Short Black Track Shorts",
+    "pants-n_room32019baggytrackpantsred": "Red Baggy Trackpants",
+    "pants-n_room32019baggytrackpantsgreycamo": "Grey Camo Baggy Trackpants",
+    "pants-n_room22019undiespink": "Pink Undies",
+    "pants-n_room22019undiesblack": "Black Undies",
+    "pants-n_room22019techpantscamo": "Camo Tech Pants",
+    "pants-n_room22019shortcutoffsdenim": "Short Denim Cut-Offs",
+    "pants-n_room22019longcutoffsdenim": "Denim Cut-Offs",
+    "pants-n_room12019rippedpantsblue": "Ripped Blue Denim",
+    "pants-n_room12019rippedpantsblack": "Ripped Black Denim",
+    "pants-n_room12019formalslackskhaki": "Khaki Formal Slacks",
+    "pants-n_room12019formalslacksblack": "Plain Black Formal Slacks",
+    "pants-n_room12019blackacidwashjeans": "Plain Black Acid Wash Jeans",
+    "pants-n_2016fallgreyacidwashjeans": "Grey Acid Wash"
+},
+  "skirt": {
+    "skirt-n_starteritems2018whiteskirt": "Basic Skirt - White",
+    "skirt-n_starteritems2018blueskirt": "Basic Skirt - Blue",
+    "skirt-n_starteritems2018blackskirt": "Basic Skirt - Black",
+    "skirt-n_room22019skirtwithsocksplaid": "Plaid Skirt With Socks",
+    "skirt-n_room22019skirtwithsocksblack": "Black Skirt With Socks",
+    "skirt-n_room12019pleatedskirtpink": "Pleated Pink Skirt",
+    "skirt-n_room12019pleatedskirtgrey": "Pleated Skirt Grey",
+    "skirt-n_room12019pleatedskirtblack": "Pleated Black Skirt",
+    "skirt-f_gianttutu": "Tutu"
+}
 }
