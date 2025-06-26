@@ -159,7 +159,6 @@
     "nose-n_01_b": "Dainty Nose",
     "nose-n_01": "Baby Nose"
 },
-
   "mouth": {
     "mouth-n_room22019sillymouth": "Silly Mouth",
     "mouth-n_basic2018widethinround": "Wide Thin Round Lips",
@@ -307,9 +306,8 @@
     "hair_front-n_basic2018coilsfront": "Coils Front",
     "hair_front-n_basic2018buzzcut": "Bald",
     "hair_front-n_basic2018afropompoms": "Afro Pom Poms",
-    "hair_front-n_basic2018afrofront": "Afro Front"
-}
-  },
+    "hair_front-n_basic2018afrofront": "Afro Front"  
+},
  "hair_back": {
     "hair_back-n_malenew33": "Short Short Fro",
     "hair_back-n_malenew32": "Box Braids",
@@ -455,8 +453,7 @@
     "shirt-f_skullsweaterblack": "Black Skull Sweater",
     "shirt-f_punklace": "Punk Lace",
     "shirt-f_plaidtiedshirtred": "Red Tied Plaid Shirt",
-    "shirt-f_marchingband": "Marching Band Top"
-  
+    "shirt-f_marchingband": "Marching Band Top"  
 },
   "pants": {
     "shorts-f_pantyhoseshortsnavy": "Navy Shorts w/ Pantyhose",
@@ -523,7 +520,6 @@
     "shoes-n_drstompsbootscherry": "Cherry Dr. Stomp Boots",
     "shoes-n_converse_black": "Black Converse",
     "shoes-n_converse": "Converse Sneakers"
-
 },
   "sock": {
     "shoes-n_room22019tallsocks": "Tall Socks"
