@@ -10,7 +10,7 @@ from highrise.models import User
 BOT_LOOP_FILE = "bot_emote_loop.json"
 
 emote_list: list[tuple[list[str], str, float]] = [
-    (['rest', 'REST', 'Rest'], 'sit-idle-cute', 17.06),
+    (['rest', 'REST', 'Rest'], 'sit-idle-cute', 16.50),
     (['zombie', 'ZOMBIE', 'Zombie'], 'idle_zombie', 28.75),
     (['relaxed', 'RElAXED', 'Relaxed'], 'idle_layingdown2', 20.55),
     (['attentive', 'att', 'Attentive'], 'idle_layingdown', 23.55),
@@ -226,9 +226,8 @@ emote_list: list[tuple[list[str], str, float]] = [
 ]
 
 user_last_positions = {}
-
 # -----------------------------------------
-# USER EMOTE LOOP (لا تُمسه حسب طلبك)
+# USER EMOTE LOOP
 # -----------------------------------------
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     try:
@@ -238,9 +237,7 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
             if user.id in self.user_loops:
                 self.user_loops[user.id]["task"].cancel()
                 del self.user_loops[user.id]
-                await self.highrise.send_whisper(
-                    user.id, "Emote loop stopped. (Type any emote name or number to start again)"
-                )
+                await self.highrise.send_whisper(user.id, "Emote loop stopped. (Type any emote name or number to start again)")
             else:
                 await self.highrise.send_whisper(user.id, "You don't have an active emote loop.")
             return
@@ -262,7 +259,6 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
                                 self.user_loops[user.id]["task"].cancel()
                                 del self.user_loops[user.id]
                                 return
-
                             await self.highrise.send_emote(emote_id, user.id)
                         await asyncio.sleep(duration)
                 except asyncio.CancelledError:
@@ -285,7 +281,6 @@ async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
     except Exception:
         traceback.print_exc()
 
-
 # -----------------------------------------
 # توقف واستئناف المستخدم عند الحركة
 # -----------------------------------------
@@ -293,9 +288,6 @@ async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
     try:
         if user.id not in self.user_loops:
             return
-        if user.id == self.user.id:
-            return
-
         old_pos = user_last_positions.get(user.id)
         user_last_positions[user.id] = (pos.x, pos.y, pos.z)
 
@@ -310,23 +302,20 @@ async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
     except Exception:
         traceback.print_exc()
 
-
 # ================================================
-# 👇 BOT EMOTE LOOP - للـبـوت نـفـسـه
+# 👇 BOT EMOTE LOOP
 # ================================================
 
 loop_file_path = "functions/bot_emote_loop.json"
 bot_loop_data = {
-    "emotes": [],  # كل عنصر: {"emote_id": "xxx", "duration": 0}
-    "mode": "order",  # أو "random"
+    "emotes": [],
+    "mode": "order",  # or "random"
 }
 bot_loop_task = None
-
 
 def save_bot_loop():
     with open(loop_file_path, "w") as f:
         json.dump(bot_loop_data, f)
-
 
 def load_bot_loop():
     global bot_loop_data
@@ -337,19 +326,13 @@ def load_bot_loop():
         except Exception:
             pass
 
-
 async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
     global bot_loop_task
-
     msg = message.strip()
     lower = msg.lower()
 
-    if lower == "reset loop" or lower == "resetloop":
-        bot_loop_data["emotes"].clear()
-        save_bot_loop()
-        if bot_loop_task and not bot_loop_task.done():
-            bot_loop_task.cancel()
-        await self.highrise.send_whisper(user.id, "✅ Bot loop has been cleared. Add emotes again using `loop emoteName`.")
+    if lower in ("rest loop", "reset loop", "stop loop", "stop bot loop"):
+        await stop_bot_emote_loop(self, user)
         return
 
     if lower == "loop list":
@@ -359,12 +342,7 @@ async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
         txt = "🤖 Bot Emote Loop:\n"
         for idx, emote in enumerate(bot_loop_data["emotes"], 1):
             txt += f"{idx}. {emote['emote_id']} - {emote['duration']:.1f}s\n"
-
-        # ✅ تجنب الخطأ: تقسيم الرسالة الطويلة
-        chunks = [txt[i:i+450] for i in range(0, len(txt), 450)]
-        for chunk in chunks:
-            await self.highrise.send_whisper(user.id, chunk)
-            await asyncio.sleep(0.2)
+        await self.highrise.send_whisper(user.id, txt)
         return
 
     if lower.startswith("loopr "):
@@ -404,3 +382,34 @@ async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
                 bot_loop_task = asyncio.create_task(start_bot_loop(self))
         else:
             await self.highrise.send_whisper(user.id, f"❌ Emote not recognized: {emote_name}")
+
+async def start_bot_loop(self: BaseBot):
+    try:
+        while True:
+            if not bot_loop_data["emotes"]:
+                await asyncio.sleep(5)
+                continue
+
+            if bot_loop_data["mode"] == "random":
+                chosen = random.choice(bot_loop_data["emotes"])
+                await self.highrise.send_emote(chosen["emote_id"])
+                await asyncio.sleep(chosen["duration"])
+            else:
+                for emote in bot_loop_data["emotes"]:
+                    await self.highrise.send_emote(emote["emote_id"])
+                    await asyncio.sleep(emote["duration"])
+    except asyncio.CancelledError:
+        pass
+    except Exception:
+        traceback.print_exc()
+
+async def stop_bot_emote_loop(self: BaseBot, user: User):
+    global bot_loop_task
+    if bot_loop_task and not bot_loop_task.done():
+        bot_loop_task.cancel()
+        bot_loop_task = None
+        bot_loop_data["emotes"].clear()
+        save_bot_loop()
+        await self.highrise.send_whisper(user.id, "🛑 Bot emote loop stopped.")
+    else:
+        await self.highrise.send_whisper(user.id, "❌ No active bot loop to stop.")
