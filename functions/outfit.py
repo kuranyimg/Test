@@ -182,25 +182,37 @@ async def remove_fit(slot: int) -> Tuple[bool, str]:
     _save_fits()
     return True, f"✅ Removed fit from slot {slot}."
 
-async def load_random_fit(bot) -> Tuple[bool, str]:
-    if not saved_fits:
-        return False, "❌ No saved fits to load."
-
-    slot = random.choice(list(saved_fits.keys()))
-    return await load_fit(bot, int(slot))
-
-# === New: Load Random from free_items.json ===
-
 async def load_random_items_from_free(bot) -> Tuple[bool, str]:
     if not free_items:
         return False, "❌ No free items available."
 
+    # Core categories to always include
+    core_categories = [
+        "hair_front", "face_hair", "freckle", "mouth",
+        "nose", "eye", "eyebrow", "shirt", "shoes"
+    ]
+
+    # Pick pants OR skirt
+    bottom_category = random.choice(["pants", "skirt"])
+    core_categories.append(bottom_category)
+
     outfit = []
-    for category, items_dict in free_items.items():
+
+    for category in core_categories:
+        items_dict = free_items.get(category)
         if not items_dict:
             continue
         item_id = random.choice(list(items_dict.keys()))
         outfit.append(Item(type="clothing", id=item_id, amount=1, account_bound=False, active_palette=0))
+
+        # Pair hair_front with matching hair_back (if exists)
+        if category == "hair_front":
+            front_suffix = item_id.replace("hair_front", "")
+            back_dict = free_items.get("hair_back", {})
+            for back_id in back_dict:
+                if back_id.endswith(front_suffix):
+                    outfit.append(Item(type="clothing", id=back_id, amount=1, account_bound=False, active_palette=0))
+                    break
 
     await bot.highrise.set_outfit(outfit)
     return True, "🎲 Random outfit equipped from free items."
