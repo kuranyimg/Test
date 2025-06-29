@@ -41,7 +41,7 @@ def _init_db():
             username TEXT PRIMARY KEY,
             join_timestamp INTEGER NOT NULL
         )
-    ''')  # To track join time for longest stay and session time
+    ''')
     conn.commit()
     conn.close()
 
@@ -64,9 +64,6 @@ def format_number(value: int) -> str:
     elif value >= 1_000:
         return f"{value / 1_000:.1f}k"
     return str(value)
-
-def format_xp(value: int) -> str:
-    return f"{format_number(value)} XP"
 
 # -- Removal system --
 def load_removed_users():
@@ -227,7 +224,7 @@ def get_leaderboard_menu_text():
         "2. 💬 Total Messages Sent\n"
         "3. 📅 Daily Visit Streak\n"
         "4. 🛋️ Longest Single Stay\n"
-        "5. 🏅 All-Time Room Legends\n"
+        "5. 👑 Room Champions\n"
         "Use `leaderboard <number>` or `leaderboard <name>` to view a leaderboard."
     )
 
@@ -237,9 +234,11 @@ def _format_leaderboard_lines(data_unused, choice):
         "most_talkative": "💬 Total Messages Sent",
         "most_daily_streak": "📅 Daily Visit Streak",
         "most_stayed": "🛋️ Longest Single Stay",
-        "all_time": "🏅 All-Time Room Legends",
+        "room_champion": "👑 Room Champions",
     }
     title = emoji_titles.get(choice, choice)
+    if choice == "room_champion":
+        return get_room_champion_leaderboard()
     category_data = get_category_scores(choice)
     filtered = {u: v for u, v in category_data.items() if not is_user_removed(None, u)}
     sorted_users = sorted(filtered.items(), key=lambda x: x[1], reverse=True)[:10]
@@ -252,9 +251,7 @@ def _format_leaderboard_lines(data_unused, choice):
         medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f"{i}."
         val = (
             format_duration(value) if choice in ["most_active", "most_stayed"]
-            else format_number(value) if choice in ["most_talkative", "most_daily_streak"]
-            else format_xp(value) if choice == "all_time"
-            else str(value)
+            else format_number(value)
         )
         lines.append(f"{medal} @{user} – {val}")
     return lines
@@ -265,7 +262,7 @@ def get_leaderboard_text_by_choice(data_unused, choice: str, public=False):
         "2": "most_talkative",
         "3": "most_daily_streak",
         "4": "most_stayed",
-        "5": "all_time",
+        "5": "room_champion",
     }
     choice = name_map.get(choice.lower(), choice.lower())
     lines = _format_leaderboard_lines(None, choice)
@@ -282,58 +279,80 @@ def get_user_rank_text(data_unused, username, category):
         if user == username:
             val = (
                 format_duration(value) if category in ["most_active", "most_stayed"]
-                else format_number(value) if category in ["most_talkative", "most_daily_streak"]
-                else format_xp(value) if category == "all_time"
-                else str(value)
+                else format_number(value)
             )
             return i, user, val
     return None, username, "0"
 
+# --- New Room Champion logic ---
+def get_room_champion_scores() -> dict:
+    categories = ["most_active", "most_talkative", "most_daily_streak", "most_stayed"]
+    champion_counts = {}
+
+    for category in categories:
+        scores = get_category_scores(category)
+        filtered = {u: v for u, v in scores.items() if not is_user_removed(None, u)}
+        if not filtered:
+            continue
+        top_user = max(filtered.items(), key=lambda x: x[1])[0]
+        champion_counts[top_user] = champion_counts.get(top_user, 0) + 1
+
+    return champion_counts
+
+def get_user_champion_count(username: str) -> int:
+    return get_room_champion_scores().get(username.lower(), 0)
+
+def get_room_champion_leaderboard() -> list[str]:
+    scores = get_room_champion_scores()
+    sorted_users = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    if not sorted_users:
+        return ["📉 No Room Champions yet."]
+    
+    lines = ["👑 Room Champion Leaderboard:"]
+    for i, (user, count) in enumerate(sorted_users[:10], 1):
+        medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f"{i}."
+        lines.append(f"{medal} @{user} – #1 in {count} categories")
+    return lines
+
 def get_user_full_rank_summary(data_unused, username):
     summary = [f"🧑 @{username}'s Top Ranks:"]
-    keys = ["most_active", "most_talkative", "most_daily_streak", "most_stayed", "all_time"]
+    keys = ["most_active", "most_talkative", "most_daily_streak", "most_stayed"]
     titles = {
         "most_active": "⏳ Time Spent in Room",
         "most_talkative": "💬 Total Messages Sent",
         "most_daily_streak": "📅 Daily Visit Streak",
         "most_stayed": "🛋️ Longest Single Stay",
-        "all_time": "🏅 All-Time Room Legends",
     }
     for key in keys:
         rank, _, value = get_user_rank_text(None, username, key)
         medal = "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else f"#{rank}" if rank else "-"
         summary.append(f"{medal} {titles[key]} – {value}")
+    
+    champions = get_user_champion_count(username)
+    if champions:
+        summary.append(f"👑 Room Champion in {champions} categories")
     return "\n".join(summary)
 
 # -- Update leaderboard on chat or activity --
 def update_leaderboard_on_chat(data_unused, username, duration=60):
-    """Update active time and longest stay on chat or activity event.
-    duration = seconds to add (default 60 seconds).
-    """
     if is_user_removed(None, username):
         return
     username = username.lower()
     current_active = get_category_scores("most_active").get(username, 0)
     current_stayed = get_category_scores("most_stayed").get(username, 0)
 
-    # Add time to active (in seconds)
     new_active = current_active + duration
     set_category_score(username, "most_active", new_active)
 
-    # Update longest single stay if current duration > previous
     if duration > current_stayed:
         set_category_score(username, "most_stayed", duration)
-
-    # Update all time with slow XP gain
-    update_all_time(username, duration)
 
 def update_leaderboard_on_message(data_unused, username):
     if is_user_removed(None, username):
         return
     username = username.lower()
-    current_talkative = get_category_scores("most_talkative").get(username, 0)
-    set_category_score(username, "most_talkative", current_talkative + 1)
-    update_all_time(username)
+    current_talkative = get_category_scores("most_talkative").get(username, 0) + 1
+    set_category_score(username, "most_talkative", current_talkative)
 
 def update_leaderboard_on_join(data_unused, username):
     if is_user_removed(None, username):
@@ -343,14 +362,16 @@ def update_leaderboard_on_join(data_unused, username):
     today = now.date()
     last_seen_str = get_last_visit_date(username)
     streak = get_category_scores("most_daily_streak").get(username, 0)
-    stayed_time = get_category_scores("most_stayed").get(username, 0)
+
     if last_seen_str:
         try:
             last_seen = datetime.strptime(last_seen_str, "%Y-%m-%d")
             if today == last_seen.date():
                 return
-            if (today - last_seen.date()).days == 1:
-                if stayed_time >= 1800:  # 30 minutes minimum for streak
+            days_diff = (today - last_seen.date()).days
+            if days_diff == 1:
+                stayed_time = get_category_scores("most_stayed").get(username, 0)
+                if stayed_time >= 60:
                     streak += 1
                 else:
                     streak = 1
@@ -360,80 +381,32 @@ def update_leaderboard_on_join(data_unused, username):
             streak = 1
     else:
         streak = 1
+
     set_last_visit_date(username, today.isoformat())
     set_category_score(username, "most_daily_streak", streak)
-    update_all_time(username)
-
-def update_all_time(username=None, add_duration=None):
-    """
-    Calculate all-time XP.
-
-    If add_duration is provided, add XP slowly based on this session duration.
-    Otherwise, recalc all users from current base categories.
-    """
-    if username is None:
-        users = set()
-        for cat in ["most_active", "most_talkative", "most_daily_streak"]:
-            users.update(get_category_scores(cat).keys())
-        for u in users:
-            update_all_time(u)
-        return
-    username = username.lower()
-    active = get_category_scores("most_active").get(username, 0)
-    talk = get_category_scores("most_talkative").get(username, 0)
-    streak = get_category_scores("most_daily_streak").get(username, 0)
-
-    # Slow XP gain: instead of adding full active seconds, scale down with factor
-    # Example: 1 XP per 10 seconds active instead of 1:1
-    slow_factor = 10
-
-    if add_duration is not None:
-        xp_gain = add_duration // slow_factor
-        # Add existing all_time XP + new xp_gain
-        current_all_time = get_category_scores("all_time").get(username, 0)
-        value = current_all_time + xp_gain
-    else:
-        multiplier = 3 ** (streak - 1) if streak else 0
-        value = active // slow_factor + talk * 5 + streak * multiplier
-
-    set_category_score(username, "all_time", value)
 
 # -- Handle user leaving the room --
 def update_leaderboard_on_leave(username: str):
-    """
-    Call when user leaves room.
-
-    Calculate total session time from join timestamp until now.
-    Update most_active, most_stayed (if longest), and all_time accordingly.
-    Remove session record.
-    """
     if is_user_removed(None, username):
         return
     username = username.lower()
     join_time = get_user_join_time(username)
     if join_time is None:
-        # No session info, can't update session duration
         return
 
     now_ts = int(datetime.utcnow().timestamp())
     session_duration = now_ts - join_time
     if session_duration < 0:
-        session_duration = 0  # Safety check
+        session_duration = 0
 
-    # Update most_active
     current_active = get_category_scores("most_active").get(username, 0)
     new_active = current_active + session_duration
     set_category_score(username, "most_active", new_active)
 
-    # Update most_stayed (longest single stay)
     current_stayed = get_category_scores("most_stayed").get(username, 0)
     if session_duration > current_stayed:
         set_category_score(username, "most_stayed", session_duration)
 
-    # Update all_time with slow XP gain
-    update_all_time(username, session_duration)
-
-    # Remove session record
     remove_user_session(username)
 
 # -- Commands --
@@ -473,15 +446,24 @@ async def handle_leaderboard_admin_commands(bot, user, message):
     m = re.match(r"!resetlb\s+(\w+)", msg)
     if m:
         cat = m.group(1).lower()
-        map_num = {"1": "most_active", "2": "most_talkative", "3": "most_daily_streak", "4": "most_stayed", "5": "all_time"}
+        map_num = {"1": "most_active", "2": "most_talkative", "3": "most_daily_streak", "4": "most_stayed", "5": "room_champion"}
         cat = map_num.get(cat, cat)
-        if cat in {"most_active", "most_talkative", "most_daily_streak", "most_stayed", "all_time"}:
+        if cat in {"most_active", "most_talkative", "most_daily_streak", "most_stayed"}:
             conn = _get_conn()
             cur = conn.cursor()
             cur.execute("DELETE FROM leaderboard WHERE category = ?", (cat,))
             conn.commit()
             conn.close()
             return f"✅ `{cat}` leaderboard reset."
+        elif cat == "room_champion":
+            # Room Champion resets all underlying categories
+            conn = _get_conn()
+            cur = conn.cursor()
+            for c in ["most_active", "most_talkative", "most_daily_streak", "most_stayed"]:
+                cur.execute("DELETE FROM leaderboard WHERE category = ?", (c,))
+            conn.commit()
+            conn.close()
+            return "✅ Room Champion leaderboard reset (all base categories cleared)."
         return f"❌ Invalid category `{cat}`."
 
     m = re.match(r"!removelb\s+@?(\w+)", message, re.IGNORECASE)
