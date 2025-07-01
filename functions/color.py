@@ -171,6 +171,7 @@ def get_user_full_rank_summary(_, username):
 
     lines = [f"📊 @{username}’s Leaderboard Stats:\n"]
 
+    # Keep this complete rank_line function here inside
     def rank_line(symbol, label, value, rank, suffix=""):
         if rank:
             return f"{symbol} {label}: {value}{suffix}\n                 (Rank #{rank})"
