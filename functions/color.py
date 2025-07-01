@@ -342,7 +342,7 @@ def handle_leaderboard_admin_commands(_, user, msg):
             "• resetlb <category|number> @username — Reset a user's score\n"
             "• resetlball @username — Reset all user's scores\n"
             "• resetalllb — Reset all leaderboards\n"
-            "• commandlb — Show this help"
+            "• commandlb
         )
 
     return None
