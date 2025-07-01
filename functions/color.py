@@ -172,7 +172,10 @@ def get_user_full_rank_summary(_, username):
     lines = [f"📊 @{username}’s Leaderboard Stats:\n"]
 
     def rank_line(symbol, label, value, rank, suffix=""):
-        return f"{symbol} {label}: {value}{suffix}\n                 (Rank #{rank})" if rank else f"{symbol} {label}: {value}{suffix}\n                 (Unranked)"
+        if rank:
+            return f"{symbol} {label}: {value}{suffix}\n                 (Rank #{rank})"
+        else:
+            return f"{symbol} {label}: {value}{suffix}\n                 (Unranked)"
 
     lines.append(rank_line("🥇", "Time", format_seconds(stats["most_active"]), ranks["most_active"]))
     lines.append(rank_line("💬", "Msgs", format_number(stats["most_talkative"]), ranks["most_talkative"]))
@@ -192,14 +195,36 @@ def get_leaderboard_text_by_choice(_, category, public=True):
 
     if category == "room_champion":
         rows = get_room_champion_leaderboard(10)
-        lines = ["👑 Room Champions – Top 10:\n"]
-        for i, (user, _) in enumerate(rows, 1):
-            title = title_map.get(i, "Elite")
-            crown = "👑" * min(i, 5)
-            medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f"{i}."
-            lines.append(f"{medal} @{user} — {crown} {title}")
+        lines = ["🏆 Top 10 Room Champions:"]
+
+        # Rank emojis for top 10
+        rank_emojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+
+        # Category emojis mapping
+        cat_emojis = {
+            "most_active": "⏳",
+            "most_talkative": "💬",
+            "most_afk_time": "😴",
+            "most_stayed": "🛋️"
+        }
+
+        for i, (user, _) in enumerate(rows, 0):
+            rank_emoji = rank_emojis[i] if i < len(rank_emojis) else f"{i+1}."
+            user_data = get_user_data(user.lower())
+
+            user_ranks = []
+            for cat in cat_emojis.keys():
+                top = get_top_leaderboard(cat, 100)
+                ranks = [u.lower() for u, _ in top]
+                if user.lower() in ranks and ranks.index(user.lower()) < 10:
+                    user_ranks.append(cat_emojis[cat])
+
+            rank_display = "".join(user_ranks)
+            lines.append(f"{rank_emoji} @{user} [{rank_display}]")
+
         return "\n".join(lines)
 
+    # For other categories, keep original style
     rows = get_top_leaderboard(category, 10)
     lines = [f"{category_names[category]} Top 10:"]
     for i, (user, val) in enumerate(rows, 1):
@@ -209,9 +234,9 @@ def get_leaderboard_text_by_choice(_, category, public=True):
     return "\n".join(lines)
 
 def format_seconds(sec):
-    d, h = divmod(sec, 86400)
-    h, m = divmod(h, 3600)
-    m //= 60
+    d, remainder = divmod(sec, 86400)
+    h, remainder = divmod(remainder, 3600)
+    m, _ = divmod(remainder, 60)
     if d > 0:
         return f"{d}d {h}h"
     return f"{h}h {m}m" if h else f"{m}m"
@@ -223,14 +248,7 @@ def format_number(n):
         n /= 1000
     return f"{n:.1f}T"
 
-def get_leaderboard_menu_text():
-    lines = ["🏆 Leaderboard Categories:"]
-    for i, cat in enumerate(leaderboard_categories, 1):
-        lines.append(f"{i}. {category_names[cat]}")
-    lines.append("\nType `leaderboard <name or number>` to view top 10.")
-    return "\n".join(lines)
-
-# --- Admin ---
+# --- Admin / Removal ---
 
 def remove_user(username):
     REMOVED_USERS.add(username.lower())
@@ -268,6 +286,15 @@ def reset_user_all_categories(username):
             if cat != "room_champion":
                 c.execute("DELETE FROM leaderboard WHERE username = ? AND category = ?", (uname, cat))
         conn.commit()
+
+# --- Command Handlers ---
+
+def get_leaderboard_menu_text():
+    lines = ["🏆 Leaderboard Categories:"]
+    for i, cat in enumerate(leaderboard_categories, 1):
+        lines.append(f"{i}. {category_names[cat]}")
+    lines.append("\nType `leaderboard <name or number>` to view top 10.")
+    return "\n".join(lines)
 
 def handle_leaderboard_command(_, user, message):
     msg = message.lower().strip()
@@ -313,13 +340,13 @@ def handle_leaderboard_admin_commands(_, user, msg):
             username = parts[2][1:]
             cat = leaderboard_categories[int(category)-1] if category.isdigit() else category
             if reset_user_in_category(username, cat):
-                return f"🔄 Reset @{username}'s score in {category_names[cat]}"
+                return f"🔄 Reset @{username}'s score in {category_names.get(cat, cat)}"
             else:
                 return "❌ Invalid category or user."
         elif len(parts) == 2:
             cat = leaderboard_categories[int(parts[1])-1] if parts[1].isdigit() else parts[1]
             if reset_leaderboard(cat):
-                return f"🔄 Reset leaderboard: {category_names[cat]}"
+                return f"🔄 Reset leaderboard: {category_names.get(cat, cat)}"
             else:
                 return "❌ Invalid category."
 
@@ -335,14 +362,13 @@ def handle_leaderboard_admin_commands(_, user, msg):
 
     if text == "commandlb":
         return (
-            "👑 Owner Leaderboard Commands:\n"
-            "• remlb @username — Remove from leaderboard\n"
-            "• unremlb @username — Add back to leaderboard\n"
-            "• resetlb <category|number> — Reset full leaderboard\n"
-            "• resetlb <category|number> @username — Reset a user's score\n"
-            "• resetlball @username — Reset all user's scores\n"
+            "👑 LB Admin Commands:\n"
+            "• remlb @user — Remove user from leaderboard\n"
+            "• unremlb @user — Add user back to leaderboard\n"
+            "• resetlb <cat|#> [@user] — Reset leaderboard or user's score\n"
+            "• resetlball @user — Reset all scores for a user\n"
             "• resetalllb — Reset all leaderboards\n"
-            "• commandlb
+            "• commandlb — Show this message"
         )
 
     return None
