@@ -154,6 +154,25 @@ def get_room_champion_rank(username):
             return i + 1
     return None
 
+def get_user_top_categories(username):
+    """
+    Returns a string with the emojis of leaderboard categories
+    where the user is ranked in the top 10.
+    """
+    uname = username.lower()
+    cat_emojis = {
+        "most_active": "⏳",
+        "most_talkative": "💬",
+        "most_afk_time": "😴",
+        "most_stayed": "🛋️"
+    }
+    user_cats = []
+    for cat, emoji in cat_emojis.items():
+        top_users = [u.lower() for u, _ in get_top_leaderboard(cat, 10)]
+        if uname in top_users:
+            user_cats.append(emoji)
+    return " ".join(user_cats)
+
 def get_user_full_rank_summary(_, username):
     uname = username.lower()
     stats = get_user_data(uname)
@@ -171,7 +190,6 @@ def get_user_full_rank_summary(_, username):
 
     lines = [f"📊 @{username}’s Leaderboard Stats:\n"]
 
-    # Keep this complete rank_line function here inside
     def rank_line(symbol, label, value, rank, suffix=""):
         if rank:
             return f"{symbol} {label}: {value}{suffix}\n                 (Rank #{rank})"
@@ -196,33 +214,12 @@ def get_leaderboard_text_by_choice(_, category, public=True):
 
     if category == "room_champion":
         rows = get_room_champion_leaderboard(10)
-        lines = ["🏆 Top 10 Room Champions:"]
-
-        # Rank emojis for top 10
-        rank_emojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
-
-        # Category emojis mapping
-        cat_emojis = {
-            "most_active": "⏳",
-            "most_talkative": "💬",
-            "most_afk_time": "😴",
-            "most_stayed": "🛋️"
-        }
-
-        for i, (user, _) in enumerate(rows, 0):
-            rank_emoji = rank_emojis[i] if i < len(rank_emojis) else f"{i+1}."
-            user_data = get_user_data(user.lower())
-
-            user_ranks = []
-            for cat in cat_emojis.keys():
-                top = get_top_leaderboard(cat, 100)
-                ranks = [u.lower() for u, _ in top]
-                if user.lower() in ranks and ranks.index(user.lower()) < 10:
-                    user_ranks.append(cat_emojis[cat])
-
-            rank_display = "".join(user_ranks)
-            lines.append(f"{rank_emoji} @{user} [{rank_display}]")
-
+        lines = ["🏆 Top 10 Room Champions:\n"]
+        header = f"{'Rank':<5} {'Username':<15} Categories"
+        lines.append(header)
+        for i, (user, _) in enumerate(rows, 1):
+            cats = get_user_top_categories(user)
+            lines.append(f"{i:<5} @{user:<15} {cats}")
         return "\n".join(lines)
 
     # For other categories, keep original style
@@ -289,7 +286,6 @@ def reset_user_all_categories(username):
         conn.commit()
 
 # --- Command Handlers ---
-
 def get_leaderboard_menu_text():
     lines = ["🏆 Leaderboard Categories:"]
     for i, cat in enumerate(leaderboard_categories, 1):
