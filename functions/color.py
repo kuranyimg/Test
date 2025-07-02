@@ -1,371 +1,417 @@
-import sqlite3
-import time
+import asyncio
+import traceback
+import json
+import os
+import random
+from highrise import BaseBot
+from highrise.models import User, Position
 
-DB_PATH = "leaderboard.db"
-REMOVED_USERS = set()
+# ملف لحفظ حالة loop البوت
+BOT_LOOP_FILE = "bot_emote_loop.json"
 
-leaderboard_categories = [
-    "most_active",
-    "most_talkative",
-    "most_afk_time",
-    "most_stayed",
-    "room_champion"
+emote_list: list[tuple[list[str], str, float]] = [
+    (['rest', 'REST', 'Rest'], 'sit-idle-cute', 16.50),
+    (['zombie', 'ZOMBIE', 'Zombie'], 'idle_zombie', 28.75),
+    (['relaxed', 'RElAXED', 'Relaxed'], 'idle_layingdown2', 20.55),
+    (['attentive', 'att', 'Attentive'], 'idle_layingdown', 23.55),
+    (['sleepy', 'SlEEPY', 'Sleepy'], 'idle-sleep', 22.62),
+    (['pouty', 'POUT', 'Pouty', 'Pouty Face'], 'idle-sad', 24.38),
+    (['posh', 'POSH', 'Posh'], 'idle-posh', 21.85),
+    (['tired', 'Tired', 'Tired'], 'idle-loop-tired', 21.96),
+    (['laploop', 'TapLoop', 'TapLoop'], 'idle-loop-tapdance', 6.26),
+    (['shy', 'SHY', 'Shy'], 'idle-loop-shy', 16.47),
+    (['bummed', 'BUMMED', 'Bummed'], 'idle-loop-sad', 6.05),
+    (['Chill', 'chill', "chillin'", "Chillin'"], 'idle-loop-happy', 18.80),
+    (['annoyed', 'annoyed', 'Annoyed'], 'idle-loop-annoyed', 17.06),
+    (['aerobics', 'aerobic', 'Aerobics'], 'idle-loop-aerobics', 8.51),
+    (['lookup', 'Loopup', 'ponder', 'Ponder'], 'idle-lookup', 22.34),
+    (['heropose', 'Hero', 'Heropose', 'hero', 'Hero Pose'], 'idle-hero', 21.88),
+    (['relaxing', 'RElAXING', 'Relaxing'], 'idle-floorsleeping2', 16.25),
+    (['cozynap', 'nap', 'Nap', 'Cozynap', 'Cozy Nap'], 'idle-floorsleeping', 12.50),
+    (['enthused', 'enthus', 'Enthused'], 'idle-enthusiastic', 15.94),
+    (['beat', 'feelbeat', 'FeelTheBeat'], 'idle-dance-headbobbing', 25.37),
+    (['irritated', 'irritat', 'Irritated'], 'idle-angry', 25.43),
+    (['fly', 'Fly', 'I Believe I Can Fly'], 'emote-wings', 13.13),
+    (['think', 'Think'], 'emote-think', 3.69),
+    (['theatrical', 'theatric', 'Theatrical'], 'emote-theatrical', 8.59),
+    (['tapdance', 'tap dance', 'TapDance'], 'emote-tapdance', 11.06),
+    (['superrun', 'Superrun', 'Super Run'], 'emote-superrun', 6.27),
+    (['super punch', 'superpunch', 'Superpunch', 'Super Punch'], 'emote-superpunch', 3.75),
+    (['sumo', 'Sumo', 'Sumo Fight'], 'emote-sumo', 10.87),
+    (['thumb suck', 'thumbsuck', 'Thumb suck', 'suckthumb'], 'emote-suckthumb', 4.19),
+    (['35', 'splits drop', 'Splits drop', 'splits'], 'emote-splitsdrop', 4.47),
+    (['36', 'snowball fight', 'Snowball fight', 'snowball'], 'emote-snowball', 5.23),
+    (['37', 'snow angel', 'Snow angel', 'angel'], 'emote-snowangel', 6.22),
+    (['39', 'secret handshake', 'Secret handshake', 'handshake'], 'emote-secrethandshake', 3.88),
+    (['41', 'rope pull', 'Rope pull', 'rope'], 'emote-ropepull', 8.77),
+    (['42', 'roll', 'Roll'], 'emote-roll', 3.56),
+    (['43', 'rofl', 'ROFL'], 'emote-rofl', 6.31),
+    (['44', 'robot', 'Robot'], 'emote-robot', 7.61),
+    (['45', 'rainbow', 'Rainbow'], 'emote-rainbow', 2.81),
+    (['46', 'proposing', 'Proposing', 'proposal'], 'emote-proposing', 4.28),
+    (['47', 'peekaboo', 'Peekaboo'], 'emote-peekaboo', 3.63),
+    (['48', 'peace', 'Peace'], 'emote-peace', 5.76),
+    (['49', 'panic', 'Panic'], 'emote-panic', 2.85),
+    (['51', 'ninja run', 'Ninja run', 'ninja'], 'emote-ninjarun', 4.75),
+    (['52', 'night fever', 'Night fever', 'fever'], 'emote-nightfever', 5.49),
+    (['53', 'monster fail', 'Monster fail'], 'emote-monster_fail', 4.63),
+    (['54', 'model', 'Model'], 'emote-model', 6.49),
+    (['55', 'flirty wave', 'Flirty wave', 'flirty'], 'emote-lust', 4.66),
+    (['56', 'level up', 'Level up'], 'emote-levelup', 6.05),
+    (['57', 'amused', 'Amused'], 'emote-laughing2', 5.06),
+    (['58', 'laugh', 'Laugh'], 'emote-laughing', 2.69),
+    (['59', 'kiss', 'Kiss'], 'emote-kiss', 2.39),
+    (['60', 'super kick', 'Super kick', 'kick'], 'emote-kicking', 4.87),
+    (['61', 'jump', 'Jump'], 'emote-jumpb', 3.58),
+    (['62', 'judo chop', 'Judo chop'], 'emote-judochop', 2.43),
+    (['63', 'imaginary jetpack', 'Imaginary jetpack', 'jetpack'], 'emote-jetpack', 16.76),
+    (['64', 'hug yourself', 'Hug yourself', 'hug'], 'emote-hugyourself', 4.99),
+    (['65', 'sweating', 'Sweating'], 'emote-hot', 4.35),
+    (['66', 'hero entrance', 'Hero entrance', 'hero'], 'emote-hero', 5.00),
+    (['68', 'headball', 'Headball'], 'emote-headball', 10.07),
+    (['69', 'harlem shake', 'Harlem shake'], 'emote-harlemshake', 13.56),
+    (['70', 'happy', 'Happy'], 'emote-happy', 3.48),
+    (['71', 'handstand', 'Handstand'], 'emote-handstand', 4.02),
+    (['72', 'greedy', 'Greedy'], 'emote-greedy', 4.64),
+    (['73', 'graceful', 'Graceful'], 'emote-graceful', 3.75),
+    (['74', 'moonwalk', 'Moonwalk'], 'emote-gordonshuffle', 8.05),
+    (['75', 'ghost float', 'Ghost float', 'ghost', 'Ghost'], 'emote-ghost-idle', 18.20),
+    (['76', 'gangnam style', 'Gangnam style', 'gangnam'], 'emote-gangnam', 7.28),
+    (['77', 'frolic', 'Frolic'], 'emote-frollicking', 3.70),
+    (['78', 'faint', 'Faint'], 'emote-fainting', 18.42),
+    (['79', 'clumsy', 'Clumsy'], 'emote-fail2', 6.48),
+    (['80', 'fall', 'Fall'], 'emote-fail1', 5.62),
+    (['81', 'face palm', 'Face palm'], 'emote-exasperatedb', 2.72),
+    (['82', 'exasperated', 'Exasperated'], 'emote-exasperated', 2.37),
+    (['83', 'elbow bump', 'Elbow bump'], 'emote-elbowbump', 3.80),
+    (['84', 'disco', 'Disco'], 'emote-disco', 5.37),
+    (["85", "blast off", "Blast Off"], "emote-disappear", 6.2),
+    (["86", "faint drop", "Faint Drop"], "emote-deathdrop", 3.76),
+    (["87", "collapse", "Collapse"], "emote-death2", 4.86),
+    (["88", "revival", "Revival"], "emote-death", 6.62),
+    (["89", "dab", "Dab"], "emote-dab", 2.72),
+    (["90", "curtsy", "Curtsy"], "emote-curtsy", 2.43),
+    (["91", "confusion", "Confusion"], "emote-confused", 8.58),
+    (["92", "cold", "Cold"], "emote-cold", 3.66),
+    (["93", "charging", "Charging"], "emote-charging", 8.03),
+    (["94", "bunny hop", "Bunny Hop"], "emote-bunnyhop", 12.38),
+    (["95", "bow", "Bow"], "emote-bow", 3.34),
+    (["96", "boo", "Boo"], "emote-boo", 4.5),
+    (["97", "home run!", "Home Run!"], "emote-baseball", 7.25),
+    (["98", "falling apart", "Falling Apart"], "emote-apart", 4.81),
+    (["99", "thumbs up", "Thumbs Up"], "emoji-thumbsup", 2.7),
+    (["100", "point", "Point"], "emoji-there", 2.06),
+    (["101", "sneeze", "Sneeze"], "emoji-sneeze", 3.0),
+    (["102", "smirk", "Smirk"], "emoji-smirking", 4.82),
+    (["103", "sick", "Sick"], "emoji-sick", 5.07),
+    (["104", "gasp", "Gasp"], "emoji-scared", 3.01),
+    (["105", "punch", "Punch"], "emoji-punch", 1.76),
+    (["106", "pray", "Pray"], "emoji-pray", 4.5),
+    (["107", "stinky", "Stinky"], "emoji-poop", 4.8),
+    (["108", "naughty", "Naughty"], "emoji-naughty", 4.28),
+    (["109", "mind blown", "Mind Blown"], "emoji-mind-blown", 2.4),
+    (["110", "lying", "Lying"], "emoji-lying", 6.31),
+    (["111", "levitate", "Levitate"], "emoji-halo", 5.84),
+    (["112", "fireball lunge", "Fireball Lunge"], "emoji-hadoken", 2.72),
+    (["113", "give up", "Give Up"], "emoji-give-up", 5.41),
+    (["114", "tummy ache", "Tummy Ache"], "emoji-gagging", 5.5),
+    (["115", "flex", "Flex"], "emoji-flex", 2.1),
+    (["116", "stunned", "Stunned"], "emoji-dizzy", 4.05),
+    (["117", "cursing emote", "Cursing Emote"], "emoji-cursing", 2.38),
+    (["118", "sob", "Sob"], "emoji-crying", 3.7),
+    (["119", "clap", "Clap"], "emoji-clapping", 2.16),
+    (["120", "raise the roof", "Raise The Roof"], "emoji-celebrate", 3.41),
+    (["121", "arrogance", "Arrogance"], "emoji-arrogance", 6.87),
+    (["122", "angry", "Angry"], "emoji-angry", 5.76),
+    (["123", "vogue hands", "Vogue Hands"], "dance-voguehands", 9.15),
+    (["124", "tiktok8", "Savage Dance"], "dance-tiktok8", 10.94),
+    (["125", "tiktok2", "Don't Start Now"], "dance-tiktok2", 10.39),
+    (["126", "yoga flow", "Yoga Flow"], "dance-spiritual", 15.8),
+    (["127", "smoothwalk", "Smoothwalk"], "dance-smoothwalk", 5.69),
+    (["128", "ring on it", "Ring on It"], "dance-singleladies", 21.19),
+    (["129", "let's go shopping", "Let's Go Shopping"], "dance-shoppingcart", 4.32),
+    (["130", "russian dance", "Russian Dance"], "dance-russian", 10.25),
+    (["131", "robotic", "Robotic"], "dance-robotic", 17.81),
+    (["132", "penny's dance", "Penny's Dance"], "dance-pennywise", 1.21),
+    (["133", "orange juice dance", "Orange Juice Dance"], "dance-orangejustice", 6.48),
+    (["134", "rock out", "Rock Out"], "dance-metal", 15.08),
+    (["135", "karate", "Karate"], "dance-martial-artist", 13.28),
+    (["136", "macarena", "Macarena"], "dance-macarena", 12.21),
+    (["137", "hands in the air", "Hands in the Air"], "dance-handsup", 22.28),
+    (["138", "floss", "Floss"], "dance-floss", 21.33),
+    (["139", "duck walk", "Duck Walk"], "dance-duckwalk", 11.75),
+    (["140", "breakdance", "Breakdance"], "dance-breakdance", 17.62),
+    (["141", "k-pop dance", "K-Pop Dance"], "dance-blackpink", 7.15),
+    (["142", "push ups", "Push Ups"], "dance-aerobics", 8.8),
+    (["143", "hyped", "Hyped"], "emote-hyped", 7.49),
+    (["144", "jinglebell", "Jinglebell"], "dance-jinglebell", 11),
+    (["145", "nervous", "Nervous"], "idle-nervous", 21.71),
+    (["146", "toilet", "Toilet"], "idle-toilet", 32.17),
+    (["147", "attention", "Attention"], "emote-attention", 4.4),
+    (["148", "astronaut", "Astronaut"], "emote-astronaut", 13.79),
+    (["149", "dance zombie", "Dance Zombie"], "dance-zombie", 12.92),
+    (["150", "ghost", "Ghost"], "emoji-ghost", 3.47),
+    (["151", "heart eyes", "Heart Eyes"], "emote-hearteyes", 4.03),
+    (["152", "swordfight", "Swordfight"], "emote-swordfight", 5.91),
+    (["153", "timejump", "TimeJump"], "emote-timejump", 4.01),
+    (["154", "snake", "Snake"], "emote-snake", 5.26),
+    (["155", "heart fingers", "Heart Fingers"], "emote-heartfingers", 4.0),
+    (["156", "heart shape", "Heart Shape"], "emote-heartshape", 6.23),
+    (["157", "hug", "Hug"], "emote-hug", 3.5),
+    (["158", "laugh", "Laugh"], "emote-lagughing", 1.13),
+    (["159", "eyeroll", "Eyeroll"], "emoji-eyeroll", 3.02),
+    (["160", "embarrassed", "Embarrassed"], "emote-embarrassed", 7.414283),
+    (["161", "float", "Float"], "emote-float", 8.995302),
+    (["162", "telekinesis", "Telekinesis"], "emote-telekinesis", 10.492032),
+    (["163", "sexy dance", "Sexy Dance"], "dance-sexy", 12.30883),
+    (["164", "puppet", "Puppet"], "emote-puppet", 16.325823),
+    (["165", "fighter idle", "Fighter Idle"], "idle-fighter", 17.19123),
+    (["166", "penguin dance", "Penguin Dance"], "dance-pinguin", 11.58291),
+    (["167", "creepy puppet", "Creepy Puppet"], "dance-creepypuppet", 6.416121),
+    (["168", "sleigh", "Sleigh"], "emote-sleigh", 11.333165),
+    (["169", "maniac", "Maniac"], "emote-maniac", 4.906886),
+    (["170", "energy ball", "Energy Ball"], "emote-energyball", 7.575354),
+    (["171", "singing", "Singing"], "idle_singing", 10.260182),
+    (["172", "frog", "Frog"], "emote-frog", 14.55257),
+    (["173", "superpose", "Superpose"], "emote-superpose", 4.530791),
+    (["174", "cute", "Cute"], "emote-cute", 6.170464),
+    (["175", "tiktok9", "TikTok Dance 9"], "dance-tiktok9", 11.892918),
+    (["176", "weird dance", "Weird Dance"], "dance-weird", 21.556237),
+    (["177", "tiktok10", "TikTok Dance 10"], "dance-tiktok10", 8.225648),
+    (["178", "pose 7", "Pose 7"], "emote-pose7", 4.655283),
+    (["179", "pose 8", "Pose 8"], "emote-pose8", 4.808806),
+    (["180", "casual dance", "Casual Dance"], "idle-dance-casual", 9.079756),
+    (["181", "pose 1", "Pose 1"], "emote-pose1", 2.825795),
+    (["182", "pose 3", "Pose 3"], "emote-pose3", 5.10562),
+    (["183", "pose 5", "Pose 5"], "emote-pose5", 4.621532),
+    (["184", "cutey", "Cutey"], "emote-cutey", 3.26032),
+    (["185", "punk guitar", "Punk Guitar"], "emote-punkguitar", 9.365807),
+    (["186", "zombie run", "Zombie Run"], "emote-zombierun", 9.182984),
+    (["187", "fashionista", "Fashionista"], "emote-fashionista", 5.606485),
+    (["188", "gravity", "Gravity"], "emote-gravity", 8.955966),
+    (["189", "ice cream dance", "Ice Cream Dance"], "dance-icecream", 14.769573),
+    (["190", "wrong dance", "Wrong Dance"], "dance-wrong", 12.422389),
+    (["191", "uwu", "UwU"], "idle-uwu", 24.761968),
+    (["192", "tiktok dance 4", "TikTok Dance 4"], "idle-dance-tiktok4", 15.500708),
+    (["193", "advanced shy", "Advanced Shy"], "emote-shy2", 4.989278),
+    (["194", "anime dance", "Anime Dance"], "dance-anime", 8.46671),
+    (["195", "kawaii", "Kawaii"], "dance-kawai", 10.290789),
+    (["196", "scritchy", "Scritchy"], "idle-wild", 26.422824),
+    (["197", "ice skating", "Ice Skating"], "emote-iceskating", 7.299156),
+    (["198", "surprise big", "Surprise Big"], "emote-pose6", 5.375124),
+    (["199", "celebration step", "Celebration Step"], "emote-celebrationstep", 3.353703),
+    (["200", "creepycute", "Creepycute"], "emote-creepycute", 7.902453),
+    (["201", "frustrated", "Frustrated"], "emote-frustrated", 5.584622),
+    (["202", "pose 10", "Pose 10"], "emote-pose10", 3.989871),
+    (["203", "rel", "Rel"], "sit-relaxed", 29.889858),
+    (["laidback", "laid", "Laid Back"], "sit-open", 24.025963),
+    (["205", "star gazing", "Star Gazing"], "emote-stargaze", 1.127464),
+    (["206", "slap", "Slap"], "emote-slap", 2.724945),
+    (["207", "boxer", "Boxer"], "emote-boxer", 5.555702),
+    (["208", "head blowup", "Head Blowup"], "emote-headblowup", 11.667537),
+    (["209", "kawaii gogo", "KawaiiGoGo"], "emote-kawaiigogo", 10),
+    (["210", "repose", "Repose"], "emote-repose", 1.118455),
+    (["211", "tiktok7", "Tiktok7"], "idle-dance-tiktok7", 12.956484),
+    (["212", "shrink", "Shrink"], "emote-shrink", 8.738784),
+    (["213", "ditzy pose", "Ditzy Pose"], "emote-pose9", 4.583117),
+    (["214", "teleporting", "Teleporting"], "emote-teleporting", 11.7676),
+    (["215", "touch", "Touch"], "dance-touch", 11.7),
+    (["216", "guitar", "Guitar"], "idle-guitar", 12.229398),
+    (["217", "this is for you", "This Is For You"], "emote-gift", 5.8),
+    (["218", "push it", "Push It"], "dance-employee", 8),
+    (["219", "smooch", "Smooch"], "emote-kissing", 5),
+    (["220", "wop dance", "Wop Dance"], "dance-tiktok11", 9.5),
+    (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
+    (["222", "at attention", "At Attention"], "emote-salute", 3),
 ]
 
-category_names = {
-    "most_active": "⏳ Time Spent in Room",
-    "most_talkative": "💬 Total Messages Sent",
-    "most_afk_time": "😴 Longest AFK Session",
-    "most_stayed": "🛋️ Longest Single Stay",
-    "room_champion": "👑 Room Champion",
-}
+user_last_positions = {}
 
-title_map = {
-    1: "Legend",
-    2: "Ruler",
-    3: "Master",
-    4: "Conqueror",
-    5: "Veteran",
-    6: "Icon",
-    7: "Prodigy",
-    8: "Star",
-    9: "Hero",
-    10: "Pioneer"
-}
+async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
+    try:
+        cleaned_msg = message.strip().lower()
 
-user_session_starts = {}
-user_last_activity = {}
+        if cleaned_msg in ("stop", "/stop", "!stop", "-stop"):
+            if user.id in self.user_loops:
+                self.user_loops[user.id]["task"].cancel()
+                del self.user_loops[user.id]
+                await self.highrise.send_whisper(user.id, "Emote loop stopped. (Type any emote name or number to start again)")
+            else:
+                await self.highrise.send_whisper(user.id, "You don't have an active emote loop.")
+            return
 
-def ensure_leaderboard_table():
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("""
-            CREATE TABLE IF NOT EXISTS leaderboard (
-                username TEXT NOT NULL,
-                category TEXT NOT NULL,
-                value INTEGER NOT NULL DEFAULT 0,
-                PRIMARY KEY (username, category)
+        selected = next((e for e in emote_list if cleaned_msg in [a.lower() for a in e[0]]), None)
+        if selected:
+            aliases, emote_id, duration = selected
+
+            if user.id in self.user_loops:
+                self.user_loops[user.id]["task"].cancel()
+
+            async def emote_loop():
+                try:
+                    while True:
+                        if not self.user_loops[user.id]["paused"]:
+                            room_users = await self.highrise.get_room_users()
+                            user_ids = [u.id for u, _ in room_users.content]
+                            if user.id not in user_ids:
+                                self.user_loops[user.id]["task"].cancel()
+                                del self.user_loops[user.id]
+                                return
+                            await self.highrise.send_emote(emote_id, user.id)
+                        await asyncio.sleep(duration)
+                except asyncio.CancelledError:
+                    pass
+                except Exception:
+                    traceback.print_exc()
+
+            task = asyncio.create_task(emote_loop())
+            self.user_loops[user.id] = {
+                "paused": False,
+                "emote_id": emote_id,
+                "duration": duration,
+                "task": task,
+            }
+
+            await self.highrise.send_whisper(
+                user.id,
+                f"You are now in a loop for emote number {aliases[0]}. (To stop, type 'stop')",
             )
-        """)
-        conn.commit()
+    except Exception:
+        traceback.print_exc()
 
-ensure_leaderboard_table()
+# -----------------------------------------
+# توقف واستئناف المستخدم عند الحركة
+# -----------------------------------------
+async def handle_user_movement(self: BaseBot, user: User, pos) -> None:
+    try:
+        if user.id not in self.user_loops:
+            return
 
-def set_user_join_time(username):
-    uname = username.lower()
-    now = int(time.time())
-    user_session_starts[uname] = now
-    user_last_activity[uname] = now
+        # Ensure pos has x/y/z (skip if AnchorPosition)
+        if not all(hasattr(pos, attr) for attr in ("x", "y", "z")):
+            return
 
-def update_most_active_live(username):
-    uname = username.lower()
-    now = int(time.time())
+        old_pos = user_last_positions.get(user.id)
+        user_last_positions[user.id] = (pos.x, pos.y, pos.z)
 
-    if uname not in user_session_starts or uname not in user_last_activity:
+        if old_pos is None:
+            return
+        if old_pos != (pos.x, pos.y, pos.z):
+            self.user_loops[user.id]["paused"] = True
+            await asyncio.sleep(2)
+            new_pos = user_last_positions.get(user.id)
+            if new_pos == (pos.x, pos.y, pos.z):
+                self.user_loops[user.id]["paused"] = False
+    except Exception:
+        traceback.print_exc()
+
+# ================================================
+# 👇 BOT EMOTE LOOP
+# ================================================
+loop_file_path = "functions/bot_emote_loop.json"
+bot_loop_data = {
+    "emotes": [],
+    "mode": "order",  # or "random"
+}
+bot_loop_task = None
+
+def save_bot_loop():
+    with open(loop_file_path, "w") as f:
+        json.dump(bot_loop_data, f)
+
+def load_bot_loop():
+    global bot_loop_data
+    if os.path.exists(loop_file_path):
+        try:
+            with open(loop_file_path, "r") as f:
+                bot_loop_data = json.load(f)
+        except Exception:
+            pass
+
+async def handle_bot_emote_loop(self: BaseBot, user: User, message: str):
+    global bot_loop_task
+    msg = message.strip()
+    lower = msg.lower()
+
+    if lower in ("rest loop", "reset loop", "stop loop", "stop bot loop"):
+        await stop_bot_emote_loop(self, user)
         return
 
-    last = user_last_activity[uname]
-    elapsed = now - last
-    if elapsed <= 0:
+    if lower == "loop list":
+        if not bot_loop_data["emotes"]:
+            await self.highrise.send_whisper(user.id, "Bot has no emotes saved.")
+            return
+        txt = "🤖 Bot Emote Loop:\n"
+        for idx, emote in enumerate(bot_loop_data["emotes"], 1):
+            txt += f"{idx}. {emote['emote_id']} - {emote['duration']:.1f}s\n"
+        await self.highrise.send_whisper(user.id, txt)
         return
 
-    data = get_user_data(uname)
-    update_leaderboard_value(uname, "most_active", data["most_active"] + elapsed)
-    if elapsed > data["most_afk_time"]:
-        update_leaderboard_value(uname, "most_afk_time", elapsed)
-
-    session_elapsed = now - user_session_starts[uname]
-    if session_elapsed > data["most_stayed"]:
-        update_leaderboard_value(uname, "most_stayed", session_elapsed)
-
-    user_last_activity[uname] = now
-
-def track_user_session_end(username):
-    uname = username.lower()
-    if uname in user_session_starts:
-        start = user_session_starts.pop(uname)
-        now = int(time.time())
-        duration = now - start
-        if duration > 0:
-            data = get_user_data(uname)
-            update_leaderboard_value(uname, "most_active", data["most_active"] + duration)
-            if duration > data["most_stayed"]:
-                update_leaderboard_value(uname, "most_stayed", duration)
-    user_last_activity.pop(uname, None)
-
-def update_message_count(username):
-    uname = username.lower()
-    update_most_active_live(uname)
-    data = get_user_data(uname)
-    update_leaderboard_value(uname, "most_talkative", data["most_talkative"] + 1)
-
-def get_user_data(username):
-    uname = username.lower()
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        for cat in leaderboard_categories[:-1]:
-            c.execute("INSERT OR IGNORE INTO leaderboard (username, category, value) VALUES (?, ?, 0)", (uname, cat))
-        conn.commit()
-        c.execute("SELECT category, value FROM leaderboard WHERE username = ?", (uname,))
-        rows = c.fetchall()
-        return {cat: val for cat, val in rows}
-
-def update_leaderboard_value(username, category, value):
-    if category == "room_champion":
-        return
-    uname = username.lower()
-    if uname in REMOVED_USERS:
-        return
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("""
-            INSERT INTO leaderboard (username, category, value)
-            VALUES (?, ?, ?)
-            ON CONFLICT(username, category) DO UPDATE SET value=excluded.value
-        """, (uname, category, value))
-        conn.commit()
-
-def get_top_leaderboard(category, limit=10):
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("""
-            SELECT username, value FROM leaderboard
-            WHERE category = ?
-            ORDER BY value DESC
-            LIMIT ?
-        """, (category, limit))
-        return c.fetchall()
-
-def get_room_champion_leaderboard(limit=10):
-    user_scores = {}
-    for cat in leaderboard_categories[:-1]:
-        top = get_top_leaderboard(cat, 100)
-        for rank, (user, _) in enumerate(top):
-            points = 100 - rank
-            user_scores[user] = user_scores.get(user, 0) + points
-    sorted_users = sorted(user_scores.items(), key=lambda x: x[1], reverse=True)
-    return sorted_users[:limit]
-
-def get_room_champion_rank(username):
-    uname = username.lower()
-    champs = get_room_champion_leaderboard(1000)
-    for i, (user, _) in enumerate(champs):
-        if user.lower() == uname:
-            return i + 1
-    return None
-
-def get_user_top_categories(username):
-    """
-    Returns a string with the emojis of leaderboard categories
-    where the user is ranked in the top 10.
-    """
-    uname = username.lower()
-    cat_emojis = {
-        "most_active": "⏳",
-        "most_talkative": "💬",
-        "most_afk_time": "😴",
-        "most_stayed": "🛋️"
-    }
-    user_cats = []
-    for cat, emoji in cat_emojis.items():
-        top_users = [u.lower() for u, _ in get_top_leaderboard(cat, 10)]
-        if uname in top_users:
-            user_cats.append(emoji)
-    return " ".join(user_cats)
-
-def get_user_full_rank_summary(_, username):
-    uname = username.lower()
-    stats = get_user_data(uname)
-    ranks = {}
-
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        for cat in leaderboard_categories[:-1]:
-            c.execute("SELECT username FROM leaderboard WHERE category = ? ORDER BY value DESC", (cat,))
-            all_users = [row[0].lower() for row in c.fetchall()]
-            ranks[cat] = all_users.index(uname) + 1 if uname in all_users else None
-
-    champ_rank = get_room_champion_rank(uname)
-    ranks["room_champion"] = champ_rank
-
-    lines = [f"📊 @{username}’s Leaderboard Stats:\n"]
-
-    def rank_line(symbol, label, value, rank, suffix=""):
-        if rank:
-            return f"{symbol} {label}: {value}{suffix}\n                 (Rank #{rank})"
+    if lower.startswith("loopr "):
+        target = lower.replace("loopr", "").strip()
+        removed = False
+        for i, e in enumerate(bot_loop_data["emotes"]):
+            if e["emote_id"] == target:
+                bot_loop_data["emotes"].pop(i)
+                removed = True
+                break
+        if removed:
+            save_bot_loop()
+            await self.highrise.send_whisper(user.id, f"✅ Removed emote: {target}")
         else:
-            return f"{symbol} {label}: {value}{suffix}\n                 (Unranked)"
+            await self.highrise.send_whisper(user.id, f"❌ Emote not found: {target}")
+        return
 
-    lines.append(rank_line("🥇", "Time", format_seconds(stats["most_active"]), ranks["most_active"]))
-    lines.append(rank_line("💬", "Msgs", format_number(stats["most_talkative"]), ranks["most_talkative"]))
-    lines.append(rank_line("😴", "AFK", format_seconds(stats["most_afk_time"]), ranks["most_afk_time"]))
-    lines.append(rank_line("🛋️", "Stay", format_seconds(stats["most_stayed"]), ranks["most_stayed"]))
+    if lower.startswith("loop mode "):
+        mode = lower.replace("loop mode", "").strip()
+        if mode in ("random", "order"):
+            bot_loop_data["mode"] = mode
+            save_bot_loop()
+            await self.highrise.send_whisper(user.id, f"✅ Bot loop mode set to {mode}.")
+        else:
+            await self.highrise.send_whisper(user.id, "❌ Mode must be 'order' or 'random'.")
+        return
 
-    if champ_rank:
-        title = title_map.get(champ_rank, "Elite" if champ_rank <= 100 else "Rookie")
-        crowns = "👑" * min(5, champ_rank if champ_rank <= 10 else 1)
-        lines.append(f"👑 Champ: #{champ_rank} {crowns} {title}")
+    if lower.startswith("loop "):
+        emote_name = lower.replace("loop", "").strip()
+        selected = next((e for e in emote_list if emote_name in [a.lower() for a in e[0]]), None)
+        if selected:
+            _, emote_id, duration = selected
+            bot_loop_data["emotes"].append({"emote_id": emote_id, "duration": duration})
+            save_bot_loop()
+            await self.highrise.send_whisper(user.id, f"✅ Bot will now loop: {emote_id}")
+            if not bot_loop_task or bot_loop_task.done():
+                bot_loop_task = asyncio.create_task(start_bot_loop(self))
+        else:
+            await self.highrise.send_whisper(user.id, f"❌ Emote not recognized: {emote_name}")
 
-    return "\n".join(lines)
+async def start_bot_loop(self: BaseBot):
+    try:
+        while True:
+            if not bot_loop_data["emotes"]:
+                await asyncio.sleep(5)
+                continue
 
-def get_leaderboard_text_by_choice(_, category, public=True):
-    if category not in leaderboard_categories:
-        return "❌ Invalid leaderboard category."
-
-    if category == "room_champion":
-        rows = get_room_champion_leaderboard(10)
-        lines = ["🏆 Top 10 Room Champions:\n"]
-        header = f"{'Rank':<5} {'Username':<15} Categories"
-        lines.append(header)
-        for i, (user, _) in enumerate(rows, 1):
-            cats = get_user_top_categories(user)
-            lines.append(f"{i:<5} @{user:<15} {cats}")
-        return "\n".join(lines)
-
-    # For other categories, keep original style
-    rows = get_top_leaderboard(category, 10)
-    lines = [f"{category_names[category]} Top 10:"]
-    for i, (user, val) in enumerate(rows, 1):
-        medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f"{i}."
-        val_txt = format_seconds(val) if category in ["most_active", "most_afk_time", "most_stayed"] else format_number(val)
-        lines.append(f"{medal} @{user} — {val_txt}")
-    return "\n".join(lines)
-
-def format_seconds(sec):
-    d, remainder = divmod(sec, 86400)
-    h, remainder = divmod(remainder, 3600)
-    m, _ = divmod(remainder, 60)
-    if d > 0:
-        return f"{d}d {h}h"
-    return f"{h}h {m}m" if h else f"{m}m"
-
-def format_number(n):
-    for unit in ["", "k", "M", "B"]:
-        if abs(n) < 1000:
-            return f"{int(n)}{unit}"
-        n /= 1000
-    return f"{n:.1f}T"
-
-# --- Admin / Removal ---
-
-def remove_user(username):
-    REMOVED_USERS.add(username.lower())
-
-def unremove_user(username):
-    REMOVED_USERS.discard(username.lower())
-
-def is_user_removed(_, username):
-    return username.lower() in REMOVED_USERS
-
-def reset_leaderboard(category):
-    if category not in leaderboard_categories:
-        return False
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("DELETE FROM leaderboard WHERE category = ?", (category,))
-        conn.commit()
-    return True
-
-def reset_user_in_category(username, category):
-    uname = username.lower()
-    if category not in leaderboard_categories or category == "room_champion":
-        return False
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("DELETE FROM leaderboard WHERE username = ? AND category = ?", (uname, category))
-        conn.commit()
-    return True
-
-def reset_user_all_categories(username):
-    uname = username.lower()
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        for cat in leaderboard_categories:
-            if cat != "room_champion":
-                c.execute("DELETE FROM leaderboard WHERE username = ? AND category = ?", (uname, cat))
-        conn.commit()
-
-# --- Command Handlers ---
-def get_leaderboard_menu_text():
-    lines = ["🏆 Leaderboard Categories:"]
-    for i, cat in enumerate(leaderboard_categories, 1):
-        lines.append(f"{i}. {category_names[cat]}")
-    lines.append("\nType `leaderboard <name or number>` to view top 10.")
-    return "\n".join(lines)
-
-def handle_leaderboard_command(_, user, message):
-    msg = message.lower().strip()
-    if msg == "leaderboard":
-        return get_leaderboard_menu_text()
-    if msg.startswith("leaderboard "):
-        arg = msg.split(" ", 1)[1]
-        if arg.isdigit():
-            index = int(arg) - 1
-            if 0 <= index < len(leaderboard_categories):
-                return get_leaderboard_text_by_choice(None, leaderboard_categories[index])
-        for cat in leaderboard_categories:
-            if cat.startswith(arg):
-                return get_leaderboard_text_by_choice(None, cat)
-        return "❌ Unknown category."
-    if msg.startswith("rank "):
-        name = msg[5:].lstrip("@").strip()
-        return get_user_full_rank_summary(None, name)
-    if msg == "rank":
-        return get_user_full_rank_summary(None, user.username)
-    return None
-
-def handle_leaderboard_admin_commands(_, user, msg):
-    if not hasattr(user, "username") or user.username.lower() != "raybm":
-        return None
-
-    text = msg.lower().strip()
-
-    if text.startswith("remlb @"):
-        username = text.split("@")[1].strip()
-        remove_user(username)
-        return f"❌ Removed @{username} from leaderboard."
-
-    if text.startswith("unremlb @"):
-        username = text.split("@")[1].strip()
-        unremove_user(username)
-        return f"✅ Unremoved @{username} from leaderboard."
-
-    if text.startswith("resetlb "):
-        parts = text.split()
-        if len(parts) == 3 and parts[2].startswith("@"):
-            category = parts[1]
-            username = parts[2][1:]
-            cat = leaderboard_categories[int(category)-1] if category.isdigit() else category
-            if reset_user_in_category(username, cat):
-                return f"🔄 Reset @{username}'s score in {category_names.get(cat, cat)}"
+            if bot_loop_data["mode"] == "random":
+                chosen = random.choice(bot_loop_data["emotes"])
+                await self.highrise.send_emote(chosen["emote_id"])
+                await asyncio.sleep(chosen["duration"])
             else:
-                return "❌ Invalid category or user."
-        elif len(parts) == 2:
-            cat = leaderboard_categories[int(parts[1])-1] if parts[1].isdigit() else parts[1]
-            if reset_leaderboard(cat):
-                return f"🔄 Reset leaderboard: {category_names.get(cat, cat)}"
-            else:
-                return "❌ Invalid category."
+                for emote in bot_loop_data["emotes"]:
+                    await self.highrise.send_emote(emote["emote_id"])
+                    await asyncio.sleep(emote["duration"])
+    except asyncio.CancelledError:
+        pass
+    except Exception:
+        traceback.print_exc()
 
-    if text.startswith("resetlball @"):
-        username = text.split("@")[1].strip()
-        reset_user_all_categories(username)
-        return f"🧹 Reset all scores for @{username}"
-
-    if text == "resetalllb":
-        for cat in leaderboard_categories:
-            reset_leaderboard(cat)
-        return "🧹 All leaderboards reset."
-
-    if text == "commandlb":
-        return (
-            "👑 LB Admin Commands:\n"
-            "• remlb @user — Remove user from leaderboard\n"
-            "• unremlb @user — Add user back to leaderboard\n"
-            "• resetlb <cat|#> [@user] — Reset leaderboard or user's score\n"
-            "• resetlball @user — Reset all scores for a user\n"
-            "• resetalllb — Reset all leaderboards\n"
-            "• commandlb — Show this message"
-        )
-
-    return None
+async def stop_bot_emote_loop(self: BaseBot, user: User):
+    global bot_loop_task
+    if bot_loop_task and not bot_loop_task.done():
+        bot_loop_task.cancel()
+        bot_loop_task = None
+        bot_loop_data["emotes"].clear()
+        save_bot_loop()
+        await self.highrise.send_whisper(user.id, "🛑 Bot emote loop stopped.")
+    else:
+        await self.highrise.send_whisper(user.id, "❌ No active bot loop to stop.")
