@@ -11,36 +11,7 @@ BOT_LOOP_FILE = "bot_emote_loop.json"
 
 emote_list: list[tuple[list[str], str, float]] = [
     (['rest', 'REST', 'Rest'], 'sit-idle-cute', 16.50),
-    (['Kawaii Go Go', 'kawaii go go', '1'], 'dance-kawai', 10.85),
-    (['Hyped', 'hyped', '2'], 'emote-hyped', 7.62),
-    (['Levitate', 'levitate', '3'], 'emoji-halo', 6.52),
-    (['Rest', 'rest', '4'], 'sit-idle-cute', 17.73),
-    (['Hero Pose', 'hero pose', '5'], 'idle-hero', 22.33),
-    (['Uhmmm', 'uhmmm', '6'], 'emote-thought', 27.43),
-    (['Crouch', 'crouch', '7'], 'idle-crouched', 28.27),
-    (['Zero Gravity', 'zero gravity', '8'], 'emote-astronaut', 13.93),
-    (['Zombie Run', 'zombie run', '9'], 'emote-zombierun', 10.05),
-    (['Wait', 'wait', '10'], 'dance-wait', 9.92),
-    (['Dab', 'dab', '11'], 'emote-dab', 3.75),
-    (['Ignition Boost', 'ignition boost', '12'], 'hcc-jetpack', 27.45),
-    (['Do The Worm', 'do the worm', '13'], 'emote-snake', 6.63),
-    (['Bummed', 'bummed', '14'], 'idle-loop-sad', 21.80),
-    (['Chillin\'', 'chillin\'', '15'], 'idle-loop-happy', 19.80),
-    (['Sweet Smooch', 'sweet smooch', '16'], 'emote-kissing', 6.69),
-    (['Emoji Shush', 'emoji shush', '17'], 'emoji-shush', 3.40),
-    (['Idle Tough', 'idle tough', '18'], 'idle_tough', 28.64),
-    (['Emote Fail3', 'emote fail3', '19'], 'emote-fail3', 7.06),
-    (['Emote Shocked', 'emote shocked', '20'], 'emote-shocked', 5.59),
-    (['Emote Theatrical Test', 'emote theatrical test', '21'], 'emote-theatrical-test', 10.86),
-    (['Emote Fireworks', 'emote fireworks', '22'], 'emote-fireworks', 13.15),
-    (['Emote Electrified', 'emote electrified', '23'], 'emote-electrified', 5.29),
-    (['Idle Headless', 'idle headless', '24'], 'idle-headless', 41.80),
-    (['Emote Armcannon', 'emote armcannon', '25'], 'emote-armcannon', 8.67),
-    (['Dance Tiktok4', 'dance tiktok4', '26'], 'dance-tiktok4', 15.00),
-    (['Dance Tiktok7', 'dance tiktok7', '27'], 'dance-tiktok7', 13.89),
-    (['Don\'t Touch Dance', 'don\'t touch dance', '28'], 'dance-tiktok13', 9.24),
-    (['Hip Hop Dance', 'hip hop dance', '29'], 'dance-hiphop', 27.59),
-    (['Emote Hopscotch', 'emote hopscotch', '30'], 'emote-hopscotch', 5.84),
+
 ]
 
 user_last_positions = {}
